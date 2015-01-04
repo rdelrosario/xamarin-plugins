@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>Xam.Plugin.DeviceMotion</id>
+        <version>1.0.0</version>
+        <title>Device Motion Plugin for Xamarin and Windows</title>
+        <authors>rdelrosario</authors>
+        <owners>rdelrosario</owners>
+        <licenseUrl>https://github.com/rdelrosario/xamarin-plugins/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/rdelrosario/xamarin-plugins</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Detect Motion Sensors Vector Value changes for: Accelerometer, Gyroscope, Magnetometer. Accoss iOS, Android, Windows Phone and Windows from a single API.</description>
+        <summary>Get vector value for the different motion sensors in the device.</summary>
+    </metadata>
+    <files>
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\MonoAndroid10\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\MonoAndroid10\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\MonoAndroid10\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.dll" target="lib\MonoAndroid10\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.pdb" target="lib\MonoAndroid10\DeviceMotion.Plugin.pdb" />
+        <file src="DeviceMotion.Plugin.Android\bin\Release\DeviceMotion.Plugin.XML" target="lib\MonoAndroid10\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.iOS\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\MonoTouch10\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.iOS\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\MonoTouch10\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.iOS\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\MonoTouch10\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.iOS\bin\iPhone\Release\DeviceMotion.Plugin.dll" target="lib\MonoTouch10\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.iOS\bin\iPhone\Release\DeviceMotion.Plugin.XML" target="lib\MonoTouch10\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\win8\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\win8\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\win8\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.dll" target="lib\win8\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.pdb" target="lib\win8\DeviceMotion.Plugin.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsStore\bin\Release\DeviceMotion.Plugin.XML" target="lib\win8\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.Abstractions\bin\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.Abstractions\bin\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.Abstractions\bin\Release\DeviceMotion.Plugin.Abstractions.XML" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.XML" />
+        <file src="DeviceMotion.Plugin\bin\Release\DeviceMotion.Plugin.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin\bin\Release\DeviceMotion.Plugin.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.pdb" />
+        <file src="DeviceMotion.Plugin\bin\Release\DeviceMotion.Plugin.XML" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\wp8\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\wp8\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\wp8\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.dll" target="lib\wp8\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.pdb" target="lib\wp8\DeviceMotion.Plugin.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsPhone8\Bin\Release\DeviceMotion.Plugin.XML" target="lib\wp8\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\wpa81\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\wpa81\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\wpa81\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.dll" target="lib\wpa81\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.pdb" target="lib\wpa81\DeviceMotion.Plugin.pdb" />
+        <file src="DeviceMotion.Plugin.WindowsPhone81\bin\Release\DeviceMotion.Plugin.XML" target="lib\wpa81\DeviceMotion.Plugin.XML" />
+        <file src="DeviceMotion.Plugin.iOSUnified\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.dll" target="lib\Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion.Plugin.iOSUnified\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.pdb" target="lib\Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion.Plugin.iOSUnified\bin\iPhone\Release\DeviceMotion.Plugin.Abstractions.xml" target="lib\Xamarin.iOS10\DeviceMotion.Plugin.Abstractions.xml" />
+        <file src="DeviceMotion.Plugin.iOSUnified\bin\iPhone\Release\DeviceMotion.Plugin.dll" target="lib\Xamarin.iOS10\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion.Plugin.iOSUnified\bin\iPhone\Release\DeviceMotion.Plugin.XML" target="lib\Xamarin.iOS10\DeviceMotion.Plugin.XML" />
+    </files>
+</package>
