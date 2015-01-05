@@ -12,7 +12,7 @@ Simple cross platform plugin to read motion vectors value  for device motion sen
 * Xamarin.Android
 * Windows Phone 8 (Silverlight)
 * Windows Phone 8.1 RT
-
+* Windows Store 8.1
 
 ### API Usage
 
@@ -37,7 +37,7 @@ Enum of Device Motion Sensor Type:
 		/// <summary>
 		/// The magnetometer.
 		/// </summary>
-		Magnetometer,
+		Magnetometer
 
 	}
 ```
@@ -128,7 +128,7 @@ public MotionSensorType SensorType;
 public MotionVector Value;
 ```
 
-Note: Magnetometer API is not available for Windows Store & Windows Phone 8.
+Note: Magnetometer API is not available for Windows Store & Windows Phone 8 (Silverlight).
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
