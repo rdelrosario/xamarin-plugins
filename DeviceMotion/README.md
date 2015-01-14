@@ -148,7 +148,7 @@ public MotionValue Value;
 /// Gets the type of the value. Indicates if sensor value is single value or a vector value
 /// </summary>
 /// <value>The type of the value.</value>
-public MotionSensorValueType ValueType { get; set; }
+public MotionSensorValueType ValueType
 ```
 If <b>ValueType</b> is <b>MotionSensorValueType.Vector</b> cast the <b>Value</b> to <b>MotionVector</b> to get the X,Y,Z Vector values. If <b>ValueType</b> is <b>MotionSensorValueType.Single</b> cast it to <b>MotionValue</b> and use the <b>Value</b> property of the <b>MotionValue</b> to get the sensor measure. For Compass sensor returns single value other sensors returns vector value
 
