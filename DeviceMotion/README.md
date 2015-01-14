@@ -1,6 +1,6 @@
 ## Device Motion Plugin for Xamarin and Windows
 
-Simple cross platform plugin to read motion vectors value  for device motion sensors such as:  Accelerometer, Gyroscope, Magnetometer. 
+Simple cross platform plugin to read motion vectors value for device motion sensors such as:  Accelerometer, Gyroscope, Magnetometer, Compass. 
 
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.DeviceMotion
@@ -68,6 +68,24 @@ Enum of Device Motion Sensor Delay:
 
 	}
 ```
+Enum of Device Motion Sensor Value Type:
+
+```
+/// <summary>
+/// Motion sensor value type.
+/// </summary>
+    public enum MotionSensorValueType
+    {
+		/// <summary>
+		/// Single value. 
+		/// </summary>
+        Single,
+		/// <summary>
+		/// Vector value.
+		/// </summary>
+        Vector
+    }
+```
 
 **Start**
 
@@ -106,7 +124,7 @@ Returns true if specified sensor type is active, false if not.
 
 #### Events
 
-You can subscribe to <b>SensorValueChanged</b>, which will return <b>SensorValueChangedEventArgs</b> with all information you need. This occurs when a new sensor reading is available at the specified interval.
+You can subscribe to <b>SensorValueChanged</b>, which will return <b>SensorValueChangedEventArgs</b> with all information you need. This occurs when a new sensor reading is available at the specified interval. 
 
 ```
 /// <summary>
@@ -122,13 +140,23 @@ event SensorValueChangedEventHandler SensorValueChanged;
 /// <value>The type of the sensor.</value>
 public MotionSensorType SensorType;
 /// <summary>
-/// Motion Vector provide X,Y,Z values
+/// Motion Value
 /// </summary>
-/// <value>Vector Value</value>
-public MotionVector Value;
+/// <value>Value/value>
+public MotionValue Value;
+/// <summary>
+/// Gets the type of the value. Indicates if sensor value is single value or a vector value
+/// </summary>
+/// <value>The type of the value.</value>
+public MotionSensorValueType ValueType { get; set; }
 ```
+If MotionSensorValueType is MotionSensorValueType.Vector cast it to MotionVector to get the X,Y,Z Vector values. If MotionSensorValueType is MotionSensorValueType.Single use the Value property to get the sensor measure. For Compass Sensor returns single value other sensors returns vector value
 
-Note: Magnetometer API is not available for Windows Store & Windows Phone 8 (Silverlight).
+
+#### Notes
+
+* Magnetometer API is not available for Windows Store & Windows Phone 8 (Silverlight). 
+* On iOS for Compass sensor interval parameter is ignored for the moment.
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)

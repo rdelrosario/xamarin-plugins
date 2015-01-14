@@ -32,56 +32,34 @@ namespace DeviceMotion.Plugin.Abstractions
         /// <param name="sensorType">Sensor type.</param>
         bool IsActive(MotionSensorType sensorType);
 
-    }
-
-    /// <summary>
-    /// Sensor changed event arguments.
-    /// </summary>
-    public class VectorValueSensorChangedEventArgs : BaseValueSensorChangedEventArgs
-    {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public new MotionVector Value { get; set; }
-    }
-
-    public class SingleValueSensorChangedEventArgs : BaseValueSensorChangedEventArgs
-    {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public new double?  Value { get; set; }
-    }
-
-    public abstract class BaseValueSensorChangedEventArgs : EventArgs
-    {
-        /// <summary>
-        /// Gets or sets the type of the sensor.
-        /// </summary>
-        /// <value>The type of the sensor.</value>
-        public MotionSensorType SensorType { get; set; }
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public virtual object Value { get; set; }
-    }
-
-    [Obsolete("SensorChangedEventArgs is deprecated, please use BaseValueSensorChangedEventArgs instead.")]
-    public class SensorChangedEventArgs : BaseValueSensorChangedEventArgs
+	}
+		
+   /// <summary>
+   /// Sensor changed event arguments.
+   /// </summary>
+	public class SensorValueChangedEventArgs  : EventArgs
     {
 
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        /// <value>The value.</value>
-        public new MotionVector Value { get; set; }
+		/// <summary>
+		/// Gets or sets the type of the sensor.
+		/// </summary>
+		/// <value>The type of the sensor.</value>
+		public MotionSensorType SensorType { get; set; }
+		/// <summary>
+		/// Gets or sets the value.
+		/// </summary>
+		/// <value>The value.</value>
+		public MotionValue Value  { get; set; }
+		/// <summary>
+		/// Gets the type of the value.
+		/// </summary>
+		/// <value>The type of the value.</value>
+		public MotionSensorValueType ValueType { get; set; }
+
     }
 
     /// <summary>
     /// Sensor value changed event handler.
     /// </summary>
-    public delegate void SensorValueChangedEventHandler(object sender, BaseValueSensorChangedEventArgs e);
+	public delegate void SensorValueChangedEventHandler(object sender, SensorValueChangedEventArgs e);
 }

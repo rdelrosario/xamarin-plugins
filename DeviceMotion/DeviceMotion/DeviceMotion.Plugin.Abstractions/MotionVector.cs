@@ -1,11 +1,11 @@
 ﻿using System;
 
-namespace DeviceMotion.Plugin
+namespace DeviceMotion.Plugin.Abstractions
 {
 	/// <summary>
 	/// Motion vector.
 	/// </summary>
-	public class MotionVector
+	public class MotionVector : MotionValue
 	{
 		/// <summary>
 		/// Gets or sets the x.
@@ -31,6 +31,16 @@ namespace DeviceMotion.Plugin
         {
             return string.Format("X={0}, Y={0}, Z={0}",X,Y,Z);
         }
+
+		/// <summary>
+		/// Gets total value.
+		/// </summary>
+		/// <value>The value.</value>
+		public override double? Value {
+			get{
+				return Math.Sqrt (Math.Pow (X, 2) + Math.Pow (Y, 2) + Math.Pow (Z, 2));
+			}
+		}
 	}
 }
 

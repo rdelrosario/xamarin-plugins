@@ -71,19 +71,19 @@ namespace DeviceMotion.Plugin
           switch (e.Sensor.Type)
           {
               case SensorType.Accelerometer:
-                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
+				SensorValueChanged(this, new SensorValueChangedEventArgs() { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
 
                   break;
               case SensorType.Gyroscope:
-                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
+					SensorValueChanged(this, new SensorValueChangedEventArgs() { ValueType=MotionSensorValueType.Vector,SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
 
                   break;
               case SensorType.MagneticField:
-                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
+					SensorValueChanged(this, new SensorValueChangedEventArgs() { ValueType=MotionSensorValueType.Vector,SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
 
                   break;
               case SensorType.Orientation:
-                  SensorValueChanged(this, new SingleValueSensorChangedEventArgs() { SensorType = MotionSensorType.Compass, Value = e.Values[0] });
+					SensorValueChanged(this, new SensorValueChangedEventArgs() { ValueType=MotionSensorValueType.Single,SensorType = MotionSensorType.Compass, Value = new MotionValue(){Value =e.Values[0]} });
                   break;
             
             

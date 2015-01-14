@@ -119,25 +119,25 @@ namespace DeviceMotion.Plugin
         void MagnetometerReadingChanged(Magnetometer sender, MagnetometerReadingChangedEventArgs args)
         {
             if(SensorValueChanged != null)
-            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = args.Reading.MagneticFieldX, Y = args.Reading.MagneticFieldY, Z = args.Reading.MagneticFieldZ } });
+                SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = args.Reading.MagneticFieldX, Y = args.Reading.MagneticFieldY, Z = args.Reading.MagneticFieldZ } });
         }
 #endif
         void CompassReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
         {
             if (args.Reading.HeadingTrueNorth!=null &&SensorValueChanged!=null)
-                SensorValueChanged(this, new SingleValueSensorChangedEventArgs { SensorType = MotionSensorType.Compass, Value = args.Reading.HeadingTrueNorth });
+                SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Single, SensorType = MotionSensorType.Compass, Value = new MotionValue() { Value = args.Reading.HeadingTrueNorth} });
         }
         void GyrometerReadingChanged(Gyrometer sender, GyrometerReadingChangedEventArgs args)
         {
             if (SensorValueChanged != null)
-                SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = args.Reading.AngularVelocityX, Y = args.Reading.AngularVelocityY, Z = args.Reading.AngularVelocityZ } });
+                SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType= MotionSensorValueType.Vector, SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = args.Reading.AngularVelocityX, Y = args.Reading.AngularVelocityY, Z = args.Reading.AngularVelocityZ } });
 
         }
 
         void AccelerometerReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
         {
             if (SensorValueChanged != null)
-                SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = args.Reading.AccelerationX, Y = args.Reading.AccelerationY, Z = args.Reading.AccelerationZ } });
+                SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = args.Reading.AccelerationX, Y = args.Reading.AccelerationY, Z = args.Reading.AccelerationZ } });
         }
 
         /// <summary>

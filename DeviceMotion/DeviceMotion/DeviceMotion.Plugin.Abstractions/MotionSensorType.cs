@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeviceMotion.Plugin
+namespace DeviceMotion.Plugin.Abstractions
 {
 	/// <summary>
 	/// Motion sensor type enum.

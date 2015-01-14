@@ -97,7 +97,7 @@ namespace DeviceMotion.Plugin
                     }
                     break;
                 case MotionSensorType.Compass:
-                    if (locationManager != null)
+                    if (CLLocationManager.HeadingAvailable)
                     {
                         locationManager.StartUpdatingHeading();
                         locationManager.UpdatedHeading += OnHeadingChanged;
@@ -116,7 +116,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new SingleValueSensorChangedEventArgs { SensorType = MotionSensorType.Compass, Value=e.NewHeading.TrueHeading });
+            SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType= MotionSensorValueType.Single, SensorType = MotionSensorType.Compass, Value = new MotionValue{ Value=e.NewHeading.TrueHeading }});
    
         }
 
@@ -132,7 +132,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = data.MagneticField.X, Y = data.MagneticField.Y, Z = data.MagneticField.Z } });
+            SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = data.MagneticField.X, Y = data.MagneticField.Y, Z = data.MagneticField.Z } });
 
         }
 
@@ -146,7 +146,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = data.Acceleration.X, Y = data.Acceleration.Y, Z = data.Acceleration.Z } });
+            SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = data.Acceleration.X, Y = data.Acceleration.Y, Z = data.Acceleration.Z } });
 
         }
 
@@ -160,7 +160,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = data.RotationRate.x, Y = data.RotationRate.y, Z = data.RotationRate.z } });
+            SensorValueChanged(this, new SensorValueChangedEventArgs { ValueType = MotionSensorValueType.Vector, SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = data.RotationRate.x, Y = data.RotationRate.y, Z = data.RotationRate.z } });
 
         }
 
