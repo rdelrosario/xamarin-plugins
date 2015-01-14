@@ -13,7 +13,7 @@ namespace DeviceMotion.Plugin
     {
         private Accelerometer accelerometer;
         private Gyrometer gyrometer;
-        
+        private Compass compass;
 
 #if WINDOWS_PHONE_APP
         private Magnetometer magnetometer;
@@ -28,7 +28,7 @@ namespace DeviceMotion.Plugin
         {
             accelerometer = Accelerometer.GetDefault();
             gyrometer = Gyrometer.GetDefault();
-       
+            compass = Compass.GetDefault();
 
 #if WINDOWS_PHONE_APP
             magnetometer = Magnetometer.GetDefault();
@@ -36,7 +36,8 @@ namespace DeviceMotion.Plugin
             sensorStatus = new Dictionary<MotionSensorType, bool>(){
 				{ MotionSensorType.Accelerometer, false},
 				{ MotionSensorType.Gyroscope, false},
-				{ MotionSensorType.Magnetometer, false}
+				{ MotionSensorType.Magnetometer, false},
+                { MotionSensorType.Compass, false}
 			};
         }
         /// <summary>
@@ -95,6 +96,20 @@ namespace DeviceMotion.Plugin
 #endif
                   
                     break;
+                case MotionSensorType.Compass:
+
+                    if(compass != null)
+                    {
+
+                        compass.ReportInterval = delay;
+                        compass.ReadingChanged += CompassReadingChanged;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Compass not available");
+                    }
+
+                    break;
 
             }
             sensorStatus[sensorType] = true;
@@ -103,19 +118,26 @@ namespace DeviceMotion.Plugin
 #if WINDOWS_PHONE_APP
         void MagnetometerReadingChanged(Magnetometer sender, MagnetometerReadingChangedEventArgs args)
         {
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = args.Reading.MagneticFieldX, Y = args.Reading.MagneticFieldY, Z = args.Reading.MagneticFieldZ } });
+            if(SensorValueChanged != null)
+            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = args.Reading.MagneticFieldX, Y = args.Reading.MagneticFieldY, Z = args.Reading.MagneticFieldZ } });
         }
 #endif
-
+        void CompassReadingChanged(Compass sender, CompassReadingChangedEventArgs args)
+        {
+            if (args.Reading.HeadingTrueNorth!=null &&SensorValueChanged!=null)
+                SensorValueChanged(this, new SingleValueSensorChangedEventArgs { SensorType = MotionSensorType.Compass, Value = args.Reading.HeadingTrueNorth });
+        }
         void GyrometerReadingChanged(Gyrometer sender, GyrometerReadingChangedEventArgs args)
         {
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = args.Reading.AngularVelocityX, Y = args.Reading.AngularVelocityY, Z = args.Reading.AngularVelocityZ } });
+            if (SensorValueChanged != null)
+                SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = args.Reading.AngularVelocityX, Y = args.Reading.AngularVelocityY, Z = args.Reading.AngularVelocityZ } });
 
         }
 
         void AccelerometerReadingChanged(Accelerometer sender, AccelerometerReadingChangedEventArgs args)
         {
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = args.Reading.AccelerationX, Y = args.Reading.AccelerationY, Z = args.Reading.AccelerationZ } });
+            if (SensorValueChanged != null)
+                SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = args.Reading.AccelerationX, Y = args.Reading.AccelerationY, Z = args.Reading.AccelerationZ } });
         }
 
         /// <summary>
@@ -160,7 +182,16 @@ namespace DeviceMotion.Plugin
                     Debug.WriteLine("Magnetometer not supported");
 #endif
                     break;
-
+                    case MotionSensorType.Compass:
+                    if (compass != null)
+                    {
+                       compass.ReadingChanged -= CompassReadingChanged;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Compass not available");
+                    }
+                    break;
             }
             sensorStatus[sensorType] = false;
         }

@@ -22,6 +22,15 @@ namespace DeviceMotion.Plugin
 		/// </summary>
 		/// <value>The z.</value>
 		public double Z { get; set; }
+
+        /// <summary>
+        /// Vector to string
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return string.Format("X={0}, Y={0}, Z={0}",X,Y,Z);
+        }
 	}
 }
 

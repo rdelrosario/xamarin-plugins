@@ -18,6 +18,7 @@ namespace DeviceMotion.Plugin
       private Sensor sensorAccelerometer;
       private Sensor sensorGyroscope;
       private Sensor sensorMagnetometer;
+      private Sensor sensorCompass;
 
       private IDictionary<MotionSensorType, bool> sensorStatus;
 
@@ -31,11 +32,12 @@ namespace DeviceMotion.Plugin
           sensorAccelerometer = sensorManager.GetDefaultSensor(SensorType.Accelerometer);
           sensorGyroscope = sensorManager.GetDefaultSensor(SensorType.Gyroscope);
           sensorMagnetometer = sensorManager.GetDefaultSensor(SensorType.MagneticField);
-
+          sensorCompass = sensorManager.GetDefaultSensor(SensorType.Orientation);
           sensorStatus = new Dictionary<MotionSensorType, bool>(){
 				{ MotionSensorType.Accelerometer, false},
 				{ MotionSensorType.Gyroscope, false},
-				{ MotionSensorType.Magnetometer, false}
+				{ MotionSensorType.Magnetometer, false},
+                { MotionSensorType.Compass,false}
 			};
       }
 
@@ -65,27 +67,34 @@ namespace DeviceMotion.Plugin
           if (SensorValueChanged == null)
               return;
 
-          MotionSensorType mSensorType = MotionSensorType.Accelerometer;
 
           switch (e.Sensor.Type)
           {
               case SensorType.Accelerometer:
-                  mSensorType = MotionSensorType.Accelerometer;
+                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
+
                   break;
               case SensorType.Gyroscope:
-                  mSensorType = MotionSensorType.Gyroscope;
+                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
+
                   break;
               case SensorType.MagneticField:
-                  mSensorType = MotionSensorType.Magnetometer;
-                  break;
+                  SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
 
+                  break;
+              case SensorType.Orientation:
+                  SensorValueChanged(this, new SingleValueSensorChangedEventArgs() { SensorType = MotionSensorType.Compass, Value = e.Values[0] });
+                  break;
+            
+            
 
           }
 
-
-          SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = mSensorType, Value = new MotionVector() { X = e.Values[0], Y = e.Values[1], Z = e.Values[2] } });
-
+          
+         
       }
+
+    
 
 
       /// <summary>
@@ -131,6 +140,12 @@ namespace DeviceMotion.Plugin
                   else
                       Console.WriteLine("Magnetometer not available");
                   break;
+              case MotionSensorType.Compass:
+                  if (sensorCompass != null)
+                      sensorManager.RegisterListener(this, sensorCompass, delay);
+                  else
+                      Console.WriteLine("Compass not available");
+                  break;
           
           }
           sensorStatus[sensorType] = true;
@@ -163,6 +178,12 @@ namespace DeviceMotion.Plugin
                       sensorManager.UnregisterListener(this, sensorMagnetometer);
                   else
                       Console.WriteLine("Magnetometer not available");
+                  break;
+              case MotionSensorType.Compass:
+                  if (sensorCompass != null)
+                      sensorManager.UnregisterListener(this, sensorCompass);
+                  else
+                      Console.WriteLine("Compass not available");
                   break;
           }
           sensorStatus[sensorType] = false;

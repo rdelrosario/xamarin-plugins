@@ -11,6 +11,7 @@ namespace DeviceMotion.Plugin.Abstractions
         /// Occurs when sensor value changed.
         /// </summary>
         event SensorValueChangedEventHandler SensorValueChanged;
+        
 
         /// <summary>
         /// Start the specified sensorType and interval.
@@ -36,7 +37,25 @@ namespace DeviceMotion.Plugin.Abstractions
     /// <summary>
     /// Sensor changed event arguments.
     /// </summary>
-    public class SensorValueChangedEventArgs : EventArgs
+    public class VectorValueSensorChangedEventArgs : BaseValueSensorChangedEventArgs
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public new MotionVector Value { get; set; }
+    }
+
+    public class SingleValueSensorChangedEventArgs : BaseValueSensorChangedEventArgs
+    {
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public new double?  Value { get; set; }
+    }
+
+    public abstract class BaseValueSensorChangedEventArgs : EventArgs
     {
         /// <summary>
         /// Gets or sets the type of the sensor.
@@ -47,11 +66,22 @@ namespace DeviceMotion.Plugin.Abstractions
         /// Gets or sets the value.
         /// </summary>
         /// <value>The value.</value>
-        public MotionVector Value { get; set; }
+        public virtual object Value { get; set; }
+    }
+
+    [Obsolete("SensorChangedEventArgs is deprecated, please use BaseValueSensorChangedEventArgs instead.")]
+    public class SensorChangedEventArgs : BaseValueSensorChangedEventArgs
+    {
+
+        /// <summary>
+        /// Gets or sets the value.
+        /// </summary>
+        /// <value>The value.</value>
+        public new MotionVector Value { get; set; }
     }
 
     /// <summary>
     /// Sensor value changed event handler.
     /// </summary>
-    public delegate void SensorValueChangedEventHandler(object sender, SensorValueChangedEventArgs e);
+    public delegate void SensorValueChangedEventHandler(object sender, BaseValueSensorChangedEventArgs e);
 }

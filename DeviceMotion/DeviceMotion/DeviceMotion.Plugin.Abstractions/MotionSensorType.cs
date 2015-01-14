@@ -7,9 +7,22 @@ namespace DeviceMotion.Plugin
 	/// </summary>
 	public enum MotionSensorType
 	{
+        /// <summary>
+        /// Accelerometer Sensor
+        /// </summary>
 		Accelerometer,
+        /// <summary>
+        /// Gyroscope Sensor
+        /// </summary>
 		Gyroscope,
-		Magnetometer
+        /// <summary>
+        /// Magnetometer Sensor
+        /// </summary>
+		Magnetometer,
+        /// <summary>
+        /// Compass Sensor
+        /// </summary>
+        Compass
 	}
 }
 

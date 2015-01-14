@@ -5,9 +5,11 @@ using System.Diagnostics;
 #if __UNIFIED__
 using Foundation;
 using CoreMotion;
+using CoreLocation;
 #else
 using MonoTouch.CoreMotion;
 using MonoTouch.Foundation;
+using MonoTouch.CoreLocation;
 #endif
 
 
@@ -23,6 +25,7 @@ namespace DeviceMotion.Plugin
     {
         private double ms = 1000.0;
         private CMMotionManager motionManager;
+        private CLLocationManager locationManager;
         private IDictionary<MotionSensorType, bool> sensorStatus;
 
         /// <summary>
@@ -31,10 +34,15 @@ namespace DeviceMotion.Plugin
         public DeviceMotionImplementation()
         {
             motionManager = new CMMotionManager();
+            locationManager = new CLLocationManager();
+            locationManager.DesiredAccuracy = CLLocation.AccuracyBest;
+            locationManager.HeadingFilter = 1;
+
             sensorStatus = new Dictionary<MotionSensorType, bool>(){
 				{ MotionSensorType.Accelerometer, false},
 				{ MotionSensorType.Gyroscope, false},
-				{ MotionSensorType.Magnetometer, false}
+				{ MotionSensorType.Magnetometer, false},
+                { MotionSensorType.Compass, false}
 			};
         }
 
@@ -88,9 +96,28 @@ namespace DeviceMotion.Plugin
                         Debug.WriteLine("Magnetometer not available");
                     }
                     break;
-               
+                case MotionSensorType.Compass:
+                    if (locationManager != null)
+                    {
+                        locationManager.StartUpdatingHeading();
+                        locationManager.UpdatedHeading += OnHeadingChanged;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Compass not available");
+                    }
+                    break;
             }
             sensorStatus[sensorType] = true;
+        }
+
+        private void OnHeadingChanged(object sender, CLHeadingUpdatedEventArgs e)
+        {
+            if (SensorValueChanged == null)
+                return;
+
+            SensorValueChanged(this, new SingleValueSensorChangedEventArgs { SensorType = MotionSensorType.Compass, Value=e.NewHeading.TrueHeading });
+   
         }
 
 
@@ -105,7 +132,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = data.MagneticField.X, Y = data.MagneticField.Y, Z = data.MagneticField.Z } });
+            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Magnetometer, Value = new MotionVector() { X = data.MagneticField.X, Y = data.MagneticField.Y, Z = data.MagneticField.Z } });
 
         }
 
@@ -119,7 +146,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = data.Acceleration.X, Y = data.Acceleration.Y, Z = data.Acceleration.Z } });
+            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Accelerometer, Value = new MotionVector() { X = data.Acceleration.X, Y = data.Acceleration.Y, Z = data.Acceleration.Z } });
 
         }
 
@@ -133,7 +160,7 @@ namespace DeviceMotion.Plugin
             if (SensorValueChanged == null)
                 return;
 
-            SensorValueChanged(this, new SensorValueChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = data.RotationRate.x, Y = data.RotationRate.y, Z = data.RotationRate.z } });
+            SensorValueChanged(this, new VectorValueSensorChangedEventArgs { SensorType = MotionSensorType.Gyroscope, Value = new MotionVector() { X = data.RotationRate.x, Y = data.RotationRate.y, Z = data.RotationRate.z } });
 
         }
 
@@ -163,7 +190,17 @@ namespace DeviceMotion.Plugin
                     else
                         Debug.WriteLine("Magnetometer not available");
                     break;
-             
+                case MotionSensorType.Compass:
+                    if (locationManager != null)
+                    {
+                        locationManager.StopUpdatingHeading();
+                        locationManager.UpdatedHeading-= OnHeadingChanged;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Compass not available");
+                    }
+                    break;
             }
             sensorStatus[sensorType] = false;
         }
