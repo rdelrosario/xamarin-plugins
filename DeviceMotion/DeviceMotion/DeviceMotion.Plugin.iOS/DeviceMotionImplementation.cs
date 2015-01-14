@@ -191,7 +191,7 @@ namespace DeviceMotion.Plugin
                         Debug.WriteLine("Magnetometer not available");
                     break;
                 case MotionSensorType.Compass:
-                    if (locationManager != null)
+                    if (CLLocationManager.HeadingAvailable)
                     {
                         locationManager.StopUpdatingHeading();
                         locationManager.UpdatedHeading-= OnHeadingChanged;

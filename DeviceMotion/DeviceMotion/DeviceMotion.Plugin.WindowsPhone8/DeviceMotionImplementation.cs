@@ -33,11 +33,13 @@ namespace DeviceMotion.Plugin
 #if WINDOWS_PHONE_APP
             magnetometer = Magnetometer.GetDefault();
 #endif
-            sensorStatus = new Dictionary<MotionSensorType, bool>(){
+            sensorStatus = new Dictionary<MotionSensorType, bool>()
+            {
 				{ MotionSensorType.Accelerometer, false},
 				{ MotionSensorType.Gyroscope, false},
 				{ MotionSensorType.Magnetometer, false},
                 { MotionSensorType.Compass, false}
+
 			};
         }
         /// <summary>
@@ -54,7 +56,7 @@ namespace DeviceMotion.Plugin
         {
 
             uint delay = (uint)((double)Convert.ToInt32(interval) / ms);
-
+           
             switch (sensorType)
             {
                 case MotionSensorType.Accelerometer:
