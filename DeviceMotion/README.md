@@ -26,18 +26,22 @@ Enum of Device Motion Sensor Type:
 /// </summary>
 	public enum MotionSensorType
 	{
-		/// <summary>
-		/// The accelerometer.
-		/// </summary>
+        /// <summary>
+        /// Accelerometer Sensor
+        /// </summary>
 		Accelerometer,
-		/// <summary>
-		/// The gyroscope.
-		/// </summary>
+        /// <summary>
+        /// Gyroscope Sensor
+        /// </summary>
 		Gyroscope,
-		/// <summary>
-		/// The magnetometer.
-		/// </summary>
-		Magnetometer
+        /// <summary>
+        /// Magnetometer Sensor
+        /// </summary>
+		Magnetometer,
+        /// <summary>
+        /// Compass Sensor
+        /// </summary>
+        Compass
 
 	}
 ```
