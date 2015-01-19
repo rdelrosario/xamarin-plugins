@@ -156,7 +156,20 @@ public MotionSensorValueType ValueType
 ```
 If <b>ValueType</b> is <b>MotionSensorValueType.Vector</b> cast the <b>Value</b> to <b>MotionVector</b> to get the X,Y,Z Vector values. If <b>ValueType</b> is <b>MotionSensorValueType.Single</b> cast it to <b>MotionValue</b> and use the <b>Value</b> property of the <b>MotionValue</b> to get the sensor measure. For Compass sensor returns single value other sensors returns vector value
 
-
+**Reading Sensor Changes Example**
+```
+CrossDeviceMotion.Current.SensorValueChanged+=(s, a)=>{
+		
+				switch(a.SensorType){
+				   case MotionSensorType.Accelerometer:
+					   Debug.WriteLine("A: {0}",((MotionVector)a.Value).X,((MotionVector)a.Value).Y,((MotionVector)a.Value).Z);
+					break;
+				    case MotionSensorType.Compass:
+					   Debug.WriteLine("H: {0}",a.Value);
+					break;
+				}
+};
+```
 #### Notes
 
 * Magnetometer API is not available for Windows Store & Windows Phone 8 (Silverlight). 
