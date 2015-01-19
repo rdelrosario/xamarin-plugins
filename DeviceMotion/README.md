@@ -162,7 +162,7 @@ CrossDeviceMotion.Current.SensorValueChanged+=(s, a)=>{
 		
 				switch(a.SensorType){
 				   case MotionSensorType.Accelerometer:
-					   Debug.WriteLine("A: {0}",((MotionVector)a.Value).X,((MotionVector)a.Value).Y,((MotionVector)a.Value).Z);
+					   Debug.WriteLine("A: {0},{1},{2}",((MotionVector)a.Value).X,((MotionVector)a.Value).Y,((MotionVector)a.Value).Z);
 					break;
 				    case MotionSensorType.Compass:
 					   Debug.WriteLine("H: {0}",a.Value);
