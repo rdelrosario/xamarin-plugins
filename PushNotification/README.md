@@ -14,8 +14,6 @@ Simple cross platform plugin to register, unregister and receive push notificati
 
 Call **CrossPushNotification.Current** from any project or PCL to gain access to APIs.
 
-
-```
 Enum of Device Types:
 
 ```
@@ -34,6 +32,7 @@ Enum of Device Types:
 **Register**
 
 Register device to receive push notifications
+
 ```
 /// <param name="id">Android Sender ID</param>
 
@@ -43,6 +42,7 @@ void Register(string id = null);
 **Unregister**
 
 Unregister device to stop receiving push notifications
+
 ```
 void Unregister(string id = null);
 ```
@@ -58,6 +58,7 @@ You can subscribe to <b>OnRegistered</b>, which will return <b>PushNotificationR
 event PushNotificationRegistrationEventHandler OnRegistered;
 ```
 **PushNotificationRegistrationEventArgs Properties**
+
 ```
 /// <summary>
 /// Device Push token.
@@ -78,6 +79,7 @@ public DeviceType DeviceType;
 event PushNotificationUnregistrationEventHandler OnUnregistered;
 ```
 **PushNotificationBaseEventArgs Properties**
+
 ```
 /// <summary>
 /// Type of device registered
