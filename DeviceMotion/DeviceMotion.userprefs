@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="DeviceMotion/DeviceMotion.Plugin/DeviceMotion.Plugin.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="DeviceMotion/DeviceMotion.Plugin.Android/DeviceMotionImplementation.cs">
+    <Files>
+      <File FileName="DeviceMotion/DeviceMotion.Plugin.Abstractions/MotionSensorValueType.cs" Line="19" Column="19" />
+      <File FileName="DeviceMotion/DeviceMotion.Plugin.Abstractions/MotionVector.cs" Line="1" Column="1" />
+      <File FileName="DeviceMotion/DeviceMotion.Plugin.Abstractions/MotionValue.cs" Line="24" Column="24" />
+      <File FileName="DeviceMotion/DeviceMotion.Plugin.Abstractions/IDeviceMotion.cs" Line="21" Column="21" />
+      <File FileName="DeviceMotion/DeviceMotion.Plugin.Android/DeviceMotionImplementation.cs" Line="1" Column="1" />
+      <File FileName="DeviceMotion/DeviceMotion.Plugin/CrossDeviceMotion.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
