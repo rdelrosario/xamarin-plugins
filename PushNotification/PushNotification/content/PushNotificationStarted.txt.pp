@@ -10,6 +10,8 @@ using PushNotification.Plugin;
 
 namespace $rootnamespace$
 {
+    //This is a starting point application class so that push notifications can be handle even when push is closed.
+
     [Application]
     public class PushNotificationAppStarter : Application
     {
@@ -26,8 +28,10 @@ namespace $rootnamespace$
 
 			AppContext = this.ApplicationContext;
                         
-                        //TODO: Initialize CrossPushNotification Plugin
-                        //CrossPushNotification.Initialize<CrossPushListener>();
+             //TODO: Initialize CrossPushNotification Plugin
+             //TODO: Replace string parameter with your Android SENDER ID
+             //TODO: Specify the listener class implementing IPushNotificationListener interface in the Initialize generic
+             //CrossPushNotification.Initialize<CrossPushNotificationListener>("<ANDROID SENDER ID>");
 
 			StartPushService();
 		}

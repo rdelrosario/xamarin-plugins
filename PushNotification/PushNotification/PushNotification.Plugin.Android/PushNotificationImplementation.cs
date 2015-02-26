@@ -35,6 +35,11 @@ namespace PushNotification.Plugin
 
             public void Register()
             {
+                if (!CrossPushNotification.IsInitialized)
+                {
+              
+                   throw NewPushNotificationNotInitializedException();
+                }
              
                 if (string.IsNullOrEmpty(CrossPushNotification.SenderId))
                 {
@@ -68,6 +73,11 @@ namespace PushNotification.Plugin
 
             public void Unregister()
             {
+                if (!CrossPushNotification.IsInitialized)
+                {
+
+                    throw NewPushNotificationNotInitializedException();
+                }
                 InternalUnRegister();
             }
 
@@ -116,9 +126,9 @@ namespace PushNotification.Plugin
                             string title = context.ApplicationInfo.LoadLabel(context.PackageManager);
                             string message = "";
 
-                            if (!string.IsNullOrEmpty(PushNotificationHelper.NotificationContentTextKey) && parameters.ContainsKey(PushNotificationHelper.NotificationContentTextKey))
+                            if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTextKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTextKey))
                             {
-                                message = parameters[PushNotificationHelper.NotificationContentTextKey].ToString();
+                                message = parameters[CrossPushNotification.NotificationContentTextKey].ToString();
                             }
                             else if (parameters.ContainsKey(PushNotificationKey.Message))
                             {
@@ -133,9 +143,9 @@ namespace PushNotification.Plugin
                                 message = parameters[PushNotificationKey.Text].ToString();
                             }
 
-                            if (!string.IsNullOrEmpty(PushNotificationHelper.NotificationContentTitleKey) && parameters.ContainsKey(PushNotificationHelper.NotificationContentTitleKey))
+                            if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTitleKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTitleKey))
                             {
-                                title = parameters[PushNotificationHelper.NotificationContentTitleKey].ToString();
+                                title = parameters[CrossPushNotification.NotificationContentTitleKey].ToString();
 
                             }
                             else if (parameters.ContainsKey(PushNotificationKey.Title))
@@ -154,7 +164,7 @@ namespace PushNotification.Plugin
                             if (!parameters.ContainsKey(PushNotificationKey.Silent) || !System.Boolean.Parse(parameters[PushNotificationKey.Silent].ToString()))
                             {
 
-                                PushNotificationHelper.CreateNotification(title, message);
+                                  CreateNotification(title, message);
 
                             }
 
@@ -331,6 +341,65 @@ namespace PushNotification.Plugin
                 editor.PutInt(PushNotificationKey.AppVersion, appVersion);
                 editor.Commit();
             }
+        public static void CreateNotification(string title, string message)
+        {
+           
+             NotificationCompat.Builder builder = null;
+             Context context = Android.App.Application.Context;
 
-        }
+             if(CrossPushNotification.SoundUri==null)
+             {
+                 CrossPushNotification.SoundUri = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+             }
+             try
+             {
+                
+                 if (CrossPushNotification.IconResource == null || CrossPushNotification.IconResource == 0 )
+                 {
+                     CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
+                 }
+                 else
+                 {
+                     string name = context.Resources.GetResourceName(CrossPushNotification.IconResource);
+
+                     if (name == null)
+                     {
+                         CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
+
+                     }
+                 }
+                 
+             }
+             catch (Android.Content.Res.Resources.NotFoundException ex)
+             {
+                 CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
+                 System.Diagnostics.Debug.WriteLine(ex.ToString());
+             }
+
+
+            Intent resultIntent = context.PackageManager.GetLaunchIntentForPackage(context.PackageName);
+
+            //Intent resultIntent = new Intent(context, typeof(T));
+           
+
+             
+            // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
+            const int pendingIntentId = 0;
+            PendingIntent resultPendingIntent = PendingIntent.GetActivity(context, pendingIntentId, resultIntent, PendingIntentFlags.OneShot);
+          
+            // Build the notification
+            builder = new NotificationCompat.Builder(context)
+                      .SetAutoCancel(true) // dismiss the notification from the notification area when the user clicks on it
+                      .SetContentIntent(resultPendingIntent) // start up this activity when the user clicks the intent.
+                      .SetContentTitle(title) // Set the title
+                      .SetSound(CrossPushNotification.SoundUri)                           
+                      .SetSmallIcon(CrossPushNotification.IconResource) // This is the icon to display
+                      .SetContentText(message); // the message to display.
+
+            NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+            notificationManager.Notify(0, builder.Build());
+       }
+
+
+    }
 }

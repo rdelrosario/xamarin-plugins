@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace $rootnamespace$.Helpers
 {
+    //Class to handle push notifications listens to events such as registration, unregistration, message arrival and errors.
     public class  CrossPushNotificationListener : IPushNotificationListener
     {
 

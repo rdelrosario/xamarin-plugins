@@ -14,6 +14,22 @@ using PushNotification.Plugin;
 
 namespace $rootnamespace$
 {
+    /*
+      This class is to handle push notifications on iOS so that can be delegated to a class that implements IPushNotificationListener
+      You can just add the methods of this class tou your AppDelegate or use this class. But if you use this class you must rename the class name and inheritance to the same name of your AppDelegate class and the same class inherits from, so that it can work correctly as the AppDelegate partial class.
+      You must include CrossPushNotification initialization on your AppDelegate FinishedLaunching method. 
+     
+      Example:
+
+        public override bool FinishedLaunching (UIApplication app, NSDictionary options)
+		{
+			//...
+			CrossPushNotification.Initialize<CrossPushNotificationListener> ();
+                        //...
+			return base.FinishedLaunching (app, options);
+		}
+ 
+    */
 	public partial class PushNotificationApplicationDelegate : UIApplicationDelegate
     {
 

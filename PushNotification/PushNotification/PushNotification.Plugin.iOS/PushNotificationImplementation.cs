@@ -29,6 +29,12 @@ namespace PushNotification.Plugin
 
 		public void Register()
 		{
+            if (!CrossPushNotification.IsInitialized)
+            {
+
+                throw NewPushNotificationNotInitializedException();
+            }
+
 			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
 				UIUserNotificationType userNotificationTypes = UIUserNotificationType.Alert | UIUserNotificationType.Badge | UIUserNotificationType.Sound;
@@ -44,7 +50,11 @@ namespace PushNotification.Plugin
 
 		public void Unregister()
 		{
+            if (!CrossPushNotification.IsInitialized)
+            {
 
+                throw NewPushNotificationNotInitializedException();
+            }
 			UIApplication.SharedApplication.UnregisterForRemoteNotifications();
 
             

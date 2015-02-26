@@ -61,7 +61,6 @@
       <Link>CrossPushNotification.cs</Link>
     </Compile>
     <Compile Include="PushNotificationImplementation.cs" />
-    <Compile Include="PushNotificationHelper.cs" />
     <Compile Include="PushNotificationService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -16,18 +16,29 @@ namespace PushNotification.Plugin
   
 #if __ANDROID__
     public static string SenderId { get; set; }
+    public static string NotificationContentTitleKey { get; set; }
+    public static string NotificationContentTextKey { get; set; }
+    public static int IconResource { get; set; }
+    public static Android.Net.Uri SoundUri { get; set; }
     public static void Initialize<T>(string senderId)
            where T : IPushNotificationListener, new()
-#else
+#endif
+#if __IOS__
     public static void Initialize<T>()
             where T : IPushNotificationListener, new()
 #endif
- 
+
+
+
+#if __MOBILE__
     {
-     #if __ANDROID__
+       
+#if __ANDROID__
+        
         SenderId = senderId;
 
-     #endif
+#endif
+
         if (PushNotificationListener == null)
         {
             PushNotificationListener = (IPushNotificationListener)Activator.CreateInstance(typeof(T));
@@ -39,7 +50,7 @@ namespace PushNotification.Plugin
         }
        
     }
-
+#endif
 
 
 
