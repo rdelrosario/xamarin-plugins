@@ -20,6 +20,8 @@ namespace PushNotification.Plugin
         public static string NotificationContentTextKey { get; set; }
         public static int IconResource { get; set; }
         public static Android.Net.Uri SoundUri { get; set; }
+
+       
         public static void CreateNotification(string title, string message)
         {
            
@@ -65,6 +67,7 @@ namespace PushNotification.Plugin
             // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
             const int pendingIntentId = 0;
             PendingIntent resultPendingIntent = PendingIntent.GetActivity(context, pendingIntentId, resultIntent, PendingIntentFlags.OneShot);
+          
             // Build the notification
             builder = new NotificationCompat.Builder(context)
                       .SetAutoCancel(true) // dismiss the notification from the notification area when the user clicks on it

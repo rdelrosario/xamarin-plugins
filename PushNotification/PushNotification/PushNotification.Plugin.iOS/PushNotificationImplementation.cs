@@ -16,16 +16,8 @@ namespace PushNotification.Plugin
   /// <summary>
   /// Implementation for PushNotification
   /// </summary>
-	public class PushNotificationImplementation : IPushNotification,  IPushNotificationListener
+	public class PushNotificationImplementation : IPushNotification,  IPushNotificationHandler
   {
-		public event PushNotificationMessageEventHandler OnMessage = delegate { };
-
-		public event PushNotificationRegistrationEventHandler OnRegistered = delegate { };
-
-		public event PushNotificationUnregistrationEventHandler OnUnregistered = delegate { };
-
-		public event PushNotificationErrorEventHandler OnError = delegate { };
-
 
 		public string Token {
 			get {
@@ -33,9 +25,9 @@ namespace PushNotification.Plugin
 			}
 
 		}
+        public IPushNotificationListener Listener { get; set; }
 
-
-		public void Register(string id = null)
+		public void Register()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
@@ -54,7 +46,8 @@ namespace PushNotification.Plugin
 		{
 
 			UIApplication.SharedApplication.UnregisterForRemoteNotifications();
-			OnUnregistered(this, new PushNotificationBaseEventArgs() { DeviceType = DeviceType.iOS });
+
+            
 
 		}
 
@@ -68,18 +61,28 @@ namespace PushNotification.Plugin
 			{
 				parameters.Add(key, userInfo.ValueForKey(key));
 			}
-            OnMessage(this, new PushNotificationMessageEventArgs() { Parameters = parameters, DeviceType = DeviceType.iOS });
-
+          
+            if (CrossPushNotification.IsInitialized)
+            {
+                CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.iOS);
+            }else
+            {
+                throw NewPushNotificationNotInitializedException();
+            }
 		}
 
 		public void OnErrorReceived (NSError error)
 		{
 			Debug.WriteLine("{0} - Registration Failed.", PushNotificationKey.DomainName);
 		
-
-            OnError(this, new PushNotificationErrorEventArgs() { Message = error.LocalizedDescription, DeviceType = DeviceType.iOS });
-
-
+            if (CrossPushNotification.IsInitialized)
+            {
+                CrossPushNotification.PushNotificationListener.OnError(error.LocalizedDescription, DeviceType.iOS);
+            }
+            else
+            {
+                throw NewPushNotificationNotInitializedException();
+            }
 		}
 
 		public void OnRegisteredSuccess (NSData token)
@@ -94,15 +97,45 @@ namespace PushNotification.Plugin
 				trimmedDeviceToken = trimmedDeviceToken.Trim('>');
 			}
 			Console.WriteLine("{0} - Token: {1}", PushNotificationKey.DomainName, trimmedDeviceToken);
-			OnRegistered(this, new PushNotificationRegistrationEventArgs() { Token = trimmedDeviceToken, DeviceType = DeviceType.iOS });
-			NSUserDefaults.StandardUserDefaults.SetString (PushNotificationKey.Token,trimmedDeviceToken);
+
+
+            if (CrossPushNotification.IsInitialized)
+            {
+                CrossPushNotification.PushNotificationListener.OnRegistered(trimmedDeviceToken, DeviceType.iOS);
+            }
+            else
+            {
+                throw NewPushNotificationNotInitializedException();
+            }
+
+
+            
+            NSUserDefaults.StandardUserDefaults.SetString (PushNotificationKey.Token,trimmedDeviceToken);
 			NSUserDefaults.StandardUserDefaults.Synchronize ();
 		}
 
 		public void OnUnregisteredSuccess ()
 		{
-			OnUnregistered(this,new PushNotificationBaseEventArgs() { DeviceType = DeviceType.iOS });
-		}
+            NSUserDefaults.StandardUserDefaults.SetString(PushNotificationKey.Token, "");
+            NSUserDefaults.StandardUserDefaults.Synchronize();
+
+            if (CrossPushNotification.IsInitialized)
+            {
+                CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.iOS);
+            }
+            else
+            {
+                throw NewPushNotificationNotInitializedException();
+            }
+
+        }
+
+        PushNotificationNotInitializedException NewPushNotificationNotInitializedException()
+        {
+            string description = "CrossPushNotification Plugin is not initialized. Should initialize before use on FinishedLaunching method of AppDelegate class. Example:  CrossPushNotification.Initialize<CrossPushNotificationListener>()";
+
+            return new PushNotificationNotInitializedException(description);
+        }
 
 		#endregion
   }

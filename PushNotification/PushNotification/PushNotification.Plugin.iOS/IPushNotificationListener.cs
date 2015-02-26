@@ -8,7 +8,7 @@ using MonoTouch.Foundation;
 
 namespace PushNotification.Plugin
 {
-	public interface  IPushNotificationListener
+	public interface  IPushNotificationHandler
 	{
 		void OnMessageReceived(NSDictionary parameters);
 		void OnErrorReceived(NSError error);

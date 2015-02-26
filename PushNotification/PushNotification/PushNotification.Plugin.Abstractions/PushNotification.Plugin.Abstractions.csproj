@@ -38,6 +38,8 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PushNotificationNotInitializedException.cs" />
+    <Compile Include="IPushNotificationListener.cs" />
     <Compile Include="DeviceType.cs" />
     <Compile Include="IPushNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

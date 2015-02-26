@@ -1,5 +1,6 @@
 ﻿using PushNotification.Plugin.Abstractions;
 using System;
+using System.Diagnostics;
 
 namespace PushNotification.Plugin
 {
@@ -8,7 +9,40 @@ namespace PushNotification.Plugin
   /// </summary>
   public class CrossPushNotification
   {
+
     static Lazy<IPushNotification> Implementation = new Lazy<IPushNotification>(() => CreatePushNotification(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
+    public static bool IsInitialized { get { return (PushNotificationListener != null);  } }
+    public static IPushNotificationListener PushNotificationListener { get; private set; }
+  
+#if __ANDROID__
+    public static string SenderId { get; set; }
+    public static void Initialize<T>(string senderId)
+           where T : IPushNotificationListener, new()
+#else
+    public static void Initialize<T>()
+            where T : IPushNotificationListener, new()
+#endif
+ 
+    {
+     #if __ANDROID__
+        SenderId = senderId;
+
+     #endif
+        if (PushNotificationListener == null)
+        {
+            PushNotificationListener = (IPushNotificationListener)Activator.CreateInstance(typeof(T));
+            Debug.WriteLine("PushNotification plugin initialized.");
+        }
+        else
+        {
+            Debug.WriteLine("PushNotification plugin already initialized.");
+        }
+       
+    }
+
+
+
+
 
     /// <summary>
     /// Current settings to use

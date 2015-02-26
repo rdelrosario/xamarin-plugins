@@ -24,9 +24,9 @@ namespace $rootnamespace$
         {
         
 
-			if (CrossPushNotification.Current is IPushNotificationListener) 
+			if (CrossPushNotification.Current is IPushNotificationHandler) 
 			{
-				((IPushNotificationListener)CrossPushNotification.Current).OnErrorReceived(error);
+				((IPushNotificationHandler)CrossPushNotification.Current).OnErrorReceived(error);
 
 			}
 
@@ -35,9 +35,9 @@ namespace $rootnamespace$
 
         public override void RegisteredForRemoteNotifications(UIApplication application, NSData deviceToken)
         {
-			if (CrossPushNotification.Current is IPushNotificationListener) 
+			if (CrossPushNotification.Current is IPushNotificationHandler) 
 			{
-				((IPushNotificationListener)CrossPushNotification.Current).OnRegisteredSuccess(deviceToken);
+				((IPushNotificationHandler)CrossPushNotification.Current).OnRegisteredSuccess(deviceToken);
 
 			}
 
@@ -51,9 +51,9 @@ namespace $rootnamespace$
         /* Uncomment if using remote background notifications. To support this background mode, enable the Remote notifications option from the Background modes section of iOS project properties. (You can also enable this support by including the UIBackgroundModes key with the remote-notification value in your app’s Info.plist file.)
         public override void DidReceiveRemoteNotification(UIApplication application, NSDictionary userInfo, Action<UIBackgroundFetchResult> completionHandler)
         {
-			if (CrossPushNotification.Current is IPushNotificationListener) 
+			if (CrossPushNotification.Current is IPushNotificationHandler) 
 			{
-				((IPushNotificationListener)CrossPushNotification.Current).OnMessageReceived(userInfo);
+				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
 
 			}
         }
@@ -62,9 +62,9 @@ namespace $rootnamespace$
         public override void ReceivedRemoteNotification(UIApplication application, NSDictionary userInfo)
         {
      
-			if (CrossPushNotification.Current is IPushNotificationListener) 
+			if (CrossPushNotification.Current is IPushNotificationHandler) 
 			{
-				((IPushNotificationListener)CrossPushNotification.Current).OnMessageReceived(userInfo);
+				((IPushNotificationHandler)CrossPushNotification.Current).OnMessageReceived(userInfo);
 
 			}
         }
