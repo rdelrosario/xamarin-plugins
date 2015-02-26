@@ -3,7 +3,8 @@
 Simple cross platform plugin to handle push notification events such as registering, unregistering and messages arrival on Android and iOS.
 
 ### Setup
-* Comming soon to NuGet
+* Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
+* Install into your PCL project and Client projects.
 
 **Supports**
 * Xamarin.iOS
@@ -113,6 +114,30 @@ void Unregister();
 
 
 #### Notes
+
+##### Android Specifics
+
+There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
+```
+    //The sets the key you will use to show the title for the notification
+    public static string NotificationContentTitleKey { get; set; }
+   
+    //The sets the key you will use to show the text for the notification
+    public static string NotificationContentTextKey { get; set; }
+
+    //The sets the resource id for the icon used for the notification
+    public static int IconResource { get; set; }
+
+    //The sets the sound  uri used for the notification
+    public static Android.Net.Uri SoundUri { get; set; }
+
+```
+If you send a key called silent with value true it won't display a notification just will listen to message arrival.
+
+
+##### iOS Specifics
+
+* Must checkout the helper class on content folder: PushNotificationApplicationDelegate.txt. In order to setup correctly.
 
 
 #### Contributors
