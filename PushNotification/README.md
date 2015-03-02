@@ -98,7 +98,7 @@ Enum of Device Types:
 
 **Register**
 
-Register device to receive push notifications. Should only be using after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
+Register device to receive push notifications. Should only be used after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
 ```
 void Register();
@@ -106,7 +106,7 @@ void Register();
 
 **Unregister**
 
-Unregister device to stop receiving push notifications. Should only be using after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
+Unregister device to stop receiving push notifications. Should only be used after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
 ```
 void Unregister();
@@ -132,8 +132,8 @@ There are a few things you can configure in Android project using the following 
     public static Android.Net.Uri SoundUri { get; set; }
 
 ```
-* By default displays a notification looking for the key title to display notification title and message to display notification message. If title key not present will use the application name.
-* If you send a key called <b>silent</b> with value true it won't display a notification just will listen to message arrival. 
+* By default displays a notification looking for the key <i><b>title</b></i>  to display notification title and <i><b>message</b></i>  to display notification message. If <i><b>title</b></i>  key not present will use the application name.
+* If you send a key called <i><b>silent</b></i> with value true it won't display a notification just will listen to message arrival. 
 
 
 ##### iOS Specifics
