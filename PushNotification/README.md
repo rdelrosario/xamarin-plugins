@@ -137,7 +137,7 @@ There are a few things you can configure in Android project using the following 
 
 
 ##### iOS Specifics
-* Application should have push notification enabled and active push cetificateds on Apple Developer Portal.
+* Application should have push notification enabled and active push certificates on Apple Developer Portal.
 * iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
 * Must checkout the helper class on content folder: PushNotificationApplicationDelegate.txt. In order to setup correctly.
 
