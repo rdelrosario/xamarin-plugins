@@ -25,7 +25,6 @@ namespace PushNotification.Plugin
 			}
 
 		}
-        public IPushNotificationListener Listener { get; set; }
 
 		public void Register()
 		{
@@ -105,6 +104,7 @@ namespace PushNotification.Plugin
 			{
 				trimmedDeviceToken = trimmedDeviceToken.Trim('<');
 				trimmedDeviceToken = trimmedDeviceToken.Trim('>');
+                trimmedDeviceToken = trimmedDeviceToken.Trim();
 			}
 			Console.WriteLine("{0} - Token: {1}", PushNotificationKey.DomainName, trimmedDeviceToken);
 

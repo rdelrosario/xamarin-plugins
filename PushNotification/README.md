@@ -15,7 +15,7 @@ Simple cross platform plugin to handle push notification events such as register
 
 Call **CrossPushNotification.Current** from any project or PCL to gain access to APIs.
 
-Must initialize plugin on each platform before use.
+Must initialize plugin on each platform before use. If not initializated before using a method (Register/Unregister) will thow <b>PushNotificationNotInitializedException</b>.
 
 **CrossPushNotification.Initialize<'T'>**
 This methods initializes push notification plugin. The generic <b>T</b> should be a class that implements IPushNotificationListener. This will be the class were you would listen to all push notifications events.
@@ -25,7 +25,7 @@ This methods initializes push notification plugin. The generic <b>T</b> should b
 ```
 public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 {
-	//...
+	//Consider inizializing before application initialization, if using any CrossPushNotification method during application initialization.
 	   CrossPushNotification.Initialize<CrossPushNotificationListener> ();
     //...
 	return base.FinishedLaunching (app, options);
@@ -98,7 +98,7 @@ Enum of Device Types:
 
 **Register**
 
-Register device to receive push notifications
+Register device to receive push notifications. Should only be using after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
 ```
 void Register();
@@ -106,7 +106,7 @@ void Register();
 
 **Unregister**
 
-Unregister device to stop receiving push notifications
+Unregister device to stop receiving push notifications. Should only be using after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
 ```
 void Unregister();
@@ -119,25 +119,28 @@ void Unregister();
 
 There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
 ```
-    //The sets the key you will use to show the title for the notification
+    //The sets the key associated with the value will be used to show the title for the notification
     public static string NotificationContentTitleKey { get; set; }
    
-    //The sets the key you will use to show the text for the notification
+    //The sets the key associated with the value will used to show the text for the notification
     public static string NotificationContentTextKey { get; set; }
 
-    //The sets the resource id for the icon used for the notification
+    //The sets the resource id for the icon will be used for the notification
     public static int IconResource { get; set; }
 
-    //The sets the sound  uri used for the notification
+    //The sets the sound  uri will be used for the notification
     public static Android.Net.Uri SoundUri { get; set; }
 
 ```
-If you send a key called silent with value true it won't display a notification just will listen to message arrival.
+* By default displays a notification looking for the key title to display notification title and message to display notification message. If title key not present will use the application name.
+* If you send a key called <b>silent</b> with value true it won't display a notification just will listen to message arrival. 
 
 
 ##### iOS Specifics
-
+* Application should have push notification enabled and active push cetificateds on Apple Developer Portal.
+* iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
 * Must checkout the helper class on content folder: PushNotificationApplicationDelegate.txt. In order to setup correctly.
+
 
 
 #### Contributors
