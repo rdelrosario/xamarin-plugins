@@ -11,6 +11,9 @@ Simple cross platform plugin to handle push notification events such as register
 * Xamarin.iOS (x64 Unified)
 * Xamarin.Android
 
+### Todo
+* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT, Windows Store 8.1 Support
+
 ### API Usage
 
 Call **CrossPushNotification.Current** from any project or PCL to gain access to APIs.
