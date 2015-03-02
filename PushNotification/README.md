@@ -134,7 +134,7 @@ There are a few things you can configure in Android project using the following 
 ```
 * By default displays a notification looking for the key <i><b>title</b></i>  to display notification title and <i><b>message</b></i>  to display notification message. If <i><b>title</b></i>  key not present will use the application name.
 * If you send a key called <i><b>silent</b></i> with value true it won't display a notification just will listen to message arrival.
-* The <b>package name</b> of your Android aplication must <b>start in lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
+* The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 
 
 ##### iOS Specifics
@@ -147,6 +147,7 @@ There are a few things you can configure in Android project using the following 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
 * [aflorenzan](https://github.com/aflorenzan)
+* [totemika](https://github.com/totemika)
 
 Thanks!
 
