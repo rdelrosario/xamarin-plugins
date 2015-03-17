@@ -125,7 +125,7 @@ There are a few things you can configure in Android project using the following 
     //The sets the key associated with the value will be used to show the title for the notification
     public static string NotificationContentTitleKey { get; set; }
    
-    //The sets the key associated with the value will used to show the text for the notification
+    //The sets the key associated with the value will be used to show the text for the notification
     public static string NotificationContentTextKey { get; set; }
 
     //The sets the resource id for the icon will be used for the notification
