@@ -13,7 +13,7 @@ namespace Geofence.Plugin
     public static bool IsInitialized { get { return (GeofenceListener != null); } }
     public static IGeofenceListener GeofenceListener { get; private set; }
 
-
+    public const string Tag = "CrossGeofence";
     public static void Initialize<T>()
      where T : IGeofenceListener, new()
     {

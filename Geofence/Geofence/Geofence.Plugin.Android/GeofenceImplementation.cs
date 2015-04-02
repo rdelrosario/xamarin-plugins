@@ -20,7 +20,6 @@ namespace Geofence.Plugin
   {
 
       public const string GeoReceiverAction="ACTION_RECEIVE_GEOFENCE";
-      public const string Tag = "CrossGeofence";
   
       private Dictionary<string,GeofenceCircularRegion> mRegions;
 
@@ -29,7 +28,7 @@ namespace Geofence.Plugin
       //private bool isMonitoring;
 
       private IGoogleApiClient mGoogleApiClient;
-
+      private Android.Locations.LocationManager locationManager; 
       // Defines the allowable request types
 	  enum RequestType { Add, Default }
 	  RequestType mRequestType;
@@ -59,22 +58,40 @@ namespace Geofence.Plugin
       /// <param name="regions"></param>
       public void StartMonitoring(List<GeofenceCircularRegion> regions)
       {
-          //Regions = regions;
+          if (!CrossGeofence.IsInitialized)
+          {
+              throw NewGeofenceNotInitializedException();
+          }
+
+          //Check if location services are enabled
+          if (!locationManager.IsProviderEnabled(Android.Locations.LocationManager.GpsProvider))
+          {
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to enable Location Services");
+              System.Diagnostics.Debug.WriteLine(message);
+              CrossGeofence.GeofenceListener.OnError(message);
+              return;
+          }
+
+          //If monitoring stop
           if (IsMonitoring)
           {
               StopMonitoring();
           }
 
+          //If connected to google play services then add regions
           if (mGoogleApiClient.IsConnected)
           {
               AddGeofences(regions);
+        
           }else
           {
+              //If not connection then connect
               if (!mGoogleApiClient.IsConnecting)
               {
                   mGoogleApiClient.Connect();
 
               }
+              //Request to add geofence regions once connected
               mRequestType = RequestType.Add;
           }
       }
@@ -110,8 +127,9 @@ namespace Geofence.Plugin
           if (geofencingEvent.HasError)
           {
               string errorMessage = Android.Gms.Location.GeofenceStatusCodes.GetStatusCodeString(geofencingEvent.ErrorCode);
-  
-              Log.Error(Tag, errorMessage);
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, errorMessage);
+              System.Diagnostics.Debug.WriteLine(message);
+              CrossGeofence.GeofenceListener.OnError(message);
           }
           // Get the transition type.
           int geofenceTransition = geofencingEvent.GeofenceTransition;
@@ -157,8 +175,9 @@ namespace Geofence.Plugin
                       CrossGeofence.GeofenceListener.OnRegionStay(mGeoreferenceResults[geofence.RequestId]);
                       break;
                   default:
-                      // Log.e(TAG, getString(R.string.geofence_transition_invalid_type,
-                      // geofenceTransition));
+                      string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Invalid transition type");
+                      System.Diagnostics.Debug.WriteLine(message);
+                      CrossGeofence.GeofenceListener.OnError(message);
                       break;
               }
           }
@@ -173,6 +192,11 @@ namespace Geofence.Plugin
       /// </summary>
       public void StopMonitoring()
       {
+          if (!CrossGeofence.IsInitialized)
+          {
+              throw NewGeofenceNotInitializedException();
+          }
+
           mRegions.Clear();
           mGeoreferenceResults.Clear();
           Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient,GeofenceTransitionPendingIntent).SetResultCallback(this);
@@ -192,25 +216,26 @@ namespace Geofence.Plugin
                   mGoogleApiClient.Connect();
 
               }
-              if (Log.IsLoggable("GeofenceService",LogPriority.Debug))
-              {
-                  Log.Debug("GeofenceService", "Google Play services is available.");
-              }
+
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Google Play services is available.");
+              System.Diagnostics.Debug.WriteLine(message);
+
           }
           else
           {
-              Log.Error("GeofenceService", "Google Play services is unavailable.");
-
+            
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Google Play services is unavailable.");
+              System.Diagnostics.Debug.WriteLine(message);
+              CrossGeofence.GeofenceListener.OnError(message);
           }
       }
 
       public void OnConnectionFailed(Android.Gms.Common.ConnectionResult result)
       {
-         // mInProgress = false;
-          // If the error has a resolution, start a Google Play services activity to resolve it
-      
           int errorCode = result.ErrorCode;
-          Log.Error(Tag, "Connection to Google Play services failed with error code " + errorCode);
+          string message = string.Format("{0} - {1} {2}", CrossGeofence.Tag, "Connection to Google Play services failed with error code ", errorCode);
+          System.Diagnostics.Debug.WriteLine(message);
+          CrossGeofence.GeofenceListener.OnError(message);
       
       }
 
@@ -234,26 +259,34 @@ namespace Geofence.Plugin
 
            }*/
           int statusCode = 0;
+          string message = string.Empty;
           switch (statusCode)
           {
               case Android.Gms.Location.GeofenceStatusCodes.Success:
-                  Log.Debug(Tag, "Successfully added Geofence.");
+                  message = string.Format("{0} - {1}", CrossGeofence.Tag, "Successfully added Geofence.");
                   break;
               case Android.Gms.Location.GeofenceStatusCodes.Error:
-                  Log.Error(Tag, "Error adding Geofence.");
+                  message = string.Format("{0} - {1}", CrossGeofence.Tag, "Error adding Geofence.");
                   break;
               case Android.Gms.Location.GeofenceStatusCodes.GeofenceTooManyGeofences:
-                  Log.Error(Tag, "Too many geofences.");
+                  message = string.Format("{0} - {1}", CrossGeofence.Tag, "Too many geofences.");
                   break;
               case Android.Gms.Location.GeofenceStatusCodes.GeofenceTooManyPendingIntents:
-                  Log.Error(Tag, "Too many pending intents.");
+                  message = string.Format("{0} - {1}", CrossGeofence.Tag, "Too many pending intents.");
+                  break;
+              case Android.Gms.Location.GeofenceStatusCodes.GeofenceNotAvailable:
+                  message = string.Format("{0} - {1}", CrossGeofence.Tag, "Geofence not available.");
                   break;
 
           }
+          System.Diagnostics.Debug.WriteLine(message);
 
-          if (statusCode!=Android.Gms.Location.GeofenceStatusCodes.Success && IsMonitoring)
+          if (statusCode != Android.Gms.Location.GeofenceStatusCodes.Success && statusCode != Android.Gms.Location.GeofenceStatusCodes.SuccessCache && IsMonitoring)
           {
               StopMonitoring();
+
+              if(!string.IsNullOrEmpty(message))
+                CrossGeofence.GeofenceListener.OnError(message);
           }
 
           
@@ -261,7 +294,15 @@ namespace Geofence.Plugin
       }
       public void OnConnectionSuspended(int cause)
       {
-          Log.Error(Tag, "Connection to Google Play services suspended with error code " + cause);
+          string message = string.Format("{0} - {1} {2}", CrossGeofence.Tag, "Connection to Google Play services suspended with error code ", cause);
+          System.Diagnostics.Debug.WriteLine(message);
+          CrossGeofence.GeofenceListener.OnError(message);
+      }
+      GeofenceNotInitializedException NewGeofenceNotInitializedException()
+      {
+          string description = string.Format("{0} - {1}", CrossGeofence.Tag, "Plugin is not initialized. Should initialize before use with CrossGeofence Initialize method. Example:  CrossGeofence.Initialize<CrossGeofenceListener>()");
+
+          return new GeofenceNotInitializedException(description);
       }
   }
 }
