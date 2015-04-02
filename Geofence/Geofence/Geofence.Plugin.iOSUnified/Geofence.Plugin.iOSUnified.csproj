@@ -35,10 +35,12 @@
     <DocumentationFile>bin\iPhone\Release\Geofence.Plugin.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\Geofence.Plugin.iOS\GeofenceImplementation.cs">
+      <Link>GeofenceImplementation.cs</Link>
+    </Compile>
     <Compile Include="..\Geofence.Plugin\CrossGeofence.cs">
       <Link>CrossGeofence.cs</Link>
     </Compile>
-    <Compile Include="GeofenceImplementation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

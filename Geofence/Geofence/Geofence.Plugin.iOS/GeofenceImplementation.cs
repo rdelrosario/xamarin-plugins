@@ -1,8 +1,13 @@
 using Geofence.Plugin.Abstractions;
-using MonoTouch.CoreLocation;
+#if __UNIFIED__
+  using CoreLocation;
+#else
+  using MonoTouch.CoreLocation;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Geofence.Plugin
 {
@@ -20,13 +25,16 @@ namespace Geofence.Plugin
 
       public GeofenceImplementation()
       {
+          mGeofenceList = new List<CLCircularRegion>();
+          mRegions = new Dictionary<string, GeofenceCircularRegion>();
+          mGeoreferenceResults = new Dictionary<string, GeofenceResult>();
+
           locationManager = new CLLocationManager();
           locationManager.DidStartMonitoringForRegion += DidStartMonitoringForRegion;
           locationManager.RegionEntered += RegionEntered;
           locationManager.RegionLeft +=RegionLeft;
           locationManager.Failed += OnFailure;
-          mRegions = new Dictionary<string, GeofenceCircularRegion>();
-          mGeoreferenceResults = new Dictionary<string, GeofenceResult>();
+       
 
       }
 
@@ -39,7 +47,7 @@ namespace Geofence.Plugin
           CrossGeofence.GeofenceListener.OnError(e.Error.LocalizedDescription);
       }
 
-      void RegionEntered(object sender, CLRegionEventArgs e)
+      async void RegionEntered(object sender, CLRegionEventArgs e)
       {
           if (!mGeoreferenceResults.ContainsKey(e.Region.Identifier))
           {
@@ -48,7 +56,21 @@ namespace Geofence.Plugin
                   Region = mRegions[e.Region.Identifier]
               });
           }
+
+          mGeoreferenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow;
+          mGeoreferenceResults[e.Region.Identifier].LastExitTime = null;
+
           CrossGeofence.GeofenceListener.OnRegionEntered(mGeoreferenceResults[e.Region.Identifier]);
+
+          if (mGeoreferenceResults[e.Region.Identifier].Region.MinimumDuration != 0)
+          {
+              await Task.Delay(mGeoreferenceResults[e.Region.Identifier].Region.MinimumDuration);
+
+              if (mGeoreferenceResults[e.Region.Identifier].LastExitTime == null)
+              {
+                  CrossGeofence.GeofenceListener.OnRegionStay(mGeoreferenceResults[e.Region.Identifier]);
+              }
+          }
       }
 
       void RegionLeft(object sender, CLRegionEventArgs e)
@@ -60,6 +82,9 @@ namespace Geofence.Plugin
                   Region = mRegions[e.Region.Identifier]
               });
           }
+
+          mGeoreferenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow;
+
           CrossGeofence.GeofenceListener.OnRegionExited(mGeoreferenceResults[e.Region.Identifier]);
       }
 

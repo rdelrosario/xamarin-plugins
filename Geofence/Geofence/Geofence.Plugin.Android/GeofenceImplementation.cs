@@ -49,9 +49,9 @@ namespace Geofence.Plugin
 
       public GeofenceImplementation()
 	  {
-          InitializeGoogleAPI();
           mRegions = new Dictionary<string, GeofenceCircularRegion>();
           mGeoreferenceResults = new Dictionary<string, GeofenceResult>();
+          InitializeGoogleAPI();
 	  }
       /// <summary>
       /// Starts geofence monitoring on specified regions
@@ -142,14 +142,14 @@ namespace Geofence.Plugin
               {
                   case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
 
-                      mGeoreferenceResults[geofence.RequestId].LastEnterTime = new DateTime();
+                      mGeoreferenceResults[geofence.RequestId].LastEnterTime = DateTime.UtcNow;
                       mGeoreferenceResults[geofence.RequestId].LastExitTime = null;
                       CrossGeofence.GeofenceListener.OnRegionEntered(mGeoreferenceResults[geofence.RequestId]);
 
                       break;
                   case Android.Gms.Location.Geofence.GeofenceTransitionExit:
 
-                      mGeoreferenceResults[geofence.RequestId].LastExitTime = new DateTime();
+                      mGeoreferenceResults[geofence.RequestId].LastExitTime = DateTime.UtcNow;
                       CrossGeofence.GeofenceListener.OnRegionExited(mGeoreferenceResults[geofence.RequestId]);
                   
                       break;
