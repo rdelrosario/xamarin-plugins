@@ -8,10 +8,11 @@ namespace Geofence.Plugin.Abstractions
 {
     public interface IGeofenceListener
     {
-       void OnMonitoringStarted(GeoCircularRegion region);
+       void OnMonitoringStarted(GeofenceCircularRegion region);
        void OnMonitoringStopped();
-       void OnRegionEntered(GeoCircularRegion region);
-       void OnRegionExited(GeoCircularRegion region);
+       void OnRegionEntered(GeofenceResult result);
+       void OnRegionExited(GeofenceResult result);
+       void OnRegionStay(GeofenceResult result);
        void OnError(String error);
     }
 }

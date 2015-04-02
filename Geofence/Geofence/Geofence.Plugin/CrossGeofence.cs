@@ -1,5 +1,6 @@
 ﻿using Geofence.Plugin.Abstractions;
 using System;
+using System.Diagnostics;
 
 namespace Geofence.Plugin
 {
@@ -9,7 +10,25 @@ namespace Geofence.Plugin
   public class CrossGeofence
   {
     static Lazy<IGeofence> Implementation = new Lazy<IGeofence>(() => CreateGeofence(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
+    public static bool IsInitialized { get { return (GeofenceListener != null); } }
+    public static IGeofenceListener GeofenceListener { get; private set; }
 
+
+    public static void Initialize<T>()
+     where T : IGeofenceListener, new()
+    {
+
+        if (GeofenceListener == null)
+        {
+            GeofenceListener = (IGeofenceListener)Activator.CreateInstance(typeof(T));
+            Debug.WriteLine("Geofence plugin initialized.");
+        }
+        else
+        {
+            Debug.WriteLine("Geofence plugin already initialized.");
+        }
+       
+    }
     /// <summary>
     /// Current settings to use
     /// </summary>

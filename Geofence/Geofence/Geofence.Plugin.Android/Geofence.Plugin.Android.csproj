@@ -17,7 +17,7 @@
     <AndroidUseLatestPlatformSdk>
     </AndroidUseLatestPlatformSdk>
     <DevInstrumentationEnabled>True</DevInstrumentationEnabled>
-    <TargetFrameworkVersion>v4.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -61,6 +61,7 @@
     <Compile Include="..\Geofence.Plugin\CrossGeofence.cs">
       <Link>CrossGeofence.cs</Link>
     </Compile>
+    <Compile Include="GeofenceBroadcastReceiver.cs" />
     <Compile Include="GeofenceImplementation.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

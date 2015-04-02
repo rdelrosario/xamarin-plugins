@@ -2,7 +2,7 @@ using Geofence.Plugin.Abstractions;
 using MonoTouch.CoreLocation;
 using System;
 using System.Collections.Generic;
-
+using System.Linq;
 
 namespace Geofence.Plugin
 {
@@ -13,7 +13,10 @@ namespace Geofence.Plugin
   {
       CLLocationManager locationManager;
       private List<CLCircularRegion> mGeofenceList;
-      public IGeofenceListener Listener { get; set; }
+      private Dictionary<string, GeofenceCircularRegion> mRegions;
+      private Dictionary<string, GeofenceResult> mGeoreferenceResults;
+      public List<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
+      public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
       public GeofenceImplementation()
       {
@@ -22,54 +25,64 @@ namespace Geofence.Plugin
           locationManager.RegionEntered += RegionEntered;
           locationManager.RegionLeft +=RegionLeft;
           locationManager.Failed += OnFailure;
+          mRegions = new Dictionary<string, GeofenceCircularRegion>();
+          mGeoreferenceResults = new Dictionary<string, GeofenceResult>();
+
       }
 
       void OnFailure(object sender, MonoTouch.Foundation.NSErrorEventArgs e)
       {
-          Listener.OnError(e.Error.LocalizedDescription);
+          if (IsMonitoring)
+          {
+              StopMonitoring();
+          }
+          CrossGeofence.GeofenceListener.OnError(e.Error.LocalizedDescription);
       }
 
       void RegionEntered(object sender, CLRegionEventArgs e)
       {
-          Listener.OnRegionEntered(new GeoCircularRegion()
+          if (!mGeoreferenceResults.ContainsKey(e.Region.Identifier))
           {
-              Latitude=e.Region.Center.Latitude,
-              Longitude = e.Region.Center.Longitude,
-              Tag = e.Region.Identifier
-          });
+              mGeoreferenceResults.Add(e.Region.Identifier, new GeofenceResult()
+              {
+                  Region = mRegions[e.Region.Identifier]
+              });
+          }
+          CrossGeofence.GeofenceListener.OnRegionEntered(mGeoreferenceResults[e.Region.Identifier]);
       }
 
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
-          Listener.OnRegionExited(new GeoCircularRegion()
+          if (!mGeoreferenceResults.ContainsKey(e.Region.Identifier))
           {
-              Latitude = e.Region.Center.Latitude,
-              Longitude = e.Region.Center.Longitude,
-              Tag = e.Region.Identifier
-          });
+              mGeoreferenceResults.Add(e.Region.Identifier, new GeofenceResult()
+              {
+                  Region = mRegions[e.Region.Identifier]
+              });
+          }
+          CrossGeofence.GeofenceListener.OnRegionExited(mGeoreferenceResults[e.Region.Identifier]);
       }
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
       {
-          Listener.OnMonitoringStarted(new GeoCircularRegion()
-          {
-              Latitude = e.Region.Center.Latitude,
-              Longitude = e.Region.Center.Longitude,
-              Tag = e.Region.Identifier
-          });
+          CrossGeofence.GeofenceListener.OnMonitoringStarted(mRegions[e.Region.Identifier]);
       }
 
-      public void Start(List<GeoCircularRegion> regions)
+      public void StartMonitoring(List<GeofenceCircularRegion> regions)
       {
-          mGeofenceList.Clear();
+          if(IsMonitoring)
+          {
+              StopMonitoring();
+          }
+        
           if (CLLocationManager.IsMonitoringAvailable(typeof(CLCircularRegion)))
           {
 
-              foreach (GeoCircularRegion region in regions)
+              foreach (GeofenceCircularRegion region in regions)
               {
                   var cRegion = new CLCircularRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), region.Radius, region.Tag);
-                    mGeofenceList.Add(cRegion);
-
+                  mGeofenceList.Add(cRegion);
+                  mRegions.Add(region.Tag, region);
                   locationManager.StartMonitoring(cRegion);
               }
 
@@ -81,7 +94,7 @@ namespace Geofence.Plugin
           
       }
 
-      public void Stop()
+      public void StopMonitoring()
       {
           foreach (CLCircularRegion region in mGeofenceList)
           {
@@ -91,7 +104,10 @@ namespace Geofence.Plugin
                
               }
           }
-          Listener.OnMonitoringStopped();
+          mGeofenceList.Clear();
+          mRegions.Clear();
+          mGeoreferenceResults.Clear();
+          CrossGeofence.GeofenceListener.OnMonitoringStopped();
          
       }
   }
