@@ -8,6 +8,10 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using System.Linq;
+using Android.Support.V4.App;
+using Android.Media;
+using Java.Lang;
+using Android.Text;
 
 namespace Geofence.Plugin
 {
@@ -24,8 +28,6 @@ namespace Geofence.Plugin
       private Dictionary<string,GeofenceCircularRegion> mRegions;
 
       private Dictionary<string, GeofenceResult> mGeoreferenceResults;
-
-      //private bool isMonitoring;
 
       private IGoogleApiClient mGoogleApiClient;
       private Android.Locations.LocationManager locationManager; 
@@ -106,7 +108,8 @@ namespace Geofence.Plugin
                 .SetTransitionTypes(Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionExit)
                 .SetCircularRegion(region.Latitude, region.Longitude, (float)region.Radius)
                 .SetLoiteringDelay(region.MinimumDuration)
-                  //.SetExpirationDuration(mExpirationDuration)
+                //.SetNotificationResponsiveness(mNotificationResponsivness)
+                //.SetExpirationDuration(mExpirationDuration)
                 .Build());
               mRegions.Add(region.Tag, region);
 
@@ -136,15 +139,9 @@ namespace Geofence.Plugin
           // Get the geofences that were triggered. A single event can trigger
           // multiple geofences.
           IList<Android.Gms.Location.IGeofence> triggeringGeofences = geofencingEvent.TriggeringGeofences;
-           // Get the transition details as a String.
-           /* String geofenceTransitionDetails = getGeofenceTransitionDetails(
-                    this,
-                    geofenceTransition,
-                    triggeringGeofences
-            *    // Send notification and log the transition details.
-            sendNotification(geofenceTransitionDetails);
-            Log.i(TAG, geofenceTransitionDetails);
-                    */
+          // Get the transition details as a String.
+        
+          List<string> geofenceIds = new List<string>();
           foreach (Android.Gms.Location.IGeofence geofence in triggeringGeofences)
           {
 
@@ -155,7 +152,7 @@ namespace Geofence.Plugin
                       Region = mRegions[geofence.RequestId]
                   });
               }
-
+            
               switch (geofenceTransition)
               {
                   case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
@@ -163,29 +160,72 @@ namespace Geofence.Plugin
                       mGeoreferenceResults[geofence.RequestId].LastEnterTime = DateTime.UtcNow;
                       mGeoreferenceResults[geofence.RequestId].LastExitTime = null;
                       CrossGeofence.GeofenceListener.OnRegionEntered(mGeoreferenceResults[geofence.RequestId]);
-
+                      
                       break;
                   case Android.Gms.Location.Geofence.GeofenceTransitionExit:
 
                       mGeoreferenceResults[geofence.RequestId].LastExitTime = DateTime.UtcNow;
                       CrossGeofence.GeofenceListener.OnRegionExited(mGeoreferenceResults[geofence.RequestId]);
-                  
+                      
                       break;
                   case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
                       CrossGeofence.GeofenceListener.OnRegionStay(mGeoreferenceResults[geofence.RequestId]);
+                    
                       break;
                   default:
                       string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Invalid transition type");
                       System.Diagnostics.Debug.WriteLine(message);
-                      CrossGeofence.GeofenceListener.OnError(message);
+                     // CrossGeofence.GeofenceListener.OnError(message);
                       break;
               }
+
+              geofenceIds.Add(geofence.RequestId);
+        
+              
           }
-          
+
+          if (CrossGeofence.EnableNotification)
+          {
+              try
+              {
+                  Context context = Android.App.Application.Context;
+
+                  CreateNotification(string.Join(", ", geofenceIds), string.Format("{0} {1}", GetTransitionString(geofenceTransition), "geofence(s) region."));
+
+              }
+              catch (Java.Lang.Exception ex)
+              {
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex.ToString()));
+              }
+              catch (System.Exception ex1)
+              {
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex1.ToString()));
+              }
+          }
          
+          
+       
 
           // Release the wake lock provided by the WakefulBroadcastReceiver.
           GeofenceBroadcastReceiver.CompleteWakefulIntent(intent);
+      }
+
+       private string GetTransitionString(int transitionType) 
+       {
+        switch (transitionType) {
+ 
+            case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
+                return "Entered";
+ 
+            case  Android.Gms.Location.Geofence.GeofenceTransitionExit:
+                return "Exited";
+ 
+            case  Android.Gms.Location.Geofence.GeofenceTransitionDwell:
+                return "Stayed in";
+ 
+            default:
+                return "Unknown";
+        }
       }
       /// <summary>
       /// Stops geofence monitoring
@@ -304,5 +344,65 @@ namespace Geofence.Plugin
 
           return new GeofenceNotInitializedException(description);
       }
+      public static void CreateNotification(string title, string message)
+      {
+
+          NotificationCompat.Builder builder = null;
+          Context context = Android.App.Application.Context;
+
+          if (CrossGeofence.SoundUri == null)
+          {
+              CrossGeofence.SoundUri = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
+          }
+          try
+          {
+
+              if (CrossGeofence.IconResource == null || CrossGeofence.IconResource == 0)
+              {
+                  CrossGeofence.IconResource = context.ApplicationInfo.Icon;
+              }
+              else
+              {
+                  string name = context.Resources.GetResourceName(CrossGeofence.IconResource);
+
+                  if (name == null)
+                  {
+                      CrossGeofence.IconResource = context.ApplicationInfo.Icon;
+
+                  }
+              }
+
+          }
+          catch (Android.Content.Res.Resources.NotFoundException ex)
+          {
+              CrossGeofence.IconResource = context.ApplicationInfo.Icon;
+              System.Diagnostics.Debug.WriteLine(ex.ToString());
+          }
+
+
+          Intent resultIntent = context.PackageManager.GetLaunchIntentForPackage(context.PackageName);
+
+          //Intent resultIntent = new Intent(context, typeof(T));
+
+
+
+          // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
+          const int pendingIntentId = 0;
+          PendingIntent resultPendingIntent = PendingIntent.GetActivity(context, pendingIntentId, resultIntent, PendingIntentFlags.OneShot);
+
+          // Build the notification
+          builder = new NotificationCompat.Builder(context)
+                    .SetAutoCancel(true) // dismiss the notification from the notification area when the user clicks on it
+                    .SetContentIntent(resultPendingIntent) // start up this activity when the user clicks the intent.
+                    .SetContentTitle(title) // Set the title
+                    .SetSound(CrossGeofence.SoundUri)
+                    .SetSmallIcon(CrossGeofence.IconResource) // This is the icon to display
+                    .SetContentText(message); // the message to display.
+
+          NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
+          notificationManager.Notify(0, builder.Build());
+      }
+
+
   }
 }
