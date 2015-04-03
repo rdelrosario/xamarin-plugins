@@ -1,4 +1,5 @@
-﻿using Geofence.Plugin.Abstractions;
+﻿using Geofence.Plugin;
+using Geofence.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,9 +12,9 @@ namespace $rootnamespace$.Helpers
    //Class to handle geofence events such as start/stop monitoring, region state changes and errors.
     public class CrossGeofenceListener : IGeofenceListener
     {
-        public void OnMonitoringStarted(GeofenceCircularRegion region)
+        public void OnMonitoringStarted()
         {
-            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Monitoring started in region", region.Tag));
+            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Monitoring started in all regions"));
         }
 
         public void OnMonitoringStopped()

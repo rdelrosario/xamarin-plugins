@@ -97,7 +97,7 @@ namespace Geofence.Plugin
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
       {
-          CrossGeofence.GeofenceListener.OnMonitoringStarted(mRegions[e.Region.Identifier]);
+          CrossGeofence.GeofenceListener.OnMonitoringStarted();
       }
 
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)

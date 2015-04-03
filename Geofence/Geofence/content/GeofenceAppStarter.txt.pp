@@ -32,10 +32,11 @@ namespace $rootnamespace$
                         //TODO: Specify the listener class implementing IGeofenceListener interface in the Initialize generic
                         //CrossGeofence.Initialize<CrossGeofenceListener>();
 
-			StartPushService();
+                        //TODO: Start a sticky service to keep receiving geofence events when app is closed.
+			//StartService();
 		}
 
-		public static void StartService()
+		/*public static void StartService()
 		{
 			AppContext.StartService(new Intent(AppContext, typeof(GeofenceService)));
 
@@ -46,9 +47,9 @@ namespace $rootnamespace$
 				AlarmManager alarm = (AlarmManager)AppContext.GetSystemService(Context.AlarmService);
 				alarm.Cancel(pintent);
 			}
-		}
+		}*/
 
-		public static void StopService()
+		/*public static void StopService()
 		{
 			AppContext.StopService(new Intent(AppContext, typeof(GeofenceService)));
                         if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
@@ -57,7 +58,7 @@ namespace $rootnamespace$
 			    AlarmManager alarm = (AlarmManager)AppContext.GetSystemService(Context.AlarmService);
 			    alarm.Cancel(pintent);
 			}
-		}
+		}*/
 
     }
 }

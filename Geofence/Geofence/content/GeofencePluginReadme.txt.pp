@@ -5,9 +5,9 @@ You must include CrossGeofence initialization on your AppDelegate FinishedLaunch
 
         public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 	{
-			//Initialization here...
+		    //Initialization here...
 			
-                     CrossPushNotification.Initialize<CrossGeofenceListener> ();
+                     CrossPushGeofence.Initialize<CrossGeofenceListener> ();
 
 		     return base.FinishedLaunching (app, options);
 	}

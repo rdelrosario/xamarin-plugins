@@ -21,7 +21,8 @@ namespace Geofence.Plugin
     /// Implementation for Feature
     /// </summary>
     /// 
-    [Service(Exported = false)]
+    //[Service(Exported = false)]
+    [Service]
     public class GeofenceImplementation : IntentService,IGeofence, IGoogleApiClientConnectionCallbacks, IGoogleApiClientOnConnectionFailedListener, IResultCallback
     {
 
@@ -37,16 +38,18 @@ namespace Geofence.Plugin
 	  enum RequestType { Add, Default }
 	  RequestType mRequestType;
 
-      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
+      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList<GeofenceCircularRegion>(); } }
       public bool IsMonitoring { get { return mRegions.Count>0; } }
 
       private PendingIntent GeofenceTransitionPendingIntent
       {
           get
           {
-              //var intent = new Intent(this, typeof(GeofenceImplementation));
-              var intent = new Intent( string.Format("{0}.{1}", Android.App.Application.Context.PackageName,GeoReceiverAction));
-              return PendingIntent.GetBroadcast(this, 0, intent, PendingIntentFlags.UpdateCurrent);
+
+             //var intent = new Intent(Android.App.Application.Context, typeof(GeofenceBroadcastReceiver));
+             // intent.SetAction(string.Format("{0}.{1}", Android.App.Application.Context.PackageName, GeoReceiverAction));
+              var intent = new Intent(string.Format("{0}.{1}", Android.App.Application.Context.PackageName, GeoReceiverAction));
+              return PendingIntent.GetBroadcast(Android.App.Application.Context, 0, intent, PendingIntentFlags.UpdateCurrent);
           }
       }
 
@@ -54,7 +57,7 @@ namespace Geofence.Plugin
 	  {
           mRegions = new Dictionary<string, GeofenceCircularRegion>();
           mGeoreferenceResults = new Dictionary<string, GeofenceResult>();
-         
+          mRequestType = RequestType.Default;
           InitializeGoogleAPI();
 
 	  }
@@ -81,13 +84,24 @@ namespace Geofence.Plugin
           //If monitoring stop
           if (IsMonitoring)
           {
-              StopMonitoring();
+              mRegions.Clear();
+              mGeoreferenceResults.Clear();
+              Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
+        
+          }
+
+          foreach (GeofenceCircularRegion region in regions)
+          {
+
+              mRegions.Add(region.Tag, region);
+
           }
 
           //If connected to google play services then add regions
           if (mGoogleApiClient.IsConnected)
           {
               AddGeofences(regions);
+              
         
             }
             else
@@ -100,31 +114,47 @@ namespace Geofence.Plugin
                 }
                 //Request to add geofence regions once connected
                 mRequestType = RequestType.Add;
+
             }
         }
 
         private void AddGeofences(IList<GeofenceCircularRegion> regions)
         {
-            List<Android.Gms.Location.IGeofence> geofenceList = new List<Android.Gms.Location.IGeofence>();
-         
-            foreach (GeofenceCircularRegion region in regions)
+            try
             {
-                geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
-                .SetRequestId(region.Tag)
-                .SetTransitionTypes(Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionExit)
-                .SetCircularRegion(region.Latitude, region.Longitude, (float)region.Radius)
-                .SetLoiteringDelay(region.MinimumDuration)
-                    //.SetNotificationResponsiveness(mNotificationResponsivness)
-                    //.SetExpirationDuration(mExpirationDuration)
-                .Build());
-                mRegions.Add(region.Tag, region);
+                List<Android.Gms.Location.IGeofence> geofenceList = new List<Android.Gms.Location.IGeofence>();
 
+                foreach (GeofenceCircularRegion region in regions)
+                {
+                    geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
+                    .SetRequestId(region.Tag)
+                    .SetTransitionTypes(Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionExit)
+                    .SetCircularRegion(region.Latitude, region.Longitude, (float)region.Radius)
+                    .SetLoiteringDelay(region.MinimumDuration)
+                        //.SetNotificationResponsiveness(mNotificationResponsivness)
+                    .SetExpirationDuration(Android.Gms.Location.Geofence.NeverExpire)
+                    .Build());
+
+                }
+                Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
+
+                Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
+
+                mRequestType = RequestType.Default;
+
+            }catch(Java.Lang.Exception ex1)
+            {
+                string message = string.Format("{0} - Error: {1}", CrossGeofence.Tag, ex1.ToString());
+                System.Diagnostics.Debug.WriteLine(message);
+                CrossGeofence.GeofenceListener.OnError(message);
             }
-            Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
-
-            Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
-        
-            mRequestType = RequestType.Default;
+            catch (System.Exception ex2)
+            {
+                string message = string.Format("{0} - Error: {1}", CrossGeofence.Tag, ex2.ToString());
+                System.Diagnostics.Debug.WriteLine(message);
+                CrossGeofence.GeofenceListener.OnError(message);
+            }
+            
         }
 
         protected override void OnHandleIntent(Intent intent)
@@ -279,7 +309,7 @@ namespace Geofence.Plugin
             // Use mRequestType to determine what action to take. Only Add used in this sample
             if (mRequestType == RequestType.Add)
             {
-                AddGeofences(mRegions.Values.ToList());
+                AddGeofences(mRegions.Values.ToList<GeofenceCircularRegion>());
           
             }
         }
@@ -295,6 +325,7 @@ namespace Geofence.Plugin
             {
                 case Android.Gms.Location.GeofenceStatusCodes.Success:
                     message = string.Format("{0} - {1}", CrossGeofence.Tag, "Successfully added Geofence.");
+                    CrossGeofence.GeofenceListener.OnMonitoringStarted();
                     break;
                 case Android.Gms.Location.GeofenceStatusCodes.Error:
                     message = string.Format("{0} - {1}", CrossGeofence.Tag, "Error adding Geofence.");
