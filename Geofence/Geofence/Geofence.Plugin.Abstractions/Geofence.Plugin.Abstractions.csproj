@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GeofenceCircularRegion.cs" />
+    <Compile Include="GeofenceNotInitializedException.cs" />
     <Compile Include="GeofenceResult.cs" />
     <Compile Include="IGeofence.cs" />
     <Compile Include="IGeofenceListener.cs" />

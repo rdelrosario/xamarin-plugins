@@ -35,7 +35,7 @@ namespace Geofence.Plugin
 	  enum RequestType { Add, Default }
 	  RequestType mRequestType;
 
-      public List<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
+      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
       public bool IsMonitoring { get { return mRegions.Count>0; } }
 
       private PendingIntent GeofenceTransitionPendingIntent
@@ -202,9 +202,7 @@ namespace Geofence.Plugin
                   System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex1.ToString()));
               }
           }
-         
-          
-       
+
 
           // Release the wake lock provided by the WakefulBroadcastReceiver.
           GeofenceBroadcastReceiver.CompleteWakefulIntent(intent);
@@ -382,9 +380,6 @@ namespace Geofence.Plugin
 
           Intent resultIntent = context.PackageManager.GetLaunchIntentForPackage(context.PackageName);
 
-          //Intent resultIntent = new Intent(context, typeof(T));
-
-
 
           // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
           const int pendingIntentId = 0;
@@ -403,6 +398,62 @@ namespace Geofence.Plugin
           notificationManager.Notify(0, builder.Build());
       }
 
+      public void StopMonitoring(List<string> regionIdentifers)
+      {
+          if (!CrossGeofence.IsInitialized)
+          {
+              throw NewGeofenceNotInitializedException();
+          }
+
+        
+          foreach(string identifier in regionIdentifers)
+          {
+              RemoveRegion(identifier);
+              //CrossGeofence.GeofenceListener.OnMonitoringStopped(identifier);
+          }
+
+          Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, regionIdentifers).SetResultCallback(this);
+ 
+          if (mRegions.Count == 0)
+          {
+              mGoogleApiClient.Disconnect();
+              CrossGeofence.GeofenceListener.OnMonitoringStopped();
+          }
+
+        
+      }
+
+      public void StopMonitoring(string regionIdentifer)
+      {
+          if (!CrossGeofence.IsInitialized)
+          {
+              throw NewGeofenceNotInitializedException();
+          }
+
+          RemoveRegion(regionIdentifer);
+          Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, new List<string>() { regionIdentifer }).SetResultCallback(this);
+          //CrossGeofence.GeofenceListener.OnMonitoringStopped(identifier);
+
+          if (mRegions.Count == 0)
+          {
+              mGoogleApiClient.Disconnect();
+              CrossGeofence.GeofenceListener.OnMonitoringStopped();
+          }
+
+         
+      }
+      private void RemoveRegion(string regionIdentifer)
+      {
+          if (mRegions.ContainsKey(regionIdentifer))
+          {
+              mRegions.Remove(regionIdentifer);
+          }
+
+          if (mGeoreferenceResults.ContainsKey(regionIdentifer))
+          {
+              mGeoreferenceResults.Remove(regionIdentifer);
+          }
+      }
 
   }
 }

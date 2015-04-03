@@ -26,7 +26,7 @@ namespace Geofence.Plugin
       private List<CLRegion> mGeofenceList;
       private Dictionary<string, GeofenceCircularRegion> mRegions;
       private Dictionary<string, GeofenceResult> mGeoreferenceResults;
-      public List<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
+      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
       public GeofenceImplementation()
@@ -186,21 +186,43 @@ namespace Geofence.Plugin
           return new GeofenceNotInitializedException(description);
       }
 
-      /*public void StopMonitoring(GeofenceCircularRegion region)
+      public void StopMonitoring(string regionIdentifier)
       {
           if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
           {
-              locationManager.StopMonitoring(region);
+              var region = GetRegion(regionIdentifier);
+              if (region != null)
+              {
+                  locationManager.StopMonitoring(region);
+                  mGeofenceList.Remove(region);
+                  mRegions.Remove(regionIdentifier);
+                  mGeoreferenceResults.Remove(regionIdentifier);
+
+                  //CrossGeofence.GeofenceListener.OnRegionMonitoringStopped(region);
+              }
+              else
+              {
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
+              }
+             
+       
           }
-          
-          mGeofenceList.Remove(region);
-          mRegions.Remove(region.Identifier);
-          mGeoreferenceResults.Remove(region.Identifier);
-          //CrossGeofence.GeofenceListener.OnRegionMonitoringStopped(region);
 
-      }*/
 
-     /* public void StartMonitoring(GeofenceCircularRegion region)
+      }
+
+      private CLRegion GetRegion(string identifier)
+      {
+          CLRegion region = null;
+          IEnumerable<CLRegion> regionEnumerable = mGeofenceList.Where(s => s.Identifier.Equals(identifier, StringComparison.Ordinal));
+          if (regionEnumerable != null)
+          {
+              region = regionEnumerable.First();
+          }
+          return region;
+      }
+
+      public void StartMonitoring(GeofenceCircularRegion region)
       {
           if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
           {
@@ -232,7 +254,7 @@ namespace Geofence.Plugin
          
           
 
-      }*/
+      }
 
 
   }
