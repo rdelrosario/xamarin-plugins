@@ -8,7 +8,7 @@ namespace Geofence.Plugin.Abstractions
   /// </summary>
   public interface IGeofence
   {
-      IList<GeofenceCircularRegion> Regions {get; }
+      IEnumerable<GeofenceCircularRegion> Regions {get; }
       bool IsMonitoring { get; }
       void StartMonitoring(IList<GeofenceCircularRegion> regions);
       void StopMonitoring();

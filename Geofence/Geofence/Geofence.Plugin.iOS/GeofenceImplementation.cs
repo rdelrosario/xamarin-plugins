@@ -26,7 +26,7 @@ namespace Geofence.Plugin
       private List<CLRegion> mGeofenceList;
       private Dictionary<string, GeofenceCircularRegion> mRegions;
       private Dictionary<string, GeofenceResult> mGeoreferenceResults;
-      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList(); } }
+      public IEnumerable<GeofenceCircularRegion> Regions { get { return mRegions.Values; } }
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
       public GeofenceImplementation()

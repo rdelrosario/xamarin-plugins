@@ -14,6 +14,7 @@ using Java.Lang;
 using Android.Text;
 using System.Runtime.Remoting.Messaging;
 using Java.Interop;
+using System.Linq;
 
 namespace Geofence.Plugin
 {
@@ -21,8 +22,7 @@ namespace Geofence.Plugin
     /// Implementation for Feature
     /// </summary>
     /// 
-    //[Service(Exported = false)]
-    [Service]
+    [Service(Exported = false)]
     public class GeofenceImplementation : IntentService,IGeofence, IGoogleApiClientConnectionCallbacks, IGoogleApiClientOnConnectionFailedListener, IResultCallback
     {
 
@@ -38,7 +38,7 @@ namespace Geofence.Plugin
 	  enum RequestType { Add, Default }
 	  RequestType mRequestType;
 
-      public IList<GeofenceCircularRegion> Regions { get { return mRegions.Values.ToList<GeofenceCircularRegion>(); } }
+      public IEnumerable<GeofenceCircularRegion> Regions { get { return mRegions.Values; } }
       public bool IsMonitoring { get { return mRegions.Count>0; } }
 
       private PendingIntent GeofenceTransitionPendingIntent
@@ -95,12 +95,21 @@ namespace Geofence.Plugin
 
               mRegions.Add(region.Tag, region);
 
+              /* new GeofenceCircularRegion()
+              {
+                  Latitude=region.Latitude,
+                  Longitude=region.Longitude,
+                  Tag=region.Tag,
+                  Radius=region.Radius,
+                  MinimumDuration=region.MinimumDuration
+              }*/
+
           }
 
           //If connected to google play services then add regions
           if (mGoogleApiClient.IsConnected)
           {
-              AddGeofences(regions);
+              AddGeofences();
               
         
             }
@@ -118,13 +127,13 @@ namespace Geofence.Plugin
             }
         }
 
-        private void AddGeofences(IList<GeofenceCircularRegion> regions)
+        private void AddGeofences()
         {
             try
             {
                 List<Android.Gms.Location.IGeofence> geofenceList = new List<Android.Gms.Location.IGeofence>();
 
-                foreach (GeofenceCircularRegion region in regions)
+                foreach (GeofenceCircularRegion region in Regions)
                 {
                     geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
                     .SetRequestId(region.Tag)
@@ -185,10 +194,18 @@ namespace Geofence.Plugin
 
                 if (!mGeoreferenceResults.ContainsKey(geofence.RequestId))
                 {
+                    System.Diagnostics.Debug.WriteLine("Requested Key:"+geofence.RequestId);
+                    System.Diagnostics.Debug.WriteLine("Regions Count:",mRegions.Count);
+                    System.Diagnostics.Debug.WriteLine("Contained Keys:");
+                    foreach (var r in mRegions.Keys)
+                    {
+                        System.Diagnostics.Debug.WriteLine(r);
+                    }
                     mGeoreferenceResults.Add(geofence.RequestId, new GeofenceResult()
                         {
                             Region = mRegions[geofence.RequestId]
                         });
+               
                 }
                
                 switch (geofenceTransition)
@@ -309,7 +326,7 @@ namespace Geofence.Plugin
             // Use mRequestType to determine what action to take. Only Add used in this sample
             if (mRequestType == RequestType.Add)
             {
-                AddGeofences(mRegions.Values.ToList<GeofenceCircularRegion>());
+                AddGeofences();
           
             }
         }
