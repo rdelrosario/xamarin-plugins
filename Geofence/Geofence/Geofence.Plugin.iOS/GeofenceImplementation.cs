@@ -65,8 +65,8 @@ namespace Geofence.Plugin
 
           mGeoreferenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow;
           mGeoreferenceResults[e.Region.Identifier].LastExitTime = null;
-
-          CrossGeofence.GeofenceListener.OnRegionEntered(mGeoreferenceResults[e.Region.Identifier]);
+          mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Entered;
+          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[e.Region.Identifier]);
 
           if (mGeoreferenceResults[e.Region.Identifier].Region.MinimumDuration != 0)
           {
@@ -74,7 +74,8 @@ namespace Geofence.Plugin
 
               if (mGeoreferenceResults[e.Region.Identifier].LastExitTime == null)
               {
-                  CrossGeofence.GeofenceListener.OnRegionStay(mGeoreferenceResults[e.Region.Identifier]);
+                  mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Stayed;
+                  CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[e.Region.Identifier]);
               }
           }
       }
@@ -90,8 +91,8 @@ namespace Geofence.Plugin
           }
 
           mGeoreferenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow;
-
-          CrossGeofence.GeofenceListener.OnRegionExited(mGeoreferenceResults[e.Region.Identifier]);
+          mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Exited;
+          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[e.Region.Identifier]);
       }
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
@@ -99,7 +100,7 @@ namespace Geofence.Plugin
           CrossGeofence.GeofenceListener.OnMonitoringStarted(mRegions[e.Region.Identifier]);
       }
 
-      public void StartMonitoring(List<GeofenceCircularRegion> regions)
+      public void StartMonitoring(IList<GeofenceCircularRegion> regions)
       {
           if (!CrossGeofence.IsInitialized)
           {
@@ -195,20 +196,68 @@ namespace Geofence.Plugin
               {
                   locationManager.StopMonitoring(region);
                   mGeofenceList.Remove(region);
-                  mRegions.Remove(regionIdentifier);
-                  mGeoreferenceResults.Remove(regionIdentifier);
+                  RemoveRegion(regionIdentifier);
 
-                  //CrossGeofence.GeofenceListener.OnRegionMonitoringStopped(region);
+                  CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
               }
               else
               {
                   System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
+              }
+
+              if (mRegions.Count == 0)
+              {
+                  CrossGeofence.GeofenceListener.OnMonitoringStopped();
               }
              
        
           }
 
 
+      }
+
+      public void StopMonitoring(List<string> regionIdentifiers)
+      {
+          if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
+          {
+              foreach(string regionIdentifier in regionIdentifiers)
+              {
+                  var region = GetRegion(regionIdentifier);
+                  if (region != null)
+                  {
+                     locationManager.StopMonitoring(region);
+                     mGeofenceList.Remove(region);
+                     RemoveRegion(regionIdentifier);
+
+                     CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
+                  }
+                  else
+                  {
+                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
+                  }
+
+              }
+
+              if (mRegions.Count == 0)
+              {
+                  CrossGeofence.GeofenceListener.OnMonitoringStopped();
+              }
+          }
+
+
+      }
+
+      private void RemoveRegion(string regionIdentifer)
+      {
+          if (mRegions.ContainsKey(regionIdentifer))
+          {
+              mRegions.Remove(regionIdentifer);
+          }
+
+          if (mGeoreferenceResults.ContainsKey(regionIdentifer))
+          {
+              mGeoreferenceResults.Remove(regionIdentifer);
+          }
       }
 
       private CLRegion GetRegion(string identifier)

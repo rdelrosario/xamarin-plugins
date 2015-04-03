@@ -13,5 +13,10 @@ namespace Geofence.Plugin.Abstractions
         public double Longitude { get; set; }
         public double Radius { get; set; }
         public int MinimumDuration { get; set; }
+
+        public override string ToString()
+        {
+            return Tag;
+        }
     }
 }

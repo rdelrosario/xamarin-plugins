@@ -41,6 +41,7 @@
     <Compile Include="GeofenceCircularRegion.cs" />
     <Compile Include="GeofenceNotInitializedException.cs" />
     <Compile Include="GeofenceResult.cs" />
+    <Compile Include="GeofenceTransition.cs" />
     <Compile Include="IGeofence.cs" />
     <Compile Include="IGeofenceListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
