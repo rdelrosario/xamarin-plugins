@@ -59,7 +59,7 @@ namespace Geofence.Plugin
           {
               mGeoreferenceResults.Add(e.Region.Identifier, new GeofenceResult()
               {
-                  Region = mRegions[e.Region.Identifier]
+                  RegionId = e.Region.Identifier
               });
           }
 
@@ -68,9 +68,9 @@ namespace Geofence.Plugin
           mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Entered;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[e.Region.Identifier]);
 
-          if (mGeoreferenceResults[e.Region.Identifier].Region.MinimumDuration != 0)
+          if (mRegions.ContainsKey(e.Region.Identifier)&&mRegions[e.Region.Identifier].MinimumDuration != 0)
           {
-              await Task.Delay(mGeoreferenceResults[e.Region.Identifier].Region.MinimumDuration);
+              await Task.Delay(mRegions[e.Region.Identifier].MinimumDuration);
 
               if (mGeoreferenceResults[e.Region.Identifier].LastExitTime == null)
               {
@@ -86,7 +86,7 @@ namespace Geofence.Plugin
           {
               mGeoreferenceResults.Add(e.Region.Identifier, new GeofenceResult()
               {
-                  Region = mRegions[e.Region.Identifier]
+                  RegionId=e.Region.Identifier
               });
           }
 

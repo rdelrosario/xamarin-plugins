@@ -11,13 +11,15 @@ namespace Geofence.Plugin.Abstractions
         public DateTime? LastEnterTime { get; set; }
         public DateTime? LastExitTime { get; set; }
         public GeofenceTransition Transition { get; set; }
-        public GeofenceCircularRegion Region { get; set; }
+        public string RegionId { get; set; }
         public TimeSpan? Duration { get { return LastExitTime - LastEnterTime; } }
         public TimeSpan? SinceLastEntry { get { return DateTime.UtcNow - LastEnterTime; } }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
 
         public override string ToString()
         {
-            return string.Format("{0} {1}: {2}",GetTransitionString(Transition),"geofence region",Region.Tag);
+            return string.Format("{0} {1}: {2}", GetTransitionString(Transition), "geofence region", RegionId);
         }
 
         public static string GetTransitionString(GeofenceTransition transitionType)
