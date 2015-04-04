@@ -11,6 +11,8 @@ using Android.Views;
 using Android.Widget;
 using Android.Support.V4.Content;
 
+[assembly: UsesPermission(Name = "android.permission.WAKE_LOCK")]
+[assembly: UsesPermission(Name = "android.permission.INTERNET")]
 namespace Geofence.Plugin
 {
     [BroadcastReceiver]

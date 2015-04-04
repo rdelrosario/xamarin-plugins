@@ -3,11 +3,11 @@ You must include CrossGeofence initialization on your AppDelegate FinishedLaunch
      
        Example:
 
-        public override bool FinishedLaunching (UIApplication app, NSDictionary options)
+    public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 	{
 		    //Initialization here...
 			
-                     CrossPushGeofence.Initialize<CrossGeofenceListener> ();
+            CrossPushGeofence.Initialize<CrossGeofenceListener> ();
 
-		     return base.FinishedLaunching (app, options);
+		    return base.FinishedLaunching (app, options);
 	}

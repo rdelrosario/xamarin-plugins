@@ -19,7 +19,8 @@ namespace Geofence.Plugin
       public static int IconResource { get; set; }
       public static Android.Net.Uri SoundUri { get; set; }
       public static bool EnableNotification { get; set; }
-    #endif
+      public static bool EnableMonitoringRestore { get; set; }
+   #endif
 
     public static void Initialize<T>()
      where T : IGeofenceListener, new()

@@ -62,7 +62,8 @@ namespace Geofence.Plugin
                   RegionId = e.Region.Identifier
               });
           }
-
+          mGeoreferenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
+          mGeoreferenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
           mGeoreferenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow;
           mGeoreferenceResults[e.Region.Identifier].LastExitTime = null;
           mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Entered;
@@ -89,7 +90,8 @@ namespace Geofence.Plugin
                   RegionId=e.Region.Identifier
               });
           }
-
+          mGeoreferenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
+          mGeoreferenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
           mGeoreferenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow;
           mGeoreferenceResults[e.Region.Identifier].Transition = GeofenceTransition.Exited;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[e.Region.Identifier]);
