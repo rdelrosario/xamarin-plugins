@@ -134,7 +134,7 @@ There are a few things you can configure in Android project using the following 
     public static Android.Net.Uri SoundUri { get; set; }
 
 ```
-* Requires *android.permission.ACCESS_FINE_LOCATION* permission.
+* Requires *android.permission.ACCESS_FINE_LOCATION* && *com.google.android.providers.gsf.permission.READ_GSERVICES* permissions.
 * The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 * Make sure you have updated your Android SDK Manager libraries:
 

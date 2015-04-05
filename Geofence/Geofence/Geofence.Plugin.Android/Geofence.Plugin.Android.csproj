@@ -59,10 +59,13 @@
     <Compile Include="..\Geofence.Plugin\CrossGeofence.cs">
       <Link>CrossGeofence.cs</Link>
     </Compile>
+    <Compile Include="GeofenceBootReceiver.cs" />
     <Compile Include="GeofenceBroadcastReceiver.cs" />
     <Compile Include="GeofenceImplementation.cs" />
     <Compile Include="GeofenceLocationListener.cs" />
+    <Compile Include="GeofenceLocationService.cs" />
     <Compile Include="GeofenceStore.cs" />
+    <Compile Include="GeofenceTransitionsIntentService.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

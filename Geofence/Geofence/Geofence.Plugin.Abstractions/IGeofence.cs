@@ -9,6 +9,7 @@ namespace Geofence.Plugin.Abstractions
   public interface IGeofence
   {
       IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get; }
+      IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get; }
       bool IsMonitoring { get; }
       void StartMonitoring(IList<GeofenceCircularRegion> regions);
 
