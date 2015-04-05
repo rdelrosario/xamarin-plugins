@@ -11,19 +11,19 @@ namespace Geofence.Plugin
   {
     static Lazy<IGeofence> Implementation = new Lazy<IGeofence>(() => CreateGeofence(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
     public static bool IsInitialized { get { return (GeofenceListener != null); } }
-    public static IGeofenceListener GeofenceListener { get; private set; }
 
     public const string Tag = "CrossGeofence";
+    public static IGeofenceListener GeofenceListener { get; private set; }
 
     #if __ANDROID__
       public static int IconResource { get; set; }
       public static Android.Net.Uri SoundUri { get; set; }
-      public static bool EnableNotification { get; set; }
       public static bool EnableMonitoringRestore { get; set; }
       public static bool EnableLocationUpdates { get; set; }
       public static int LocationUpdatesInterval { get; set; }
       public static int FastestLocationUpdatesInterval { get; set; }
    #endif
+
 
     public static void Initialize<T>()
      where T : IGeofenceListener, new()

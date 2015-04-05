@@ -48,20 +48,24 @@ namespace Geofence.Plugin
                     ((GeofenceImplementation)CrossGeofence.Current).AddGeofenceResult(geofence.RequestId);
 
                 }
-
+                //geofencingEvent.TriggeringLocation.Accuracy
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Latitude = geofencingEvent.TriggeringLocation.Latitude;
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Longitude = geofencingEvent.TriggeringLocation.Longitude;
+
+
+                double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
+                DateTime utcConverted = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
 
                 switch (geofenceTransition)
                 {
                     case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
                         gTransition = GeofenceTransition.Entered;
-                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = DateTime.UtcNow;
+                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = utcConverted;
                         CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = null;
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionExit:
                         gTransition = GeofenceTransition.Exited;
-                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = DateTime.UtcNow;
+                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = utcConverted;
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
                         gTransition = GeofenceTransition.Stayed;
@@ -77,14 +81,26 @@ namespace Geofence.Plugin
                 {
                     CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = gTransition;
                     CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
-                    geofenceIds.Add(geofence.RequestId);
+                    
+                    if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
+                    {
+                        var region = CrossGeofence.Current.Regions[geofence.RequestId];
+
+                        if ((region.NotifyOnEntry && gTransition == GeofenceTransition.Entered) || (region.NotifyOnExit && gTransition == GeofenceTransition.Exited))
+                        {
+                            geofenceIds.Add(geofence.RequestId);
+                        }
+
+                    }
+                   
+                   
                 }
 
 
             }
 
 
-            if (CrossGeofence.EnableNotification && geofenceIds.Count > 0)
+            if (geofenceIds.Count > 0)
             {
                 try
                 {

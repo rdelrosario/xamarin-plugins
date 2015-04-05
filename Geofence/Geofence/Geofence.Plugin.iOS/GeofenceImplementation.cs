@@ -42,7 +42,6 @@ namespace Geofence.Plugin
           locationManager.RegionEntered += RegionEntered;
           locationManager.RegionLeft +=RegionLeft;
           locationManager.Failed += OnFailure;
-       
 
       }
 
@@ -66,7 +65,7 @@ namespace Geofence.Plugin
           }
           mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
           mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
-          mGeofenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow;
+          mGeofenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow.ToLocalTime();
           mGeofenceResults[e.Region.Identifier].LastExitTime = null;
           mGeofenceResults[e.Region.Identifier].Transition = GeofenceTransition.Entered;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[e.Region.Identifier]);
@@ -92,9 +91,10 @@ namespace Geofence.Plugin
                   RegionId=e.Region.Identifier
               });
           }
+      
           mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
           mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
-          mGeofenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow;
+          mGeofenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow.ToLocalTime();
           mGeofenceResults[e.Region.Identifier].Transition = GeofenceTransition.Exited;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[e.Region.Identifier]);
       }
@@ -142,6 +142,10 @@ namespace Geofence.Plugin
                   {
                       cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Tag);
                   }
+
+
+                  cRegion.NotifyOnEntry = region.NotifyOnEntry;
+                  cRegion.NotifyOnExit = region.NotifyOnExit;
 
                   mGeofenceList.Add(cRegion);
                   mRegions.Add(region.Tag, region);
@@ -289,6 +293,10 @@ namespace Geofence.Plugin
               {
                   cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Tag);
               }
+
+              cRegion.NotifyOnEntry = region.NotifyOnEntry;
+              cRegion.NotifyOnExit = region.NotifyOnExit;
+
               if (!mRegions.ContainsKey(region.Tag))
               {
                   mRegions.Add(region.Tag, region);
