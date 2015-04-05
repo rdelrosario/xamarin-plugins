@@ -14,6 +14,7 @@ using Java.Lang;
 using Android.Text;
 using System.Runtime.Remoting.Messaging;
 using Java.Interop;
+using System.Collections.ObjectModel;
 
 namespace Geofence.Plugin
 {
@@ -39,9 +40,9 @@ namespace Geofence.Plugin
 
       // Defines the allowable request types
 	  enum RequestType { Add, Default }
-	  
 
-      public IEnumerable<GeofenceCircularRegion> Regions { get { return mRegions.Values; } }
+
+      public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
   
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
       
@@ -165,8 +166,8 @@ namespace Geofence.Plugin
             try
             {
                 List<Android.Gms.Location.IGeofence> geofenceList = new List<Android.Gms.Location.IGeofence>();
-
-                foreach (GeofenceCircularRegion region in Regions)
+                var regions = Regions.Values;
+                foreach (GeofenceCircularRegion region in regions)
                 {
                     geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
                     .SetRequestId(region.Tag)
@@ -184,7 +185,7 @@ namespace Geofence.Plugin
                     
                 }
                 Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
-
+            
                 Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
 
                 mRequestType = RequestType.Default;
@@ -232,14 +233,15 @@ namespace Geofence.Plugin
 
                 if (!mGeoreferenceResults.ContainsKey(geofence.RequestId))
                 {
-                    Android.Gms.Location.GeofencingEvent g = null;  
-                   
+
                     mGeoreferenceResults.Add(geofence.RequestId, new GeofenceResult()
                         {
-                            RegionId =  geofence.RequestId 
+                            RegionId =  geofence.RequestId,
+                            Transition = GeofenceTransition.Unknown
                         });
-               
+
                 }
+
                 mGeoreferenceResults[geofence.RequestId].Latitude = geofencingEvent.TriggeringLocation.Latitude;
                 mGeoreferenceResults[geofence.RequestId].Longitude = geofencingEvent.TriggeringLocation.Longitude;
 
@@ -249,39 +251,34 @@ namespace Geofence.Plugin
                         gTransition = GeofenceTransition.Entered;
                         mGeoreferenceResults[geofence.RequestId].LastEnterTime = DateTime.UtcNow;
                         mGeoreferenceResults[geofence.RequestId].LastExitTime = null;
-                        mGeoreferenceResults[geofence.RequestId].Transition = GeofenceTransition.Entered;
-                        CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[geofence.RequestId]);
-                      
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionExit:
                         gTransition = GeofenceTransition.Exited;
                         mGeoreferenceResults[geofence.RequestId].LastExitTime = DateTime.UtcNow;
-                        mGeoreferenceResults[geofence.RequestId].Transition = GeofenceTransition.Exited;
-                        CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[geofence.RequestId]);
-                      
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
                         gTransition = GeofenceTransition.Stayed;
-                        mGeoreferenceResults[geofence.RequestId].Transition = GeofenceTransition.Stayed;
-                        CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[geofence.RequestId]);
-                    
                         break;
                     default:
                         string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Invalid transition type");
                         System.Diagnostics.Debug.WriteLine(message);
                         gTransition = GeofenceTransition.Unknown;
-                        mGeoreferenceResults[geofence.RequestId].Transition = GeofenceTransition.Unknown;
-                        CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[geofence.RequestId]);
                         break;
                 }
 
-                geofenceIds.Add(geofence.RequestId);
+                if (mGeoreferenceResults[geofence.RequestId].Transition != gTransition)
+                {
+                    mGeoreferenceResults[geofence.RequestId].Transition = gTransition;
+                    CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeoreferenceResults[geofence.RequestId]);
+                    geofenceIds.Add(geofence.RequestId);
+                }
+                
         
               
           }
     
              
-          if (CrossGeofence.EnableNotification)
+          if (CrossGeofence.EnableNotification&&geofenceIds.Count>0)
           {
               try
               {
@@ -323,7 +320,11 @@ namespace Geofence.Plugin
             Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
             mGoogleApiClient.Disconnect();
             CrossGeofence.GeofenceListener.OnMonitoringStopped();
-          
+
+            if(CrossGeofence.EnableLocationUpdates)
+            {
+                StopLocationUpdates();
+            }
         }
 
         private void InitializeGoogleAPI()
@@ -369,6 +370,12 @@ namespace Geofence.Plugin
                 AddGeofences();
           
             }
+
+            if (CrossGeofence.EnableLocationUpdates)
+            {
+                StartLocationUpdates();
+            }
+
         }
 
         public void OnResult(Java.Lang.Object result)
@@ -499,13 +506,16 @@ namespace Geofence.Plugin
 
           Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, regionIdentifiers).SetResultCallback(this);
  
-          /*if (mRegions.Count == 0)
+          if (mRegions.Count == 0)
           {
-              isMonitoring = false;
               mGoogleApiClient.Disconnect();
               CrossGeofence.GeofenceListener.OnMonitoringStopped();
-          }*/
-
+              if(CrossGeofence.EnableLocationUpdates)
+              {
+                  StopLocationUpdates();
+              }
+          }
+    
         
       }
 
@@ -526,6 +536,10 @@ namespace Geofence.Plugin
  
               mGoogleApiClient.Disconnect();
               CrossGeofence.GeofenceListener.OnMonitoringStopped();
+              if (CrossGeofence.EnableLocationUpdates)
+              {
+                  StopLocationUpdates();
+              }
           }
 
          
@@ -542,6 +556,20 @@ namespace Geofence.Plugin
               mGeoreferenceResults.Remove(regionIdentifier);
           }
       }
+
+      protected void StartLocationUpdates()
+      {
+          Android.Gms.Location.LocationRequest mLocationRequest = new Android.Gms.Location.LocationRequest();
+          mLocationRequest.SetInterval(CrossGeofence.LocationUpdatesInterval == 0 ? 30000 : CrossGeofence.LocationUpdatesInterval);
+          mLocationRequest.SetFastestInterval(CrossGeofence.FastestLocationUpdatesInterval == 0 ? 5000 : CrossGeofence.FastestLocationUpdatesInterval);
+          mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityHighAccuracy);
+          Android.Gms.Location.LocationServices.FusedLocationApi.RequestLocationUpdates(mGoogleApiClient, mLocationRequest, GeofenceLocationListener.SharedInstance);
+      }
+      protected void StopLocationUpdates()
+      {
+          Android.Gms.Location.LocationServices.FusedLocationApi.RemoveLocationUpdates(mGoogleApiClient, GeofenceLocationListener.SharedInstance);
+      }
+      
 
     }
 }

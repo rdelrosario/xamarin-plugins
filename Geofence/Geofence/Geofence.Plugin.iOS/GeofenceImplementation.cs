@@ -12,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 
 namespace Geofence.Plugin
@@ -26,7 +27,7 @@ namespace Geofence.Plugin
       private List<CLRegion> mGeofenceList;
       private Dictionary<string, GeofenceCircularRegion> mRegions;
       private Dictionary<string, GeofenceResult> mGeoreferenceResults;
-      public IEnumerable<GeofenceCircularRegion> Regions { get { return mRegions.Values; } }
+      public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
       public GeofenceImplementation()

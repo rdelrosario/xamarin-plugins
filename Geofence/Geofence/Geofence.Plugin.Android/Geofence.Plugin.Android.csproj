@@ -61,6 +61,7 @@
     </Compile>
     <Compile Include="GeofenceBroadcastReceiver.cs" />
     <Compile Include="GeofenceImplementation.cs" />
+    <Compile Include="GeofenceLocationListener.cs" />
     <Compile Include="GeofenceStore.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

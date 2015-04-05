@@ -20,6 +20,9 @@ namespace Geofence.Plugin
       public static Android.Net.Uri SoundUri { get; set; }
       public static bool EnableNotification { get; set; }
       public static bool EnableMonitoringRestore { get; set; }
+      public static bool EnableLocationUpdates { get; set; }
+      public static int LocationUpdatesInterval { get; set; }
+      public static int FastestLocationUpdatesInterval { get; set; }
    #endif
 
     public static void Initialize<T>()
