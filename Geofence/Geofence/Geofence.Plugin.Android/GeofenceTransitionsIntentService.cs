@@ -51,7 +51,7 @@ namespace Geofence.Plugin
                 //geofencingEvent.TriggeringLocation.Accuracy
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Latitude = geofencingEvent.TriggeringLocation.Latitude;
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Longitude = geofencingEvent.TriggeringLocation.Longitude;
-
+                CrossGeofence.Current.GeofenceResults[geofence.RequestId].Accuracy = geofencingEvent.TriggeringLocation.Accuracy;
 
                 double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
                 DateTime utcConverted = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();

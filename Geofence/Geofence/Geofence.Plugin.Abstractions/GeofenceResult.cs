@@ -16,6 +16,7 @@ namespace Geofence.Plugin.Abstractions
         public TimeSpan? SinceLastEntry { get { return DateTime.UtcNow.ToLocalTime() - LastEnterTime; } }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
+        public double Accuracy { get; set; }
 
         public override string ToString()
         {

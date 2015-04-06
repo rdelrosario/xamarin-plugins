@@ -42,7 +42,23 @@ namespace Geofence.Plugin
           locationManager.RegionEntered += RegionEntered;
           locationManager.RegionLeft +=RegionLeft;
           locationManager.Failed += OnFailure;
+          locationManager.DidDetermineState += DidDetermineState;
+      }
 
+      void DidDetermineState(object sender, CLRegionStateDeterminedEventArgs e)
+      {
+          switch (e.State)
+          {
+              case CLRegionState.Inside:
+                  OnRegionEntered(e.Region);
+                  break;
+              case CLRegionState.Outside:
+                  break;
+              default:
+                  string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Unknown region state");
+                  System.Diagnostics.Debug.WriteLine(message);
+                  break;
+          }
       }
 
       void OnFailure(object sender, NSErrorEventArgs e)
@@ -54,54 +70,63 @@ namespace Geofence.Plugin
           CrossGeofence.GeofenceListener.OnError(e.Error.LocalizedDescription);
       }
 
-      async void RegionEntered(object sender, CLRegionEventArgs e)
+      void RegionEntered(object sender, CLRegionEventArgs e)
       {
-          if (!mGeofenceResults.ContainsKey(e.Region.Identifier))
+          OnRegionEntered(e.Region);
+      }
+      async void OnRegionEntered(CLRegion region)
+      {
+          if (!mGeofenceResults.ContainsKey(region.Identifier))
           {
-              mGeofenceResults.Add(e.Region.Identifier, new GeofenceResult()
+              mGeofenceResults.Add(region.Identifier, new GeofenceResult()
               {
-                  RegionId = e.Region.Identifier
+                  RegionId = region.Identifier
               });
           }
-          mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
-          mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
-          mGeofenceResults[e.Region.Identifier].LastEnterTime = DateTime.UtcNow.ToLocalTime();
-          mGeofenceResults[e.Region.Identifier].LastExitTime = null;
-          mGeofenceResults[e.Region.Identifier].Transition = GeofenceTransition.Entered;
-          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[e.Region.Identifier]);
+          mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
+          mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
+          mGeofenceResults[region.Identifier].LastEnterTime = DateTime.UtcNow.ToLocalTime();
+          mGeofenceResults[region.Identifier].LastExitTime = null;
+          mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
+          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-          if (mRegions.ContainsKey(e.Region.Identifier)&&mRegions[e.Region.Identifier].MinimumDuration != 0)
+          if (mRegions.ContainsKey(region.Identifier) && mRegions[region.Identifier].MinimumDuration != 0)
           {
-              await Task.Delay(mRegions[e.Region.Identifier].MinimumDuration);
+              await Task.Delay(mRegions[region.Identifier].MinimumDuration);
 
-              if (mGeofenceResults[e.Region.Identifier].LastExitTime == null)
+              if (mGeofenceResults[region.Identifier].LastExitTime == null)
               {
-                  mGeofenceResults[e.Region.Identifier].Transition = GeofenceTransition.Stayed;
-                  CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[e.Region.Identifier]);
+                  mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Stayed;
+                  CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
               }
           }
       }
 
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
-          if (!mGeofenceResults.ContainsKey(e.Region.Identifier))
+          OnRegionLeft(e.Region);
+      }
+      void OnRegionLeft(CLRegion region)
+      {
+          if (!mGeofenceResults.ContainsKey(region.Identifier))
           {
-              mGeofenceResults.Add(e.Region.Identifier, new GeofenceResult()
+              mGeofenceResults.Add(region.Identifier, new GeofenceResult()
               {
-                  RegionId=e.Region.Identifier
+                  RegionId = region.Identifier
               });
           }
-      
-          mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Latitude;
-          mGeofenceResults[e.Region.Identifier].Latitude = e.Region.Center.Longitude;
-          mGeofenceResults[e.Region.Identifier].LastExitTime = DateTime.UtcNow.ToLocalTime();
-          mGeofenceResults[e.Region.Identifier].Transition = GeofenceTransition.Exited;
-          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[e.Region.Identifier]);
+
+          mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
+          mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
+          mGeofenceResults[region.Identifier].LastExitTime = DateTime.UtcNow.ToLocalTime();
+          mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Exited;
+          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
       }
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
       {
           CrossGeofence.GeofenceListener.OnMonitoringStarted();
+          locationManager.RequestState(e.Region);
       }
 
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)
