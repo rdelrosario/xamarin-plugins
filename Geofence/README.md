@@ -134,7 +134,13 @@ There are a few things you can configure in Android project using the following 
     public static Android.Net.Uri SoundUri { get; set; }
 
 ```
-* Requires *android.permission.ACCESS_FINE_LOCATION* && *com.google.android.providers.gsf.permission.READ_GSERVICES* permissions.
+* Requires the following permissions:
+   * <b>android.permission.ACCESS_FINE_LOCATION</b>
+   * <b>android.permission.ACCESS_COARSE_LOCATION</b>
+   * <b>com.google.android.providers.gsf.permission.READ_GSERVICES* permissions</b>
+   
+* Optional but recommended: <b>android.permission.RECEIVE_BOOT_COMPLETED</b>. This permission allows the plugin to restore any geofence region previously monitored when rebooting.
+
 * The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 * Make sure you have updated your Android SDK Manager libraries:
 
@@ -143,9 +149,18 @@ There are a few things you can configure in Android project using the following 
 
 ##### iOS Specifics
 
+* You need to do is to add the following key to your Info.plist file:
+
+    <b>NSLocationAlwaysUsageDescription</b>
+
+    You can enter a string like “Location is required to find out where you are” which, as in iOS 7, can be localized in the InfoPlist.strings file.
+
 * Must checkout the helper class on content folder: GeofenceReadme.txt. In order to setup correctly.
 
+##### Limitations
 
+* The region monitoring feature of iOS only provides the possibility to monitor up to 20 regions at a time. Trying to monitor more than 20 regions will result in an error, indicating that the limit is crossed. See more at: [Reference](http://www.rapidvaluesolutions.com/tech_blog/geofencing-using-core-location-for-regional-monitoring-in-ios-applications/#sthash.AYIWNg19.dpuf)
+* The region monitoring feature of Android has a limit of 100 regions per device user
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
