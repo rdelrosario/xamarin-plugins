@@ -20,7 +20,7 @@ namespace Geofence.Plugin
   /// <summary>
   /// Implementation for Geofence
   /// </summary>
-  public class GeofenceImplementation : UIAlertViewDelegate,IGeofence
+  public class GeofenceImplementation : IGeofence
   {
       
       CLLocationManager locationManager;
@@ -121,7 +121,6 @@ namespace Geofence.Plugin
                   Tag=region.Identifier,
                   Latitude=region.Center.Latitude,
                   Longitude=region.Center.Longitude,
-                  MinimumDuration=30000,
                   Radius=region.Radius,
                   NotifyOnEntry=region.NotifyOnEntry,
                   NotifyOnExit=region.NotifyOnExit
@@ -138,7 +137,6 @@ namespace Geofence.Plugin
 
         if (monitoredRegions.Count > 0)
         {
-            
             foreach(CLRegion region in monitoredRegions)
             {
                
@@ -224,16 +222,16 @@ namespace Geofence.Plugin
           }
           mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
           mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
-          mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now.ToLocalTime();
+          mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now;
           mGeofenceResults[region.Identifier].LastExitTime = null;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
           lastGeofenceTransition = GeofenceTransition.Entered;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
           
           CreateNotification("View",string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition), "geofence region:",region.Identifier));
-          if (mRegions.ContainsKey(region.Identifier) && mRegions[region.Identifier].MinimumDuration != 0)
+          if (mRegions.ContainsKey(region.Identifier) && CrossGeofence.StayedInDuration != 0)
           {
-              await Task.Delay(mRegions[region.Identifier].MinimumDuration);
+              await Task.Delay(CrossGeofence.StayedInDuration);
 
               if (mGeofenceResults[region.Identifier].LastExitTime == null)
               {
@@ -518,7 +516,20 @@ namespace Geofence.Plugin
               string title = (status == CLAuthorizationStatus.Denied) ? "Location services are off" : "Background location is not enabled";
               string message = "To use background location you must turn on 'Always' in the Location Services Settings";
 
-              UIAlertView alertView = new UIAlertView(title, message, this, "Cancel", "Settings");
+              UIAlertView alertView = new UIAlertView(title, message, null, "Cancel", "Settings");
+            
+
+              alertView.Clicked += (sender, buttonArgs) => 
+              {
+                  if (buttonArgs.ButtonIndex == 1)
+                  {
+                      // Send the user to the Settings for this app
+                      NSUrl settingsUrl = new NSUrl(UIApplication.OpenSettingsUrlString);
+                      UIApplication.SharedApplication.OpenUrl(settingsUrl);
+
+                  }
+              };
+
               alertView.Show();
           }
           else if (status == CLAuthorizationStatus.NotDetermined)
@@ -526,19 +537,6 @@ namespace Geofence.Plugin
               locationManager.RequestAlwaysAuthorization();
           }
       }
-      public override void Clicked(UIAlertView alertview, int buttonIndex)
-      {
-          base.Clicked(alertview, buttonIndex);
-          if (buttonIndex == 1) 
-          {
-              // Send the user to the Settings for this app
-              NSUrl settingsUrl = new NSUrl(UIApplication.OpenSettingsUrlString);
-              UIApplication.SharedApplication.OpenUrl(settingsUrl);
-     
-          }
-
-      }
-
 
 
   }

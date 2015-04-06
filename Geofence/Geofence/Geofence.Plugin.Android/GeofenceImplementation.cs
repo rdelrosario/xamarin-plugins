@@ -192,7 +192,7 @@ namespace Geofence.Plugin
                     geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
                     .SetRequestId(region.Tag)
                     .SetCircularRegion(region.Latitude, region.Longitude, (float)region.Radius)
-                    .SetLoiteringDelay(region.MinimumDuration)
+                    .SetLoiteringDelay(CrossGeofence.StayedInDuration)
                     //.SetNotificationResponsiveness(mNotificationResponsivness)
                     .SetExpirationDuration(Android.Gms.Location.Geofence.NeverExpire)
                      //Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionExit

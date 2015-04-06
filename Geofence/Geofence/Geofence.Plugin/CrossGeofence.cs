@@ -18,7 +18,7 @@ namespace Geofence.Plugin
     public static bool EnableLocalNotifications { get; set; }
     public static GeofencePriority GeofencePriority { get; set; }
     public static float SmallestDisplacement { get; set; }
-    public static double RegionMinimumDuration { get; set; }
+    public static int StayedInDuration { get; set; }
 
     #if __ANDROID__
       public static int IconResource { get; set; }

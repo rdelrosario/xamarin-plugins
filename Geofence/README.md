@@ -12,7 +12,8 @@ Simple cross platform plugin to handle geofence events such as entering, leaving
 * Xamarin.Android
 
 ### TODO
-* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT, Windows Store 8.1 Support
+* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT, Windows Store 8.1 Support.
+* Unlimited geofence regions support by just adding the ones near the device location on each location update. 
 
 ### API Usage
 
@@ -122,6 +123,24 @@ void StopMonitoring();
 
 #### Notes
 
+##### CrossGeofence Features
+
+This are special features you can enable or change values
+
+```
+    //Enable the creation of local notifications when region state changes
+    public static bool EnableLocalNotifications { get; set; }
+
+    //Set the Priority for the Geofence Tracking Location Accuracy
+    public static GeofencePriority GeofencePriority { get; set; }
+
+    //Set the smallest displacement should be done from current location before a location update
+    public static float SmallestDisplacement { get; set; }
+
+    //Sets the minimum duration after entering a region for firing stayed in region event
+    public static double StayedInDuration { get; set; }
+
+```
 ##### Android Specifics
 
 There are a few things you can configure in Android project using the following properties from CrossGeofence class:
@@ -132,6 +151,19 @@ There are a few things you can configure in Android project using the following 
 
     //The sets the sound  uri will be used for the notification
     public static Android.Net.Uri SoundUri { get; set; }
+
+    //If set enables region restore when device is rebooted  (Recommended)
+    public static bool EnableMonitoringRestore { get; set; }
+    
+    //If set enables location updates for a better geofence tracking precision (Recommended)
+    public static bool EnableLocationUpdates { get; set; }
+
+    //Sets update interval for the location updates
+    public static int LocationUpdatesInterval { get; set; }
+
+    //Sets fastest interval for the location updates
+    public static int FastestLocationUpdatesInterval { get; set; }
+
 
 ```
 * Requires the following permissions:
@@ -155,7 +187,7 @@ There are a few things you can configure in Android project using the following 
 
     You can enter a string like “Location is required to find out where you are” which, as in iOS 7, can be localized in the InfoPlist.strings file.
 
-* Must checkout the helper class on content folder: GeofenceReadme.txt. In order to setup correctly.
+* Must checkout the helper on content folder: GeofenceReadme.txt. In order to setup correctly.
 
 ##### Limitations
 

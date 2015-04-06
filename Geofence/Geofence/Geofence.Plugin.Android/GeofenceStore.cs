@@ -17,7 +17,6 @@ namespace Geofence.Plugin
         const string LatitudeGeofenceRegionKey = "Geofence.Region.Latitude";
         const string LongitudeGeofenceRegionKey = "Geofence.Region.Longitude";
         const string RadiusGeofenceRegionKey = "Geofence.Region.Radius";
-        const string MinimumDurationGeofenceRegionKey = "Geofence.Region.MinimunDuration";
         const string TagGeofenceRegionKey = "Geofence.Region.Tag";
         const string TransitionTypeGeofenceRegionKey = "Geofence.Region.TransitionType";
         const string ExpirationDurationGeofenceRegionKey = "Geofence.Region.ExpirationDuration";
@@ -53,7 +52,6 @@ namespace Geofence.Plugin
             double lat = mPrefs.GetFloat(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey), InvalidFloatValue);
             double lng = mPrefs.GetFloat(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey), InvalidFloatValue);
             double radius = mPrefs.GetFloat(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey), InvalidFloatValue);
-            int minDuration = mPrefs.GetInt(GetGeofenceFieldKey(id, MinimumDurationGeofenceRegionKey), InvalidIntValue);
             bool notifyOnEntry = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), false);
             bool notifyOnExit = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), false);
             //long expirationDuration = mPrefs.GetLong(GetGeofenceFieldKey(id, ExpirationDurationGeofenceRegionKey), InvalidLongValue);
@@ -65,14 +63,13 @@ namespace Geofence.Plugin
                 && radius != InvalidFloatValue
                 // && expirationDuration != InvalidLongValue
                 //&& transitionType != InvalidIntValue
-                && minDuration != InvalidIntValue)
+                )
                 return new GeofenceCircularRegion()
                 {
                     Tag = id,
                     Latitude = lat,
                     Longitude = lng,
                     Radius = radius,
-                    MinimumDuration = minDuration,
                     NotifyOnEntry=notifyOnEntry,
                     NotifyOnExit=notifyOnExit
                 };
@@ -93,7 +90,6 @@ namespace Geofence.Plugin
             prefs.PutFloat(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey), (float)region.Latitude);
             prefs.PutFloat(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey), (float)region.Longitude);
             prefs.PutFloat(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey), (float)region.Radius);
-            prefs.PutInt(GetGeofenceFieldKey(id, MinimumDurationGeofenceRegionKey), region.MinimumDuration);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), region.NotifyOnEntry);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), region.NotifyOnExit);
 			// Commit the changes
@@ -118,7 +114,6 @@ namespace Geofence.Plugin
                 prefs.Remove(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
-                prefs.Remove(GetGeofenceFieldKey(id, MinimumDurationGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
                 // Commit the changes

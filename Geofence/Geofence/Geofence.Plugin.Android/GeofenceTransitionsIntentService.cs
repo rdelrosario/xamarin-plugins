@@ -56,12 +56,23 @@ namespace Geofence.Plugin
                 double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
                 DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local).AddSeconds(seconds);
 
+                //DateTime resultDate = DateTime.Now;
+
                 switch (geofenceTransition)
                 {
                     case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
                         gTransition = GeofenceTransition.Entered;
                         CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = resultDate;
                         CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = null;
+                       /* if (CrossGeofence.Current.GeofenceResults.ContainsKey(geofence.RequestId) && CrossGeofence.StayedInDuration != 0)
+                        {
+                            await Task.Delay(CrossGeofence.StayedInDuration);
+
+                            if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime == null)
+                            {
+                                gTransition = GeofenceTransition.Stayed;
+                            }
+                        }*/
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionExit:
                         gTransition = GeofenceTransition.Exited;
@@ -80,8 +91,15 @@ namespace Geofence.Plugin
                 if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != gTransition)
                 {
                     CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = gTransition;
+                    /*try
+                    {*/
                     CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
                     
+                   /* }catch(Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex.ToString()));
+                    }*/
+                   
                     if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
                     {
                         var region = CrossGeofence.Current.Regions[geofence.RequestId];

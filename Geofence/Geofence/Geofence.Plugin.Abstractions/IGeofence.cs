@@ -17,5 +17,6 @@ namespace Geofence.Plugin.Abstractions
       void StopMonitoring(string identifier);
       void StopMonitoring(List<string> identifier);
 
+
   }
 }
