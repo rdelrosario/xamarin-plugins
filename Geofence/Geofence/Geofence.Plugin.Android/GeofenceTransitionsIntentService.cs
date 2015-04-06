@@ -54,18 +54,18 @@ namespace Geofence.Plugin
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Accuracy = geofencingEvent.TriggeringLocation.Accuracy;
 
                 double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
-                DateTime utcConverted = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local).AddSeconds(seconds);
 
                 switch (geofenceTransition)
                 {
                     case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
                         gTransition = GeofenceTransition.Entered;
-                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = utcConverted;
+                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = resultDate;
                         CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = null;
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionExit:
                         gTransition = GeofenceTransition.Exited;
-                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = utcConverted;
+                        CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = resultDate;
                         break;
                     case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
                         gTransition = GeofenceTransition.Stayed;
@@ -86,11 +86,9 @@ namespace Geofence.Plugin
                     {
                         var region = CrossGeofence.Current.Regions[geofence.RequestId];
 
-                        if ((region.NotifyOnEntry && gTransition == GeofenceTransition.Entered) || (region.NotifyOnExit && gTransition == GeofenceTransition.Exited))
-                        {
-                            geofenceIds.Add(geofence.RequestId);
-                        }
-
+                        
+                        geofenceIds.Add(geofence.RequestId);
+                      
                     }
                    
                    
@@ -100,7 +98,7 @@ namespace Geofence.Plugin
             }
 
 
-            if (geofenceIds.Count > 0)
+            if (CrossGeofence.EnableLocalNotifications&&geofenceIds.Count > 0)
             {
                 try
                 {

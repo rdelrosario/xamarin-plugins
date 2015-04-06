@@ -12,7 +12,6 @@ namespace Geofence.Plugin.Abstractions
       IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get; }
       bool IsMonitoring { get; }
       void StartMonitoring(IList<GeofenceCircularRegion> regions);
-
       //void StartMonitoring(GeofenceCircularRegion region);
       void StopMonitoring();
       void StopMonitoring(string identifier);

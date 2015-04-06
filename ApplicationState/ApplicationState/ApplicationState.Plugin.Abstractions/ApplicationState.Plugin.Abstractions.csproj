@@ -8,8 +8,8 @@
     <ProjectGuid>{6EDB0588-FFC5-4EF5-8A99-9E241D0F878D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Geofence.Plugin.Abstractions</RootNamespace>
-    <AssemblyName>Geofence.Plugin.Abstractions</AssemblyName>
+    <RootNamespace>ApplicationState.Plugin.Abstractions</RootNamespace>
+    <AssemblyName>ApplicationState.Plugin.Abstractions</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -32,19 +32,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Geofence.Plugin.Abstractions.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ApplicationState.Plugin.Abstractions.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeofenceCircularRegion.cs" />
-    <Compile Include="GeofenceNotInitializedException.cs" />
-    <Compile Include="GeofencePriority.cs" />
-    <Compile Include="GeofenceResult.cs" />
-    <Compile Include="GeofenceTransition.cs" />
-    <Compile Include="IGeofence.cs" />
-    <Compile Include="IGeofenceListener.cs" />
+    <Compile Include="IApplicationState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

@@ -24,16 +24,17 @@ namespace Geofence.Plugin
   {
       
       CLLocationManager locationManager;
-      private List<CLRegion> mGeofenceList;
+
       private Dictionary<string, GeofenceCircularRegion> mRegions;
       private Dictionary<string, GeofenceResult> mGeofenceResults;
       public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
       public IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get { return mGeofenceResults; } }
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
+      private GeofenceTransition lastGeofenceTransition=GeofenceTransition.Unknown;
+
       public GeofenceImplementation()
       {
-          mGeofenceList = new List<CLRegion>();
           mRegions = new Dictionary<string, GeofenceCircularRegion>();
           mGeofenceResults = new Dictionary<string, GeofenceResult>();
 
@@ -43,13 +44,113 @@ namespace Geofence.Plugin
           locationManager.RegionLeft +=RegionLeft;
           locationManager.Failed += OnFailure;
           locationManager.DidDetermineState += DidDetermineState;
+          locationManager.LocationsUpdated += LocationsUpdated;
+          string priorityType = "Balanced Power";
+          switch(CrossGeofence.GeofencePriority)
+          {
+              case GeofencePriority.HighAccuracy:
+                  priorityType = "High Accuracy";
+                  locationManager.DesiredAccuracy = CLLocation.AccuracyBest;
+                  break;
+              case GeofencePriority.AcceptableAccuracy:
+                  priorityType = "Acceptable Accuracy";
+                  locationManager.DesiredAccuracy = CLLocation.AccuracyNearestTenMeters;
+                  break;
+              case GeofencePriority.MediumAccuracy:
+                  priorityType = "Medium Accuracy";
+                  locationManager.DesiredAccuracy = CLLocation.AccuracyHundredMeters;
+                  break;
+              case GeofencePriority.LowAccuracy:
+                  priorityType = "Low Accuracy";
+                  locationManager.DesiredAccuracy = CLLocation.AccuracyKilometer;
+                  break;
+              case GeofencePriority.LowestAccuracy:
+                  priorityType = "Lowest Accuracy";
+                  locationManager.DesiredAccuracy = CLLocation.AccuracyThreeKilometers;
+                  break;
+              default:
+                  locationManager.DesiredAccuracy = CLLocation.AccurracyBestForNavigation;
+                  break;
+          }
+          System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Location priority set to", priorityType));
+    
+          if(CrossGeofence.SmallestDisplacement>0)
+          {
+              locationManager.DistanceFilter = CrossGeofence.SmallestDisplacement;
+              System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Tag, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
+          }
+
+          NSSet monitoredRegions = locationManager.MonitoredRegions;
+          foreach (CLCircularRegion region in monitoredRegions)
+          {
+              mRegions.Add(region.Identifier, new GeofenceCircularRegion()
+              {
+                  Tag=region.Identifier,
+                  Latitude=region.Center.Latitude,
+                  Longitude=region.Center.Longitude,
+                  MinimumDuration=30000,
+                  Radius=region.Radius,
+                  NotifyOnEntry=region.NotifyOnEntry,
+                  NotifyOnExit=region.NotifyOnExit
+              });
+          }
+
+          //locationManager.StartMonitoringSignificantLocationChanges();
       }
 
+      void LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
+      {
+        
+        NSSet monitoredRegions = locationManager.MonitoredRegions;
+
+        if (monitoredRegions.Count > 0)
+        {
+            
+            foreach(CLRegion region in monitoredRegions)
+            {
+               
+                string identifier = region.Identifier;
+                CLLocation lastLocation = e.Locations[e.Locations.Length-1];
+                CLLocationCoordinate2D centerCoords = region.Center;
+                CLLocationCoordinate2D currentCoords = new CLLocationCoordinate2D(lastLocation.Coordinate.Latitude, lastLocation.Coordinate.Longitude);
+
+                double currentLocationDistance = CalculateDistance(currentCoords, centerCoords);
+                 if(currentLocationDistance < region.Radius)
+                 {
+                        // NSLog(@"Invoking didEnterRegion Manually for region: %@",identifer);
+ 
+                        //stop Monitoring Region temporarily
+                        // [locationManager stopMonitoringForRegion:region];
+ 
+                         //[self locationManager:locationManager didEnterRegion:region];
+                         //start Monitoing Region again.
+                         //[locationManager startMonitoringForRegion:region];
+                         locationManager.StopMonitoring(region);
+                         
+                         locationManager.StartMonitoring(region);
+                 }
+            }
+        }
+       
+      }
+      double CalculateDistance(CLLocationCoordinate2D coordinate1,CLLocationCoordinate2D coordinate2)
+      {
+          int nRadius = 6371; // Earth's radius in Kilometers
+          double latDiff = (coordinate2.Latitude - coordinate1.Latitude) * (Math.PI / 180);
+          double lonDiff = (coordinate2.Longitude - coordinate1.Longitude) * (Math.PI / 180);
+          double lat1InRadians = coordinate1.Latitude * (Math.PI / 180);
+          double lat2InRadians = coordinate2.Latitude * (Math.PI / 180);
+          double nA = Math.Pow(Math.Sin(latDiff / 2), 2) + Math.Cos(lat1InRadians) * Math.Cos(lat2InRadians) * Math.Pow(Math.Sin(lonDiff / 2), 2);
+          double nC = 2 * Math.Atan2(Math.Sqrt(nA), Math.Sqrt(1 - nA));
+          double nD = nRadius * nC;
+          return (nD * 1000);
+      }
       void DidDetermineState(object sender, CLRegionStateDeterminedEventArgs e)
       {
           switch (e.State)
           {
               case CLRegionState.Inside:
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "StartedRegion: " + e.Region));
                   OnRegionEntered(e.Region);
                   break;
               case CLRegionState.Outside:
@@ -72,7 +173,12 @@ namespace Geofence.Plugin
 
       void RegionEntered(object sender, CLRegionEventArgs e)
       {
-          OnRegionEntered(e.Region);
+          if (lastGeofenceTransition != GeofenceTransition.Entered)
+          {
+              OnRegionEntered(e.Region);
+              
+          }
+        
       }
       async void OnRegionEntered(CLRegion region)
       {
@@ -85,11 +191,12 @@ namespace Geofence.Plugin
           }
           mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
           mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
-          mGeofenceResults[region.Identifier].LastEnterTime = DateTime.UtcNow.ToLocalTime();
+          mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now.ToLocalTime();
           mGeofenceResults[region.Identifier].LastExitTime = null;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
+          lastGeofenceTransition = GeofenceTransition.Entered;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
-
+          CreateNotification(region.Identifier, GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition));
           if (mRegions.ContainsKey(region.Identifier) && mRegions[region.Identifier].MinimumDuration != 0)
           {
               await Task.Delay(mRegions[region.Identifier].MinimumDuration);
@@ -98,13 +205,18 @@ namespace Geofence.Plugin
               {
                   mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Stayed;
                   CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
+                  lastGeofenceTransition = GeofenceTransition.Stayed;
               }
           }
       }
 
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
-          OnRegionLeft(e.Region);
+          if (lastGeofenceTransition != GeofenceTransition.Exited)
+          {
+              OnRegionLeft(e.Region);
+              
+          }
       }
       void OnRegionLeft(CLRegion region)
       {
@@ -118,15 +230,19 @@ namespace Geofence.Plugin
 
           mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
           mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
-          mGeofenceResults[region.Identifier].LastExitTime = DateTime.UtcNow.ToLocalTime();
+          mGeofenceResults[region.Identifier].LastExitTime = DateTime.Now;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Exited;
+          lastGeofenceTransition = GeofenceTransition.Exited;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
+
+          CreateNotification(region.Identifier,GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition));
       }
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
       {
           CrossGeofence.GeofenceListener.OnMonitoringStarted();
-          locationManager.RequestState(e.Region);
+          //locationManager.RequestState(e.Region);
+     
       }
 
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)
@@ -172,7 +288,6 @@ namespace Geofence.Plugin
                   cRegion.NotifyOnEntry = region.NotifyOnEntry;
                   cRegion.NotifyOnExit = region.NotifyOnExit;
 
-                  mGeofenceList.Add(cRegion);
                   mRegions.Add(region.Tag, region);
                   locationManager.StartMonitoring(cRegion);
               }
@@ -195,7 +310,7 @@ namespace Geofence.Plugin
               throw NewGeofenceNotInitializedException();
           }
 
-          foreach (CLCircularRegion region in mGeofenceList)
+          foreach (CLCircularRegion region in locationManager.MonitoredRegions)
           {
               if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
               {
@@ -203,7 +318,6 @@ namespace Geofence.Plugin
                
               }
           }
-          mGeofenceList.Clear();
           mRegions.Clear();
           mGeofenceResults.Clear();
 
@@ -228,7 +342,6 @@ namespace Geofence.Plugin
               if (region != null)
               {
                   locationManager.StopMonitoring(region);
-                  mGeofenceList.Remove(region);
                   RemoveRegion(regionIdentifier);
 
                   CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
@@ -259,7 +372,6 @@ namespace Geofence.Plugin
                   if (region != null)
                   {
                      locationManager.StopMonitoring(region);
-                     mGeofenceList.Remove(region);
                      RemoveRegion(regionIdentifier);
 
                      CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
@@ -296,10 +408,13 @@ namespace Geofence.Plugin
       private CLRegion GetRegion(string identifier)
       {
           CLRegion region = null;
-          IEnumerable<CLRegion> regionEnumerable = mGeofenceList.Where(s => s.Identifier.Equals(identifier, StringComparison.Ordinal));
-          if (regionEnumerable != null)
+          foreach(CLRegion r in locationManager.MonitoredRegions)
           {
-              region = regionEnumerable.First();
+              if (r.Identifier.Equals(identifier, StringComparison.Ordinal))
+              {
+                  region = r;
+                  break;
+              }
           }
           return region;
       }
@@ -325,9 +440,7 @@ namespace Geofence.Plugin
               if (!mRegions.ContainsKey(region.Tag))
               {
                   mRegions.Add(region.Tag, region);
-                  mGeofenceList.Add(cRegion);
                   locationManager.StartMonitoring(cRegion);
-                  //CrossGeofence.GeofenceListener.OnRegionMonitoringStarted(region);
               }
               else
               {
@@ -341,6 +454,28 @@ namespace Geofence.Plugin
           
 
       }
+      void  CreateNotification(string  title,string  message)
+      {
+           if(CrossGeofence.EnableLocalNotifications)
+           {
+               UILocalNotification notification = new UILocalNotification();
+
+               notification.AlertAction = title;
+               notification.AlertBody = message;
+               notification.HasAction = true;
+
+               notification.SoundName = UILocalNotification.DefaultSoundName;
+               #if __UNIFIED__
+                   UIApplication.SharedApplication.PresentLocalNotificationNow(notification);
+               #else
+                   UIApplication.SharedApplication.PresentLocationNotificationNow(notification);
+               #endif
+           }
+          
+           
+
+      }
+
 
 
   }

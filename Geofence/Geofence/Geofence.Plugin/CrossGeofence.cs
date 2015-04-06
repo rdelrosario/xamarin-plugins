@@ -15,6 +15,11 @@ namespace Geofence.Plugin
     public const string Tag = "CrossGeofence";
     public static IGeofenceListener GeofenceListener { get; private set; }
 
+    public static bool EnableLocalNotifications { get; set; }
+    public static GeofencePriority GeofencePriority { get; set; }
+    public static float SmallestDisplacement { get; set; }
+    public static double RegionMinimumDuration { get; set; }
+
     #if __ANDROID__
       public static int IconResource { get; set; }
       public static Android.Net.Uri SoundUri { get; set; }
@@ -22,6 +27,8 @@ namespace Geofence.Plugin
       public static bool EnableLocationUpdates { get; set; }
       public static int LocationUpdatesInterval { get; set; }
       public static int FastestLocationUpdatesInterval { get; set; }
+     
+    
    #endif
 
 

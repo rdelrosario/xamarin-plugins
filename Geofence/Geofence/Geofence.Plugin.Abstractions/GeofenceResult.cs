@@ -13,7 +13,7 @@ namespace Geofence.Plugin.Abstractions
         public GeofenceTransition Transition { get; set; }
         public string RegionId { get; set; }
         public TimeSpan? Duration { get { return LastExitTime - LastEnterTime; } }
-        public TimeSpan? SinceLastEntry { get { return DateTime.UtcNow.ToLocalTime() - LastEnterTime; } }
+        public TimeSpan? SinceLastEntry { get { return DateTime.Now - LastEnterTime; } }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public double Accuracy { get; set; }

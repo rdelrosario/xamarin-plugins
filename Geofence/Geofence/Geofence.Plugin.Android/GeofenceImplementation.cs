@@ -177,13 +177,26 @@ namespace Geofence.Plugin
                 var regions = Regions.Values;
                 foreach (GeofenceCircularRegion region in regions)
                 {
+                    int transitionTypes = Android.Gms.Location.Geofence.GeofenceTransitionDwell;
+                    
+                    if(region.NotifyOnEntry)
+                    {
+                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionEnter;
+                    }
+
+                    if (region.NotifyOnExit)
+                    {
+                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionExit;
+                    }
+
                     geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()
                     .SetRequestId(region.Tag)
                     .SetCircularRegion(region.Latitude, region.Longitude, (float)region.Radius)
                     .SetLoiteringDelay(region.MinimumDuration)
                     //.SetNotificationResponsiveness(mNotificationResponsivness)
                     .SetExpirationDuration(Android.Gms.Location.Geofence.NeverExpire)
-                    .SetTransitionTypes(Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionExit)
+                     //Android.Gms.Location.Geofence.GeofenceTransitionEnter | Android.Gms.Location.Geofence.GeofenceTransitionDwell | Android.Gms.Location.Geofence.GeofenceTransitionExit
+                    .SetTransitionTypes(transitionTypes)
                     .Build());
 
                     if (GeofenceStore.SharedInstance.GetGeofenceRegion(region.Tag)==null)
@@ -439,7 +452,36 @@ namespace Geofence.Plugin
           Android.Gms.Location.LocationRequest mLocationRequest = new Android.Gms.Location.LocationRequest();
           mLocationRequest.SetInterval(CrossGeofence.LocationUpdatesInterval == 0 ? 30000 : CrossGeofence.LocationUpdatesInterval);
           mLocationRequest.SetFastestInterval(CrossGeofence.FastestLocationUpdatesInterval == 0 ? 5000 : CrossGeofence.FastestLocationUpdatesInterval);
-          mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityHighAccuracy);
+          string priorityType="Balanced Power";
+          switch(CrossGeofence.GeofencePriority)
+          {
+              case GeofencePriority.HighAccuracy:
+                  priorityType="High Accuracy";
+                  mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityHighAccuracy);
+                  break;
+              case GeofencePriority.LowAccuracy:
+                  priorityType="Low Accuracy";
+                  mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityLowPower);
+                  break;
+              case GeofencePriority.LowestAccuracy:
+                  priorityType="Lowest Accuracy";
+                  mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityNoPower);
+                  break;
+              case GeofencePriority.MediumAccuracy:
+              case GeofencePriority.AcceptableAccuracy:
+              default:
+                  mLocationRequest.SetPriority(Android.Gms.Location.LocationRequest.PriorityBalancedPowerAccuracy);
+                  break;
+          }
+        
+          System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Priority set to",priorityType));
+          //(Regions.Count == 0) ? (CrossGeofence.SmallestDisplacement==0?50 :CrossGeofence.SmallestDisplacement): Regions.Min(s => (float)s.Value.Radius)
+          if(CrossGeofence.SmallestDisplacement>0)
+          {
+              mLocationRequest.SetSmallestDisplacement(CrossGeofence.SmallestDisplacement);
+              System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Tag, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
+          }
+     
           Android.Gms.Location.LocationServices.FusedLocationApi.RequestLocationUpdates(mGoogleApiClient, mLocationRequest, GeofenceLocationListener.SharedInstance);
       }
       protected void StopLocationUpdates()
