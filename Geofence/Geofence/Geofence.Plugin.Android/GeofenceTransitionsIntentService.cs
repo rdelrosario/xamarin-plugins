@@ -104,8 +104,8 @@ namespace Geofence.Plugin
                 {
 
                     Context context = Android.App.Application.Context;
-
-                    CreateNotification(string.Join(", ", geofenceIds), string.Format("{0} {1}", GeofenceResult.GetTransitionString(gTransition), "geofence(s) region."));
+  
+                    CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(gTransition), "geofence regions:", string.Join(", ", geofenceIds)));
 
                 }
                 catch (Java.Lang.Exception ex)

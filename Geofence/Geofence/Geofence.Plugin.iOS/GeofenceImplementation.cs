@@ -20,7 +20,7 @@ namespace Geofence.Plugin
   /// <summary>
   /// Implementation for Geofence
   /// </summary>
-  public class GeofenceImplementation : IGeofence
+  public class GeofenceImplementation : UIAlertViewDelegate,IGeofence
   {
       
       CLLocationManager locationManager;
@@ -35,6 +35,29 @@ namespace Geofence.Plugin
 
       public GeofenceImplementation()
       {
+          RequestAlwaysAuthorization();
+
+          if (!CLLocationManager.LocationServicesEnabled)
+          {
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to enable Location Services");
+              System.Diagnostics.Debug.WriteLine(message);
+              CrossGeofence.GeofenceListener.OnError(message);
+          }
+          else if (CLLocationManager.Status == CLAuthorizationStatus.Denied || CLLocationManager.Status == CLAuthorizationStatus.Restricted)
+          {
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to authorize Location Services");
+              System.Diagnostics.Debug.WriteLine(message);
+              CrossGeofence.GeofenceListener.OnError(message);
+
+          }
+          else if (!CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
+          {
+              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Plugin requires region monitoring, which is unavailable on this device");
+              System.Diagnostics.Debug.WriteLine(message);
+
+              CrossGeofence.GeofenceListener.OnError(message);
+          }
+
           mRegions = new Dictionary<string, GeofenceCircularRegion>();
           mGeofenceResults = new Dictionary<string, GeofenceResult>();
 
@@ -78,6 +101,16 @@ namespace Geofence.Plugin
           {
               locationManager.DistanceFilter = CrossGeofence.SmallestDisplacement;
               System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Tag, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
+          }
+
+          if (CrossGeofence.EnableLocalNotifications)
+          {
+              var settings = UIUserNotificationSettings.GetSettingsForTypes(
+                UIUserNotificationType.Alert
+                | UIUserNotificationType.Badge
+                | UIUserNotificationType.Sound,
+                new NSSet());
+              UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
           }
 
           NSSet monitoredRegions = locationManager.MonitoredRegions;
@@ -196,7 +229,8 @@ namespace Geofence.Plugin
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
           lastGeofenceTransition = GeofenceTransition.Entered;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
-          CreateNotification(region.Identifier, GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition));
+          
+          CreateNotification("View",string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition), "geofence region:",region.Identifier));
           if (mRegions.ContainsKey(region.Identifier) && mRegions[region.Identifier].MinimumDuration != 0)
           {
               await Task.Delay(mRegions[region.Identifier].MinimumDuration);
@@ -235,7 +269,8 @@ namespace Geofence.Plugin
           lastGeofenceTransition = GeofenceTransition.Exited;
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-          CreateNotification(region.Identifier,GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition));
+          CreateNotification("View", string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(mGeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier));
+          
       }
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
@@ -473,6 +508,34 @@ namespace Geofence.Plugin
            }
           
            
+
+      }
+      void RequestAlwaysAuthorization()
+      {
+          CLAuthorizationStatus status = CLLocationManager.Status;
+          if(status ==CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.Denied)
+          {
+              string title = (status == CLAuthorizationStatus.Denied) ? "Location services are off" : "Background location is not enabled";
+              string message = "To use background location you must turn on 'Always' in the Location Services Settings";
+
+              UIAlertView alertView = new UIAlertView(title, message, this, "Cancel", "Settings");
+              alertView.Show();
+          }
+          else if (status == CLAuthorizationStatus.NotDetermined)
+          {
+              locationManager.RequestAlwaysAuthorization();
+          }
+      }
+      public override void Clicked(UIAlertView alertview, int buttonIndex)
+      {
+          base.Clicked(alertview, buttonIndex);
+          if (buttonIndex == 1) 
+          {
+              // Send the user to the Settings for this app
+              NSUrl settingsUrl = new NSUrl(UIApplication.OpenSettingsUrlString);
+              UIApplication.SharedApplication.OpenUrl(settingsUrl);
+     
+          }
 
       }
 

@@ -20,7 +20,7 @@ Simple cross platform plugin to check if application is on foreground or backgro
 
 Call **CrossApplicationState.Current** from any project or PCL to gain access to APIs.
 
-**IsForeground*
+**IsForeground**
 ```
 /// <summary>
 /// Determines if the application is on foreground
