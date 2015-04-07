@@ -17,7 +17,10 @@ namespace Geofence.Plugin.Abstractions
         protected const string ExpirationDurationGeofenceRegionKey = "Geofence.Region.ExpirationDuration";
         protected const string NotifyOnEntryGeofenceRegionKey = "Geofence.Region.NotifyOnEntry";
         protected const string NotifyOnExitGeofenceRegionKey = "Geofence.Region.NotifyOnExit";
-
+        protected const string NotifyOnStayGeofenceRegionKey = "Geofence.Region.NotifyOnStay";
+        protected const string EntryMessageGeofenceRegionKey = "Geofence.Region.EntryMessage";
+        protected const string ExitMessageGeofenceRegionKey = "Geofence.Region.ExitMessage";
+        protected const string StayMessageGeofenceRegionKey = "Geofence.Region.StayMessage";
         /// <summary>
         /// Given a Geofence object's ID and the name of a field , return the keyname of the object's values in Store
         /// </summary>

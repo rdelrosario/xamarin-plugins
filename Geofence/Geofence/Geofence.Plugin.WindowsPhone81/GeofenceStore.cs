@@ -29,7 +29,7 @@ namespace Geofence.Plugin
 
         public override Dictionary<string, GeofenceCircularRegion> GetGeofenceRegions()
         {
-            IEnumerable<string> keys = Container.Values.Where(p => p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct();
+            IEnumerable<string> keys = Container.Values.Where(p => p.Key.ToString().StartsWith(GeofenceStoreId) && p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct();
 
             Dictionary<string, GeofenceCircularRegion> regions = new Dictionary<string, GeofenceCircularRegion>();
 

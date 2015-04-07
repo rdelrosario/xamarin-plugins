@@ -13,7 +13,11 @@ namespace Geofence.Plugin.Abstractions
         public double Longitude { get; set; }
         public double Radius { get; set; }
         public bool NotifyOnEntry { get; set; }
+        public bool NotifyOnStay { get; set; }
         public bool NotifyOnExit { get; set; }
+        public string EntryMessage { get; set; }
+        public string ExitMessage { get; set; }
+        public string StayMessage { get; set; }
 
         public override string ToString()
         {

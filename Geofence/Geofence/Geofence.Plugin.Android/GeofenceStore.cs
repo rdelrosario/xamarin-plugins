@@ -46,6 +46,10 @@ namespace Geofence.Plugin
             double radius = mPrefs.GetFloat(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey), InvalidFloatValue);
             bool notifyOnEntry = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), false);
             bool notifyOnExit = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), false);
+            bool notifyOnStay = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey), false);
+            string entryMessage = mPrefs.GetString(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey), string.Empty);
+            string exitMessage = mPrefs.GetString(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey), string.Empty);
+            string stayMessage = mPrefs.GetString(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey), string.Empty);
             //long expirationDuration = mPrefs.GetLong(GetGeofenceFieldKey(id, ExpirationDurationGeofenceRegionKey), InvalidLongValue);
             //int transitionType = mPrefs.GetInt(GetGeofenceFieldKey(id, TransitionTypeGeofenceRegionKey), InvalidIntValue);
 
@@ -63,7 +67,11 @@ namespace Geofence.Plugin
                     Longitude = lng,
                     Radius = radius,
                     NotifyOnEntry=notifyOnEntry,
-                    NotifyOnExit=notifyOnExit
+                    NotifyOnExit=notifyOnExit,
+                    NotifyOnStay=notifyOnStay,
+                    EntryMessage=entryMessage,
+                    StayMessage=stayMessage,
+                    ExitMessage=exitMessage,
                 };
 
 			// Otherwise return null
@@ -86,6 +94,10 @@ namespace Geofence.Plugin
             prefs.PutFloat(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey), (float)region.Radius);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), region.NotifyOnEntry);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), region.NotifyOnExit);
+            prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey), region.NotifyOnStay);
+            prefs.PutString(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey), region.EntryMessage);
+            prefs.PutString(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey), region.ExitMessage);
+            prefs.PutString(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey), region.StayMessage);
 			// Commit the changes
 			prefs.Commit ();
            
@@ -110,6 +122,10 @@ namespace Geofence.Plugin
                 prefs.Remove(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey));
                 // Commit the changes
                 prefs.Commit();
 
@@ -122,7 +138,7 @@ namespace Geofence.Plugin
 
         public override Dictionary<string,GeofenceCircularRegion> GetGeofenceRegions()
         {
-            IEnumerable<string> keys = mPrefs.All.Where(p => p.Key.Split('_').Length>1).Select( p => p.Key.Split('_')[1]).Distinct();
+            IEnumerable<string> keys = mPrefs.All.Where(p => p.Key.ToString().StartsWith(GeofenceStoreId) && p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct();
 
             Dictionary<string, GeofenceCircularRegion> regions = new Dictionary<string,GeofenceCircularRegion>();
 

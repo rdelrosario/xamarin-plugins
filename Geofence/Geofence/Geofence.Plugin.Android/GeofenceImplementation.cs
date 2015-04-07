@@ -177,8 +177,13 @@ namespace Geofence.Plugin
                 var regions = Regions.Values;
                 foreach (GeofenceCircularRegion region in regions)
                 {
-                    int transitionTypes = Android.Gms.Location.Geofence.GeofenceTransitionDwell;
+                    int transitionTypes = 0;
                     
+                     if(region.NotifyOnStay)
+                    {
+                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionDwell;
+                    }
+
                     if(region.NotifyOnEntry)
                     {
                         transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionEnter;
@@ -240,10 +245,8 @@ namespace Geofence.Plugin
             mGeofenceResults.Clear();
             Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
             
-            if (CrossGeofence.EnableLocationUpdates)
-            {
-                StopLocationUpdates();
-            }
+            StopLocationUpdates();
+            
 
             mGoogleApiClient.Disconnect();
 
@@ -300,10 +303,8 @@ namespace Geofence.Plugin
           
             }
 
-            if (CrossGeofence.EnableLocationUpdates)
-            {
-                StartLocationUpdates();
-            }
+            StartLocationUpdates();
+            
 
         }
 
@@ -392,10 +393,8 @@ namespace Geofence.Plugin
               
               CrossGeofence.GeofenceListener.OnMonitoringStopped();
 
-              if(CrossGeofence.EnableLocationUpdates)
-              {
-                  StopLocationUpdates();
-              }
+              StopLocationUpdates();
+             
 
               mGoogleApiClient.Disconnect();
           }
@@ -420,10 +419,8 @@ namespace Geofence.Plugin
  
               
               
-              if (CrossGeofence.EnableLocationUpdates)
-              {
-                  StopLocationUpdates();
-              }
+               StopLocationUpdates();
+            
 
               mGoogleApiClient.Disconnect();
 
