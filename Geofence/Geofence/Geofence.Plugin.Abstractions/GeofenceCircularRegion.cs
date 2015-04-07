@@ -8,7 +8,7 @@ namespace Geofence.Plugin.Abstractions
 {
     public class GeofenceCircularRegion
     {
-        public string Tag { get; set; }
+        public string Id { get; set; }
         public double Latitude  { get; set; }
         public double Longitude { get; set; }
         public double Radius { get; set; }
@@ -17,7 +17,7 @@ namespace Geofence.Plugin.Abstractions
 
         public override string ToString()
         {
-            return Tag;
+            return Id;
         }
     }
 }

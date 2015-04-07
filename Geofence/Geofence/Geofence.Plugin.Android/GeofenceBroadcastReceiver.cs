@@ -21,7 +21,7 @@ namespace Geofence.Plugin
     {
         public override void OnReceive(Context context, Intent intent)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}",CrossGeofence.Tag,"Region State Change Received"));
+            System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}",CrossGeofence.Id,"Region State Change Received"));
             var serviceIntent = new Intent(context, typeof(GeofenceTransitionsIntentService));
             serviceIntent.AddFlags(ActivityFlags.IncludeStoppedPackages);
             serviceIntent.ReplaceExtras(intent.Extras);

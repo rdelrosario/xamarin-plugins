@@ -24,7 +24,7 @@ namespace Geofence.Plugin
             if (geofencingEvent.HasError)
             {
                 string errorMessage = Android.Gms.Location.GeofenceStatusCodes.GetStatusCodeString(geofencingEvent.ErrorCode);
-                string message = string.Format("{0} - {1}", CrossGeofence.Tag, errorMessage);
+                string message = string.Format("{0} - {1}", CrossGeofence.Id, errorMessage);
                 System.Diagnostics.Debug.WriteLine(message);
                 CrossGeofence.GeofenceListener.OnError(message);
             }
@@ -82,7 +82,7 @@ namespace Geofence.Plugin
                         gTransition = GeofenceTransition.Stayed;
                         break;
                     default:
-                        string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Invalid transition type");
+                        string message = string.Format("{0} - {1}", CrossGeofence.Id, "Invalid transition type");
                         System.Diagnostics.Debug.WriteLine(message);
                         gTransition = GeofenceTransition.Unknown;
                         break;
@@ -97,7 +97,7 @@ namespace Geofence.Plugin
                     
                    /* }catch(Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex.ToString()));
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
                     }*/
                    
                     if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
@@ -128,11 +128,11 @@ namespace Geofence.Plugin
                 }
                 catch (Java.Lang.Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex.ToString()));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
                 }
                 catch (System.Exception ex1)
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, ex1.ToString()));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex1.ToString()));
                 }
             }
         }

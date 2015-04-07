@@ -12,7 +12,7 @@ namespace Geofence.Plugin
     static Lazy<IGeofence> Implementation = new Lazy<IGeofence>(() => CreateGeofence(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
     public static bool IsInitialized { get { return (GeofenceListener != null); } }
 
-    public const string Tag = "CrossGeofence";
+    public const string Id = "CrossGeofence";
     public static IGeofenceListener GeofenceListener { get; private set; }
 
     public static bool EnableLocalNotifications { get; set; }

@@ -14,7 +14,7 @@ namespace Geofence.Plugin
     {
         public override void OnReceive(Context context, Intent intent)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Boot Received"));
+            System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Boot Received"));
             if(CrossGeofence.EnableMonitoringRestore)
             {
                var geofenceInstance= CrossGeofence.Current;

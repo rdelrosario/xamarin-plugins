@@ -39,20 +39,20 @@ namespace Geofence.Plugin
 
           if (!CLLocationManager.LocationServicesEnabled)
           {
-              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to enable Location Services");
+              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enable Location Services");
               System.Diagnostics.Debug.WriteLine(message);
               CrossGeofence.GeofenceListener.OnError(message);
           }
           else if (CLLocationManager.Status == CLAuthorizationStatus.Denied || CLLocationManager.Status == CLAuthorizationStatus.Restricted)
           {
-              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to authorize Location Services");
+              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to authorize Location Services");
               System.Diagnostics.Debug.WriteLine(message);
               CrossGeofence.GeofenceListener.OnError(message);
 
           }
           else if (!CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
           {
-              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Plugin requires region monitoring, which is unavailable on this device");
+              string message = string.Format("{0} - {1}", CrossGeofence.Id, "Plugin requires region monitoring, which is unavailable on this device");
               System.Diagnostics.Debug.WriteLine(message);
 
               CrossGeofence.GeofenceListener.OnError(message);
@@ -95,12 +95,12 @@ namespace Geofence.Plugin
                   locationManager.DesiredAccuracy = CLLocation.AccurracyBestForNavigation;
                   break;
           }
-          System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Location priority set to", priorityType));
+          System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Id, "Location priority set to", priorityType));
     
           if(CrossGeofence.SmallestDisplacement>0)
           {
               locationManager.DistanceFilter = CrossGeofence.SmallestDisplacement;
-              System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Tag, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
+              System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Id, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
           }
 
           if (CrossGeofence.EnableLocalNotifications)
@@ -118,7 +118,7 @@ namespace Geofence.Plugin
           {
               mRegions.Add(region.Identifier, new GeofenceCircularRegion()
               {
-                  Tag=region.Identifier,
+                  Id=region.Identifier,
                   Latitude=region.Center.Latitude,
                   Longitude=region.Center.Longitude,
                   Radius=region.Radius,
@@ -181,13 +181,13 @@ namespace Geofence.Plugin
           switch (e.State)
           {
               case CLRegionState.Inside:
-                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "StartedRegion: " + e.Region));
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "StartedRegion: " + e.Region));
                   OnRegionEntered(e.Region);
                   break;
               case CLRegionState.Outside:
                   break;
               default:
-                  string message = string.Format("{0} - {1}", CrossGeofence.Tag, "Unknown region state");
+                  string message = string.Format("{0} - {1}", CrossGeofence.Id, "Unknown region state");
                   System.Diagnostics.Debug.WriteLine(message);
                   break;
           }
@@ -287,13 +287,13 @@ namespace Geofence.Plugin
 
           if (!CLLocationManager.LocationServicesEnabled)
           {
-              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to enable Location Services");
+              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enable Location Services");
               System.Diagnostics.Debug.WriteLine(message);
               CrossGeofence.GeofenceListener.OnError(message);
           }
           else if (CLLocationManager.Status == CLAuthorizationStatus.Denied || CLLocationManager.Status == CLAuthorizationStatus.Restricted)
           {
-              string message = string.Format("{0} - {1}", CrossGeofence.Tag, "You need to authorize Location Services");
+              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to authorize Location Services");
               System.Diagnostics.Debug.WriteLine(message);
               CrossGeofence.GeofenceListener.OnError(message);
 
@@ -310,25 +310,25 @@ namespace Geofence.Plugin
 
                   if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
                   {
-                      cRegion = new CLCircularRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance)?locationManager.MaximumRegionMonitoringDistance:region.Radius, region.Tag);
+                      cRegion = new CLCircularRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance)?locationManager.MaximumRegionMonitoringDistance:region.Radius, region.Id);
                   }
                   else
                   {
-                      cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Tag);
+                      cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Id);
                   }
 
 
                   cRegion.NotifyOnEntry = region.NotifyOnEntry;
                   cRegion.NotifyOnExit = region.NotifyOnExit;
 
-                  mRegions.Add(region.Tag, region);
+                  mRegions.Add(region.Id, region);
                   locationManager.StartMonitoring(cRegion);
               }
 
           }
           else
           {
-              string message = string.Format("{0} - {1}",CrossGeofence.Tag,"Plugin requires region monitoring, which is unavailable on this device");
+              string message = string.Format("{0} - {1}",CrossGeofence.Id,"Plugin requires region monitoring, which is unavailable on this device");
               System.Diagnostics.Debug.WriteLine(message);
 
               CrossGeofence.GeofenceListener.OnError(message);
@@ -362,7 +362,7 @@ namespace Geofence.Plugin
       }
       GeofenceNotInitializedException NewGeofenceNotInitializedException()
       {
-          string description = string.Format("{0} - {1}", CrossGeofence.Tag, "Plugin is not initialized. Should initialize before use with CrossGeofence Initialize method. Example:  CrossGeofence.Initialize<CrossGeofenceListener>()");
+          string description = string.Format("{0} - {1}", CrossGeofence.Id, "Plugin is not initialized. Should initialize before use with CrossGeofence Initialize method. Example:  CrossGeofence.Initialize<CrossGeofenceListener>()");
 
           return new GeofenceNotInitializedException(description);
       }
@@ -381,7 +381,7 @@ namespace Geofence.Plugin
               }
               else
               {
-                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
               }
 
               if (mRegions.Count == 0)
@@ -411,7 +411,7 @@ namespace Geofence.Plugin
                   }
                   else
                   {
-                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
+                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Region Identifier: " + regionIdentifier + " isn't being monitored"));
                   }
 
               }
@@ -460,24 +460,24 @@ namespace Geofence.Plugin
 
               if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
               {
-                  cRegion = new CLCircularRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Tag);
+                  cRegion = new CLCircularRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Id);
               }
               else
               {
-                  cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Tag);
+                  cRegion = new CLRegion(new CLLocationCoordinate2D(region.Latitude, region.Longitude), (region.Radius > locationManager.MaximumRegionMonitoringDistance) ? locationManager.MaximumRegionMonitoringDistance : region.Radius, region.Id);
               }
 
               cRegion.NotifyOnEntry = region.NotifyOnEntry;
               cRegion.NotifyOnExit = region.NotifyOnExit;
 
-              if (!mRegions.ContainsKey(region.Tag))
+              if (!mRegions.ContainsKey(region.Id))
               {
-                  mRegions.Add(region.Tag, region);
+                  mRegions.Add(region.Id, region);
                   locationManager.StartMonitoring(cRegion);
               }
               else
               {
-                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Region: "+ region.Tag +" already been monitored"));
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Region: "+ region.Id +" already been monitored"));
               }
 
              

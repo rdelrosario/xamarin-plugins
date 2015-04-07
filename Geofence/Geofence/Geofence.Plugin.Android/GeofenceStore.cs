@@ -8,20 +8,11 @@ using System.Threading.Tasks;
 
 namespace Geofence.Plugin
 {
-    public class GeofenceStore
+    internal class GeofenceStore : BaseGeofenceStore
     {
         // The SharedPreferences object in which geofences are stored
 		readonly ISharedPreferences mPrefs;
-		// The name of the SharedPreferences
-		const string GeofenceSharedPreferences = "CrossGeofence.SharedPreferences";
-        const string LatitudeGeofenceRegionKey = "Geofence.Region.Latitude";
-        const string LongitudeGeofenceRegionKey = "Geofence.Region.Longitude";
-        const string RadiusGeofenceRegionKey = "Geofence.Region.Radius";
-        const string TagGeofenceRegionKey = "Geofence.Region.Tag";
-        const string TransitionTypeGeofenceRegionKey = "Geofence.Region.TransitionType";
-        const string ExpirationDurationGeofenceRegionKey = "Geofence.Region.ExpirationDuration";
-        const string NotifyOnEntryGeofenceRegionKey = "Geofence.Region.NotifyOnEntry";
-        const string NotifyOnExitGeofenceRegionKey = "Geofence.Region.NotifyOnExit";
+
         // Invalid values, used to test geofence storage when retrieving geofences.
         const long InvalidLongValue = -999L;
         const float InvalidFloatValue= -999.0f;
@@ -37,7 +28,7 @@ namespace Geofence.Plugin
 		/// <param name="context">Context.</param>
 		private GeofenceStore ()
 		{
-            mPrefs = Android.App.Application.Context.GetSharedPreferences(GeofenceSharedPreferences, FileCreationMode.Private);
+            mPrefs = Android.App.Application.Context.GetSharedPreferences(GeofenceStoreId, FileCreationMode.Private);
 		}
  
 
@@ -46,8 +37,9 @@ namespace Geofence.Plugin
 		/// </summary>
 		/// <returns>A SimpleGeofence defined by its center and radius, or null if the ID is invalid</returns>
 		/// <param name="id">The ID of a stored Geofence</param>
-		public GeofenceCircularRegion GetGeofenceRegion(String id)
+		public override GeofenceCircularRegion GetGeofenceRegion(String id)
 		{
+
 			// Get the latitude for the geofence identified by id, or INVALID_FLOAT_VALUE if it doesn't exist (similarly for the other values that follow)
             double lat = mPrefs.GetFloat(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey), InvalidFloatValue);
             double lng = mPrefs.GetFloat(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey), InvalidFloatValue);
@@ -66,7 +58,7 @@ namespace Geofence.Plugin
                 )
                 return new GeofenceCircularRegion()
                 {
-                    Tag = id,
+                    Id = id,
                     Latitude = lat,
                     Longitude = lng,
                     Radius = radius,
@@ -83,7 +75,9 @@ namespace Geofence.Plugin
 		/// </summary>
 		/// <param name="id">The ID of the Geofence</param>
 		/// <param name="geofence">The SimpleGeofence with the values you want to save in SharedPreferemces</param>
-		public void SetGeofenceRegion(String id, GeofenceCircularRegion region) {
+		public override void SetGeofenceRegion(GeofenceCircularRegion region) {
+
+            string id = region.Id;
 			// Get a SharedPreferences editor instance. Among other things, SharedPreferences ensures that updates are atomic and non-concurrent
 			ISharedPreferencesEditor prefs = mPrefs.Edit();
 			// Write the geofence values to SharedPreferences 
@@ -97,7 +91,7 @@ namespace Geofence.Plugin
            
 		}
 
-        public void ClearGeofenceRegions()
+        public override void ClearGeofenceRegions()
         {
             ISharedPreferencesEditor prefs = mPrefs.Edit();
             prefs.Clear();
@@ -105,7 +99,7 @@ namespace Geofence.Plugin
             prefs.Commit();
         }
 
-        public void RemoveGeofenceRegion(string id)
+        public override void RemoveGeofenceRegion(string id)
         {
             try
             {
@@ -121,12 +115,12 @@ namespace Geofence.Plugin
 
             }catch(Java.Lang.Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error: {1}", CrossGeofence.Tag, ex.ToString()));
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error: {1}", CrossGeofence.Id, ex.ToString()));
             }
             
         }
 
-        public Dictionary<string,GeofenceCircularRegion> GetGeofenceRegions()
+        public override Dictionary<string,GeofenceCircularRegion> GetGeofenceRegions()
         {
             IEnumerable<string> keys = mPrefs.All.Where(p => p.Key.Split('_').Length>1).Select( p => p.Key.Split('_')[1]).Distinct();
 
@@ -140,7 +134,7 @@ namespace Geofence.Plugin
                 if (region != null)
                 {
                    
-                    regions.Add(region.Tag, region);
+                    regions.Add(region.Id, region);
                 }
            
                 
@@ -150,14 +144,6 @@ namespace Geofence.Plugin
             
         }
 
-		/// <summary>
-		/// Given a Geofence object's ID and the name of a field (For example, KEY_LATITUDE), return the keyname of the object's values in SharedPreferences
-		/// </summary>
-		/// <returns>The full key name o a value in SharedPreferences</returns>
-		/// <param name="id">The ID of a Geofence object</param>
-		/// <param name="fieldName">The field represented by the key</param>
-		private string GetGeofenceFieldKey(String id, String fieldName) {
-			return CrossGeofence.Tag + "_" + id + "_" + fieldName;
-		}
+		
     }
 }
