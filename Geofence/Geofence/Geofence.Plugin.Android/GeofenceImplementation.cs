@@ -322,7 +322,11 @@ namespace Geofence.Plugin
                     if(CurrentRequestType!=RequestType.Update)
                     {
                         message = string.Format("{0} - {1}", CrossGeofence.Id, "Successfully added Geofence.");
-                        CrossGeofence.GeofenceListener.OnMonitoringStarted();
+                        
+                        foreach(GeofenceCircularRegion region in Regions.Values)
+                        {
+                            CrossGeofence.GeofenceListener.OnMonitoringStarted(region.Id);
+                        }
                     }
                     else
                     {

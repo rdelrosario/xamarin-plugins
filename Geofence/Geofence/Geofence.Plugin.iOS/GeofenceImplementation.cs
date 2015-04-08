@@ -275,7 +275,7 @@ namespace Geofence.Plugin
 
       void DidStartMonitoringForRegion(object sender, CLRegionEventArgs e)
       {
-          CrossGeofence.GeofenceListener.OnMonitoringStarted(); 
+          CrossGeofence.GeofenceListener.OnMonitoringStarted(e.Region.Identifier); 
       }
 
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)
@@ -316,6 +316,12 @@ namespace Geofence.Plugin
 
               locationManager.StartMonitoringSignificantLocationChanges();
 
+              foreach (GeofenceCircularRegion region in regions)
+              {
+                  mRegions.Add(region.Id, region);
+                  GeofenceStore.SharedInstance.SetGeofenceRegion(region);
+              }
+
               IList<GeofenceCircularRegion> nearestRegions = GetCurrentRegions(regions);
 
               foreach (GeofenceCircularRegion region in nearestRegions)
@@ -336,8 +342,8 @@ namespace Geofence.Plugin
                   cRegion.NotifyOnEntry = region.NotifyOnEntry;
                   cRegion.NotifyOnExit = region.NotifyOnExit;
 
-                  GeofenceStore.SharedInstance.SetGeofenceRegion(region);
-                  mRegions.Add(region.Id, region);
+                
+                
                   locationManager.StartMonitoring(cRegion);
                   locationManager.RequestState(cRegion);
               }
