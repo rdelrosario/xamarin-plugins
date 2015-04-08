@@ -90,8 +90,8 @@ namespace Geofence.Plugin
 
                     if (CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId) && CrossGeofence.Current.Regions[geofence.RequestId].ShowNotification)
                     {
-                       
-                       string message=string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition), "geofence region:", geofence.RequestId);
+
+                        string message = CrossGeofence.Current.GeofenceResults[geofence.RequestId].ToString();
                        
                         if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
                        {
@@ -143,7 +143,7 @@ namespace Geofence.Plugin
 
                     if (CrossGeofence.Current.Regions[regionId].ShowNotification)
                     {
-                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[regionId].Transition), "geofence region:", regionId) : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
+                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? CrossGeofence.Current.GeofenceResults[regionId].ToString() : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
                     }
 
                 }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Geofence.Plugin.Abstractions
 {
+    /// <summary>
+    /// BaseGeofence Store abstract class
+    /// </summary>
     public abstract class BaseGeofenceStore : IGeofenceStore
     {
         /// <summary>

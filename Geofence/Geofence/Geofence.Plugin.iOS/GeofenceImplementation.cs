@@ -239,7 +239,7 @@ namespace Geofence.Plugin
 
           if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification)
           {
-              CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationEntryMessage);
+              CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationEntryMessage);
           }
 
 
@@ -255,7 +255,7 @@ namespace Geofence.Plugin
 
                   if (Regions[region.Identifier].ShowNotification)
                   {
-                      CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationStayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationStayMessage);
+                      CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationStayMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationStayMessage);
                   }
 
 
@@ -290,7 +290,7 @@ namespace Geofence.Plugin
 
           if (Regions[region.Identifier].ShowNotification)
           {
-              CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationExitMessage);
+              CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationExitMessage);
           }
       }
 
