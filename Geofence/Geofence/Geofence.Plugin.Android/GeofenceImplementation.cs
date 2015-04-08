@@ -179,19 +179,19 @@ namespace Geofence.Plugin
                 {
                     int transitionTypes = 0;
                     
-                     if(region.NotifyOnStay)
+                    if(region.NotifyOnStay)
                     {
-                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionDwell;
+                        transitionTypes |= Android.Gms.Location.Geofence.GeofenceTransitionDwell;
                     }
 
                     if(region.NotifyOnEntry)
                     {
-                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionEnter;
+                        transitionTypes |= Android.Gms.Location.Geofence.GeofenceTransitionEnter;
                     }
 
                     if (region.NotifyOnExit)
                     {
-                        transitionTypes = transitionTypes | Android.Gms.Location.Geofence.GeofenceTransitionExit;
+                        transitionTypes |= Android.Gms.Location.Geofence.GeofenceTransitionExit;
                     }
 
                     geofenceList.Add(new Android.Gms.Location.GeofenceBuilder()

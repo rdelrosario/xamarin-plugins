@@ -17,7 +17,7 @@ namespace Geofence.Plugin
     {
         public static int NotificationId = 0;
         public const int  NotificationMaxId = 6;
-        protected async override void OnHandleIntent(Intent intent)
+        protected override void OnHandleIntent(Intent intent)
         {
             Context context = Android.App.Application.Context;
             Bundle extras = intent.Extras;
@@ -80,13 +80,17 @@ namespace Geofence.Plugin
                         gTransition = GeofenceTransition.Unknown;
                         break;
                 }
-
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Transition: {1}", CrossGeofence.Id, gTransition));
                 if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != gTransition )
                 {
+               
                     CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = gTransition;
-
+                    
+                    CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
+                   
                     if (CrossGeofence.EnableLocalNotifications)
                     {
+                       
                        string message=string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition), "geofence region:", geofence.RequestId);
                        
                         if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
@@ -109,27 +113,10 @@ namespace Geofence.Plugin
 
                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), message);
                     }
-                  
-                    CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
 
 
-                    if (CrossGeofence.Current.GeofenceResults.ContainsKey(geofence.RequestId) && CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId) && CrossGeofence.Current.Regions[geofence.RequestId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition == GeofenceTransition.Entered && CrossGeofence.StayedInDuration != 0)
-                    {
-                        await Task.Delay(CrossGeofence.StayedInDuration);
 
-                        if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != GeofenceTransition.Stayed)
-                        {
-                            CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = GeofenceTransition.Stayed;
-
-                            CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
-
-                            if (CrossGeofence.EnableLocalNotifications)
-                            {
-                                CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].StayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition), "geofence region:", geofence.RequestId) : CrossGeofence.Current.Regions[geofence.RequestId].StayMessage);
-                            }
-                    
-                        }
-                    }
+                    CheckIfStayed(geofence.RequestId);
                    
                    
                 }
@@ -139,6 +126,28 @@ namespace Geofence.Plugin
 
 
            
+        }
+
+        public async Task CheckIfStayed(string regionId)
+        {
+            Context context = Android.App.Application.Context;
+            if (CrossGeofence.Current.GeofenceResults.ContainsKey(regionId) && CrossGeofence.Current.Regions.ContainsKey(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.StayedInDuration != 0)
+            {
+                await Task.Delay(CrossGeofence.StayedInDuration);
+
+                if (CrossGeofence.Current.GeofenceResults[regionId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[regionId].Transition != GeofenceTransition.Stayed)
+                {
+                    CrossGeofence.Current.GeofenceResults[regionId].Transition = GeofenceTransition.Stayed;
+
+                    CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[regionId]);
+
+                    if (CrossGeofence.EnableLocalNotifications)
+                    {
+                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].StayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[regionId].Transition), "geofence region:", regionId) : CrossGeofence.Current.Regions[regionId].StayMessage);
+                    }
+
+                }
+            }
         }
        
 
