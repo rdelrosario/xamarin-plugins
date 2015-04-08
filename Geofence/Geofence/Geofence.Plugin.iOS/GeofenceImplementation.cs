@@ -215,24 +215,24 @@ namespace Geofence.Plugin
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
          
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
-       
-          if(CrossGeofence.EnableLocalNotifications)
+
+          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification)
           {
               CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationEntryMessage);
           }
-          
 
 
-          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].NotifyOnStay && CrossGeofence.StayedInDuration != 0)
+
+          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].NotifyOnStay && Regions[region.Identifier].StayedInThresholdDuration != 0)
           {
-              await Task.Delay(CrossGeofence.StayedInDuration);
+              await Task.Delay(Regions[region.Identifier].StayedInThresholdDuration);
 
               if (GeofenceResults[region.Identifier].LastExitTime == null && GeofenceResults[region.Identifier].Transition != GeofenceTransition.Stayed)
               {
                   mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Stayed;
                   CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-                  if (CrossGeofence.EnableLocalNotifications)
+                  if (Regions[region.Identifier].ShowNotification)
                   {
                       CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationStayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationStayMessage);
                   }
@@ -267,7 +267,7 @@ namespace Geofence.Plugin
          
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-          if (CrossGeofence.EnableLocalNotifications)
+          if (Regions[region.Identifier].ShowNotification)
           {
               CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationExitMessage);
           }
@@ -508,8 +508,6 @@ namespace Geofence.Plugin
 
       void  CreateNotification(string  title,string  message)
       {
-           if(CrossGeofence.EnableLocalNotifications)
-           {
                UILocalNotification notification = new UILocalNotification();
 
                notification.AlertAction = title;
@@ -522,9 +520,6 @@ namespace Geofence.Plugin
                #else
                    UIApplication.SharedApplication.PresentLocationNotificationNow(notification);
                #endif
-           }
-          
-           
 
       }
       void RequestAlwaysAuthorization()

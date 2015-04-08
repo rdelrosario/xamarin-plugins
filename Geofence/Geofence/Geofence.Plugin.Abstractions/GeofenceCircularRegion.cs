@@ -65,7 +65,7 @@ namespace Geofence.Plugin.Abstractions
         /// <summary>
         /// Sets minimum duration time in milliseconds before passing to stayed in transition after an entry 
         /// </summary>
-        public bool StayedInThresholdDuration;
+        public int StayedInThresholdDuration;
 
    
         public override string ToString()

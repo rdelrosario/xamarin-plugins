@@ -15,10 +15,10 @@ namespace Geofence.Plugin
     public const string Id = "CrossGeofence";
     public static IGeofenceListener GeofenceListener { get; private set; }
 
-    public static bool EnableLocalNotifications { get; set; }
+    //public static bool EnableLocalNotifications { get; set; }
     public static GeofencePriority GeofencePriority { get; set; }
     public static float SmallestDisplacement { get; set; }
-    public static int StayedInDuration { get; set; }
+    //public static int StayedInDuration { get; set; }
 
     #if __ANDROID__
       public static int IconResource { get; set; }

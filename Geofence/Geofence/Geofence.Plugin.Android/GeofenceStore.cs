@@ -47,9 +47,12 @@ namespace Geofence.Plugin
             bool notifyOnEntry = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), false);
             bool notifyOnExit = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), false);
             bool notifyOnStay = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey), false);
-            string NotificationEntryMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey), string.Empty);
-            string NotificationExitMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey), string.Empty);
-            string NotificationStayMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), string.Empty);
+            string notificationEntryMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey), string.Empty);
+            string notificationExitMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey), string.Empty);
+            string notificationStayMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), string.Empty);
+            bool showNotification = mPrefs.GetBoolean(GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey), false);
+            bool persistent = mPrefs.GetBoolean(GetGeofenceFieldKey(id, PersistentGeofenceRegionKey), false);
+            int stayedInThresholdDuration = mPrefs.GetInt(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey), InvalidIntValue);
             //long expirationDuration = mPrefs.GetLong(GetGeofenceFieldKey(id, ExpirationDurationGeofenceRegionKey), InvalidLongValue);
             //int transitionType = mPrefs.GetInt(GetGeofenceFieldKey(id, TransitionTypeGeofenceRegionKey), InvalidIntValue);
 
@@ -57,6 +60,8 @@ namespace Geofence.Plugin
             if (lat != InvalidFloatValue
                 && lng != InvalidFloatValue
                 && radius != InvalidFloatValue
+                && persistent
+                && stayedInThresholdDuration != InvalidIntValue
                 // && expirationDuration != InvalidLongValue
                 //&& transitionType != InvalidIntValue
                 )
@@ -69,9 +74,13 @@ namespace Geofence.Plugin
                     NotifyOnEntry=notifyOnEntry,
                     NotifyOnExit=notifyOnExit,
                     NotifyOnStay=notifyOnStay,
-                    NotificationEntryMessage=NotificationEntryMessage,
-                    NotificationStayMessage=NotificationStayMessage,
-                    NotificationExitMessage=NotificationExitMessage,
+                    NotificationEntryMessage=notificationEntryMessage,
+                    NotificationStayMessage=notificationStayMessage,
+                    NotificationExitMessage=notificationExitMessage,
+                    ShowNotification=showNotification,
+                    Persistent=persistent,
+                    StayedInThresholdDuration = stayedInThresholdDuration
+
                 };
 
 			// Otherwise return null
@@ -84,6 +93,9 @@ namespace Geofence.Plugin
 		/// <param name="id">The ID of the Geofence</param>
 		/// <param name="geofence">The SimpleGeofence with the values you want to save in SharedPreferemces</param>
 		public override void SetGeofenceRegion(GeofenceCircularRegion region) {
+
+            if (!region.Persistent)
+                return;
 
             string id = region.Id;
 			// Get a SharedPreferences editor instance. Among other things, SharedPreferences ensures that updates are atomic and non-concurrent
@@ -98,6 +110,9 @@ namespace Geofence.Plugin
             prefs.PutString(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey), region.NotificationEntryMessage);
             prefs.PutString(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey), region.NotificationExitMessage);
             prefs.PutString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), region.NotificationStayMessage);
+            prefs.PutBoolean(GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey), region.ShowNotification);
+            prefs.PutBoolean(GetGeofenceFieldKey(id, PersistentGeofenceRegionKey), region.Persistent);
+            prefs.PutInt(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey), region.StayedInThresholdDuration);
 			// Commit the changes
 			prefs.Commit ();
            
@@ -126,6 +141,9 @@ namespace Geofence.Plugin
                 prefs.Remove(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, PersistentGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
                 // Commit the changes
                 prefs.Commit();
 
