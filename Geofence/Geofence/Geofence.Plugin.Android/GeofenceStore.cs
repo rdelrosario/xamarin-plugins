@@ -91,7 +91,7 @@ namespace Geofence.Plugin
 		/// Save a geofence
 		/// </summary>
 		/// <param name="id">The ID of the Geofence</param>
-		/// <param name="geofence">The SimpleGeofence with the values you want to save in SharedPreferemces</param>
+		/// <param name="geofence">The GeofenceCircularRegion with the values you want to save in SharedPreferemces</param>
 		public override void Save(GeofenceCircularRegion region) {
 
             if (!region.Persistent)

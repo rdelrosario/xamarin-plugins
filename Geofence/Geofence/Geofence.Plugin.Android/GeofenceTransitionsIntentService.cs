@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace Geofence.Plugin
 {
+    /// <summary>
+    /// GeofenceTransitionsIntentService class
+    /// Service that handles geofence events
+    /// </summary>
     [Service]
     public class GeofenceTransitionsIntentService : IntentService
     {
@@ -30,14 +34,13 @@ namespace Geofence.Plugin
                 System.Diagnostics.Debug.WriteLine(message);
                 CrossGeofence.GeofenceListener.OnError(message);
             }
+
             // Get the transition type.
             int geofenceTransition = geofencingEvent.GeofenceTransition;
-            // Get the geofences that were triggered. A single event can trigger
-            // multiple geofences.
+
+            // Get the geofences that were triggered. A single event can trigger multiple geofences.
             IList<Android.Gms.Location.IGeofence> triggeringGeofences = geofencingEvent.TriggeringGeofences;
 
-
-            // List<string> geofenceIds = new List<string>();
             GeofenceTransition gTransition = GeofenceTransition.Unknown;
 
             ((GeofenceImplementation)CrossGeofence.Current).CurrentRequestType = Geofence.Plugin.GeofenceImplementation.RequestType.Update;
@@ -115,7 +118,7 @@ namespace Geofence.Plugin
                     }
 
 
-
+                    //Check if device has stayed in region asynchronosly
                     CheckIfStayed(geofence.RequestId);
                    
                    
@@ -150,8 +153,12 @@ namespace Geofence.Plugin
             }
         }
        
-
-        public static void CreateNotification(string title, string message)
+        /// <summary>
+        /// Create local notification
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="message"></param>
+        public void CreateNotification(string title, string message)
         {
            
             try

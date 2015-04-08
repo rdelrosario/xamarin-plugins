@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Geofence.Plugin
 {
+    /// <summary>
+    /// GeofenceLocationListener class
+    /// Listens to location updates
+    /// </summary>
     public class GeofenceLocationListener : Java.Lang.Object,Android.Gms.Location.ILocationListener
     {
         private static GeofenceLocationListener sharedInstance = new GeofenceLocationListener();
