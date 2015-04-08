@@ -81,7 +81,7 @@ namespace Geofence.Plugin
                         break;
                 }
 
-                if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != gTransition &&CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition!=GeofenceTransition.Unknown)
+                if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != gTransition )
                 {
                     CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = gTransition;
 
