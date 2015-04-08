@@ -25,7 +25,7 @@ namespace Geofence.Plugin
      
       CLLocationManager locationManager;
 
-      private Dictionary<string, GeofenceCircularRegion> mRegions=GeofenceStore.SharedInstance.GetGeofenceRegions();
+      private Dictionary<string, GeofenceCircularRegion> mRegions=GeofenceStore.SharedInstance.GetAll();
       private Dictionary<string, GeofenceResult> mGeofenceResults;
       public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
       public IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get { return mGeofenceResults; } }
@@ -340,7 +340,7 @@ namespace Geofence.Plugin
               foreach (GeofenceCircularRegion region in regions)
               {
                   mRegions.Add(region.Id, region);
-                  GeofenceStore.SharedInstance.SetGeofenceRegion(region);
+                  GeofenceStore.SharedInstance.Save(region);
               }
 
               IList<GeofenceCircularRegion> nearestRegions = GetCurrentRegions(regions);
@@ -413,7 +413,7 @@ namespace Geofence.Plugin
               throw NewGeofenceNotInitializedException();
           }
 
-          GeofenceStore.SharedInstance.ClearGeofenceRegions();
+          GeofenceStore.SharedInstance.RemoveAll();
 
           foreach (CLCircularRegion region in locationManager.MonitoredRegions)
           {
@@ -448,7 +448,7 @@ namespace Geofence.Plugin
               {
                   locationManager.StopMonitoring(region);
                   RemoveRegion(regionIdentifier);
-                  GeofenceStore.SharedInstance.RemoveGeofenceRegion(region.Identifier);
+                  GeofenceStore.SharedInstance.Remove(region.Identifier);
                   CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
 
               }
@@ -479,7 +479,7 @@ namespace Geofence.Plugin
                   {
                      locationManager.StopMonitoring(region);
                      RemoveRegion(regionIdentifier);
-                     GeofenceStore.SharedInstance.RemoveGeofenceRegion(region.Identifier);
+                     GeofenceStore.SharedInstance.Remove(region.Identifier);
                      CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
                   }
                   else

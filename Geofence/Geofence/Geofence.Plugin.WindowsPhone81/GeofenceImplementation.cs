@@ -50,7 +50,7 @@ namespace Geofence.Plugin
               Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.Geofences.Remove(geofence);
           }
           
-          GeofenceStore.SharedInstance.RemoveGeofenceRegion(id);
+          GeofenceStore.SharedInstance.Remove(id);
       }
 
       public void AddRegion(GeofenceCircularRegion region)
@@ -82,7 +82,7 @@ namespace Geofence.Plugin
           var geofence = new Windows.Devices.Geolocation.Geofencing.Geofence(region.Id, geocircle, mask, false, new TimeSpan(0, 0, CrossGeofence.StayedInDuration / 1000), DateTime.Now, TimeSpan.MaxValue);
           Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.Geofences.Add(geofence);
 
-          GeofenceStore.SharedInstance.SetGeofenceRegion(region);
+          GeofenceStore.SharedInstance.Save(region);
       }
       public void StopMonitoring()
       {
@@ -91,7 +91,7 @@ namespace Geofence.Plugin
               StopMonitoring(region.Id); 
           }*/
           Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.Geofences.Clear();
-          GeofenceStore.SharedInstance.ClearGeofenceRegions();
+          GeofenceStore.SharedInstance.RemoveAll();
       }
 
       public void StopMonitoring(string identifier)

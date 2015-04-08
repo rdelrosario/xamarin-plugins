@@ -8,10 +8,10 @@ namespace Geofence.Plugin.Abstractions
 {
     interface IGeofenceStore
     {
-        Dictionary<string, GeofenceCircularRegion> GetGeofenceRegions();
-        GeofenceCircularRegion GetGeofenceRegion(string id);
-        void SetGeofenceRegion(GeofenceCircularRegion region);
-        void ClearGeofenceRegions();
-        void RemoveGeofenceRegion(String id);
+        Dictionary<string, GeofenceCircularRegion> GetAll();
+        GeofenceCircularRegion Get(string id);
+        void Save(GeofenceCircularRegion region);
+        void RemoveAll();
+        void Remove(String id);
     }
 }

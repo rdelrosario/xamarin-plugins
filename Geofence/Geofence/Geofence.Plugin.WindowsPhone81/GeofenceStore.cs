@@ -27,7 +27,7 @@ namespace Geofence.Plugin
         }
 
 
-        public override Dictionary<string, GeofenceCircularRegion> GetGeofenceRegions()
+        public override Dictionary<string, GeofenceCircularRegion> GetAll()
         {
             IEnumerable<string> keys = Container.Values.Where(p => p.Key.ToString().StartsWith(GeofenceStoreId) && p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct();
 
@@ -37,7 +37,7 @@ namespace Geofence.Plugin
             {
 
 
-                var region = GetGeofenceRegion(key);
+                var region = Get(key);
                 if (region != null)
                 {
 
@@ -50,56 +50,56 @@ namespace Geofence.Plugin
             return regions;
         }
 
-        public override GeofenceCircularRegion GetGeofenceRegion(string id)
+        public override GeofenceCircularRegion Get(string id)
         {
             GeofenceCircularRegion region=null;
-            if (Container.Values.ContainsKey(GetGeofenceFieldKey(id, IdGeofenceRegionKey))
-                && Container.Values.ContainsKey(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey))
-                && Container.Values.ContainsKey(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey))
-                && Container.Values.ContainsKey(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey))
-                && Container.Values.ContainsKey(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey))
-                && Container.Values.ContainsKey(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey)))
+            if (Container.Values.ContainsKey(GetFieldKey(id, IdGeofenceRegionKey))
+                && Container.Values.ContainsKey(GetFieldKey(id, LatitudeGeofenceRegionKey))
+                && Container.Values.ContainsKey(GetFieldKey(id, LongitudeGeofenceRegionKey))
+                && Container.Values.ContainsKey(GetFieldKey(id, NotifyOnEntryGeofenceRegionKey))
+                && Container.Values.ContainsKey(GetFieldKey(id, NotifyOnExitGeofenceRegionKey))
+                && Container.Values.ContainsKey(GetFieldKey(id, RadiusGeofenceRegionKey)))
             {
                 region= new GeofenceCircularRegion()
                 {
-                    Id = Container.Values[GetGeofenceFieldKey(id, IdGeofenceRegionKey)].ToString(),
-                    Latitude = (double)Container.Values[GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey)],
-                    Longitude = (double)Container.Values[GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey)],
-                    Radius = (double)Container.Values[GetGeofenceFieldKey(id, RadiusGeofenceRegionKey)],
-                    NotifyOnEntry = (bool)Container.Values[GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey)],
-                    NotifyOnExit = (bool)Container.Values[GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey)],
+                    Id = Container.Values[GetFieldKey(id, IdGeofenceRegionKey)].ToString(),
+                    Latitude = (double)Container.Values[GetFieldKey(id, LatitudeGeofenceRegionKey)],
+                    Longitude = (double)Container.Values[GetFieldKey(id, LongitudeGeofenceRegionKey)],
+                    Radius = (double)Container.Values[GetFieldKey(id, RadiusGeofenceRegionKey)],
+                    NotifyOnEntry = (bool)Container.Values[GetFieldKey(id, NotifyOnEntryGeofenceRegionKey)],
+                    NotifyOnExit = (bool)Container.Values[GetFieldKey(id, NotifyOnExitGeofenceRegionKey)],
                 };
             }
 
             return region;
         }
 
-        public override void SetGeofenceRegion(GeofenceCircularRegion region)
+        public override void Save(GeofenceCircularRegion region)
         {
             string id = region.Id;
 
-            Container.Values[GetGeofenceFieldKey(id, IdGeofenceRegionKey)] = region.Id;
-            Container.Values[GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey)] = region.Latitude;
-            Container.Values[GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey)] = region.Longitude;
-            Container.Values[GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey)] = region.NotifyOnEntry;
-            Container.Values[GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey)] = region.NotifyOnExit;
-            Container.Values[GetGeofenceFieldKey(id, RadiusGeofenceRegionKey)] = region.Radius;
+            Container.Values[GetFieldKey(id, IdGeofenceRegionKey)] = region.Id;
+            Container.Values[GetFieldKey(id, LatitudeGeofenceRegionKey)] = region.Latitude;
+            Container.Values[GetFieldKey(id, LongitudeGeofenceRegionKey)] = region.Longitude;
+            Container.Values[GetFieldKey(id, NotifyOnEntryGeofenceRegionKey)] = region.NotifyOnEntry;
+            Container.Values[GetFieldKey(id, NotifyOnExitGeofenceRegionKey)] = region.NotifyOnExit;
+            Container.Values[GetFieldKey(id, RadiusGeofenceRegionKey)] = region.Radius;
             
         }
 
-        public override void ClearGeofenceRegions()
+        public override void RemoveAll()
         {
             ApplicationData.Current.LocalSettings.DeleteContainer(GeofenceStoreId);
         }
 
-        public override void RemoveGeofenceRegion(string id)
+        public override void Remove(string id)
         {
-            Container.Values.Remove(GetGeofenceFieldKey(id, IdGeofenceRegionKey));
-            Container.Values.Remove(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey));
-            Container.Values.Remove(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey));
-            Container.Values.Remove(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
-            Container.Values.Remove(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
-            Container.Values.Remove(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, IdGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, LatitudeGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, LongitudeGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, NotifyOnEntryGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, NotifyOnExitGeofenceRegionKey));
+            Container.Values.Remove(GetFieldKey(id, RadiusGeofenceRegionKey));
         }
     }
 }

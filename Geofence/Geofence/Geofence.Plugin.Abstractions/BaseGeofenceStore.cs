@@ -8,6 +8,9 @@ namespace Geofence.Plugin.Abstractions
 {
     public abstract class BaseGeofenceStore : IGeofenceStore
     {
+        /// <summary>
+        /// Storage Keys
+        /// </summary>
         protected const string GeofenceStoreId = "CrossGeofence.Store";
         protected const string LatitudeGeofenceRegionKey = "Geofence.Region.Latitude";
         protected const string LongitudeGeofenceRegionKey = "Geofence.Region.Longitude";
@@ -24,22 +27,42 @@ namespace Geofence.Plugin.Abstractions
         protected const string ShowNotificationGeofenceRegionKey = "Geofence.Region.ShowNotification";
         protected const string PersistentGeofenceRegionKey = "Geofence.Region.Persistent";
         protected const string StayedInThresholdDurationGeofenceRegionKey = "Geofence.Region.StayedInThresholdDuration";
+       
         /// <summary>
-        /// Given a Geofence object's ID and the name of a field , return the keyname of the object's values in Store
+        /// Given a GeofenceCircularRegion object's ID and the name of a field , return the keyname of the object's values in Store
         /// </summary>
-        /// <returns>The full key name o a value in SharedPreferences</returns>
-        /// <param name="id">The ID of a Geofence object</param>
+        /// <returns>The full key name o a value in Store</returns>
+        /// <param name="id">The ID of a GeofenceCircularRegion object</param>
         /// <param name="fieldName">The field represented by the key</param>
-        protected string GetGeofenceFieldKey(String id, String fieldName)
+        protected string GetFieldKey(String id, String fieldName)
         {
             return GeofenceStoreId + "_" + id + "_" + fieldName;
         }
-
-        public abstract  Dictionary<string, GeofenceCircularRegion> GetGeofenceRegions();
-        public abstract GeofenceCircularRegion GetGeofenceRegion(string id);
-        public abstract void SetGeofenceRegion(GeofenceCircularRegion region);
-        public abstract void ClearGeofenceRegions();
-        public abstract void RemoveGeofenceRegion(String id);
+        /// <summary>
+        /// Gets all stored geofence regions
+        /// </summary>
+        /// <returns></returns>
+        public abstract  Dictionary<string, GeofenceCircularRegion> GetAll();
+        /// <summary>
+        /// Gets specific geofence region from store
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public abstract GeofenceCircularRegion Get(string id);
+        /// <summary>
+        /// Saves geofence region in store
+        /// </summary>
+        /// <param name="region"></param>
+        public abstract void Save(GeofenceCircularRegion region);
+        /// <summary>
+        /// Clear geofence regions in store
+        /// </summary>
+        public abstract void RemoveAll();
+        /// <summary>
+        /// Remove specific geofence region from store
+        /// </summary>
+        /// <param name="id"></param>
+        public abstract void Remove(String id);
         
     }
 }

@@ -27,7 +27,7 @@ namespace Geofence.Plugin
 
       public const string GeoReceiverAction = "ACTION_RECEIVE_GEOFENCE";
   
-      private Dictionary<string,GeofenceCircularRegion> mRegions= GeofenceStore.SharedInstance.GetGeofenceRegions();
+      private Dictionary<string,GeofenceCircularRegion> mRegions= GeofenceStore.SharedInstance.GetAll();
 
       private  Dictionary<string, GeofenceResult> mGeofenceResults= new Dictionary<string, GeofenceResult>();
 
@@ -100,7 +100,7 @@ namespace Geofence.Plugin
           {
               mRegions.Clear();
               mGeofenceResults.Clear();
-              GeofenceStore.SharedInstance.ClearGeofenceRegions();
+              GeofenceStore.SharedInstance.RemoveAll();
           }
      
       }
@@ -127,7 +127,7 @@ namespace Geofence.Plugin
           {
               mRegions.Clear();
               mGeofenceResults.Clear();
-              GeofenceStore.SharedInstance.ClearGeofenceRegions();
+              GeofenceStore.SharedInstance.RemoveAll();
               Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
         
           }
@@ -205,9 +205,9 @@ namespace Geofence.Plugin
                     .SetTransitionTypes(transitionTypes)
                     .Build());
 
-                    if (GeofenceStore.SharedInstance.GetGeofenceRegion(region.Id)==null)
+                    if (GeofenceStore.SharedInstance.Get(region.Id)==null)
                     {
-                        GeofenceStore.SharedInstance.SetGeofenceRegion(region);
+                        GeofenceStore.SharedInstance.Save(region);
                     }
                     
                 }
@@ -241,7 +241,7 @@ namespace Geofence.Plugin
             {
                 throw NewGeofenceNotInitializedException();
             }
-            GeofenceStore.SharedInstance.ClearGeofenceRegions();
+            GeofenceStore.SharedInstance.RemoveAll();
             mRegions.Clear();
             mGeofenceResults.Clear();
             Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
@@ -387,7 +387,7 @@ namespace Geofence.Plugin
           foreach(string identifier in regionIdentifiers)
           {
               RemoveRegion(identifier);
-              GeofenceStore.SharedInstance.RemoveGeofenceRegion(identifier);
+              GeofenceStore.SharedInstance.Remove(identifier);
               CrossGeofence.GeofenceListener.OnMonitoringStopped(identifier);
           }
 
@@ -415,7 +415,7 @@ namespace Geofence.Plugin
           }
 
           RemoveRegion(regionIdentifier);
-          GeofenceStore.SharedInstance.RemoveGeofenceRegion(regionIdentifier);
+          GeofenceStore.SharedInstance.Remove(regionIdentifier);
           Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, new List<string>() { regionIdentifier }).SetResultCallback(this);
           CrossGeofence.GeofenceListener.OnMonitoringStopped(regionIdentifier);
 

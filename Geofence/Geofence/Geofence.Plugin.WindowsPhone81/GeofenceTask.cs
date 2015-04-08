@@ -32,7 +32,7 @@ namespace Geofence.Plugin
                 {
                     foreach (var report in reports)
                     {
-                        var geoNotification = GeofenceStore.SharedInstance.GetGeofenceRegion(report.Geofence.Id);
+                        var geoNotification = GeofenceStore.SharedInstance.Get(report.Geofence.Id);
                         if (geoNotification != null)
                         {
                           /*  var toastNotifier = ToastNotificationManager.CreateToastNotifier();
