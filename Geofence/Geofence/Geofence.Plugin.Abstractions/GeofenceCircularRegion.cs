@@ -32,7 +32,7 @@ namespace Geofence.Plugin.Abstractions
         /// </summary>
         public bool NotifyOnEntry { get; set; }
         /// <summary>
-        /// Notify when stays in region based on the milliseconds specified in StayedInThresholdDuration
+        /// Notify when stays in region based on the time span specified in StayedInThresholdDuration
         /// Note: Stayed in transition will not be fired if device has exit region before the StayedInThresholdDuration
         /// </summary>
         public bool NotifyOnStay { get; set; }
@@ -63,9 +63,9 @@ namespace Geofence.Plugin.Abstractions
         public bool ShowNotification { get; set; }
 
         /// <summary>
-        /// Sets minimum duration time in milliseconds before passing to stayed in transition after an entry 
+        /// Sets minimum duration time span before passing to stayed in transition after an entry 
         /// </summary>
-        public int StayedInThresholdDuration;
+        public TimeSpan StayedInThresholdDuration;
 
    
         public override string ToString()

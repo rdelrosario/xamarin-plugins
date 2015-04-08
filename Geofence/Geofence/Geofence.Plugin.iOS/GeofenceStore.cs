@@ -80,7 +80,7 @@ namespace Geofence.Plugin
                string notificationStayMessage = NSUserDefaults.StandardUserDefaults.StringForKey(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey));
                bool showNotification = NSUserDefaults.StandardUserDefaults.BoolForKey(GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey));
                bool persistent = NSUserDefaults.StandardUserDefaults.BoolForKey(GetGeofenceFieldKey(id, PersistentGeofenceRegionKey));
-               int stayedInThresholdDuration = NSUserDefaults.StandardUserDefaults.IntForKey(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
+               int stayedInThresholdDuration = (int)NSUserDefaults.StandardUserDefaults.IntForKey(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
 
                region = new GeofenceCircularRegion()
                {
@@ -96,7 +96,7 @@ namespace Geofence.Plugin
                    NotificationExitMessage = notificationExitMessage,
                    ShowNotification=showNotification,
                    Persistent=persistent,
-                   StayedInThresholdDuration=stayedInThresholdDuration
+                   StayedInThresholdDuration=TimeSpan.FromMilliseconds(stayedInThresholdDuration)
                };
            }
 
@@ -121,7 +121,7 @@ namespace Geofence.Plugin
             NSUserDefaults.StandardUserDefaults.SetDouble(region.Radius,GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.SetBool(region.ShowNotification, GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.SetBool(region.Persistent, GetGeofenceFieldKey(id, PersistentGeofenceRegionKey));
-            NSUserDefaults.StandardUserDefaults.SetInt(region.StayedInThresholdDuration, GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.SetInt((int)region.StayedInThresholdDuration.TotalMilliseconds, GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
 
             if(!string.IsNullOrEmpty(region.NotificationEntryMessage))
             {

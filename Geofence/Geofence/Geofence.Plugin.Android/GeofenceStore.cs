@@ -79,7 +79,7 @@ namespace Geofence.Plugin
                     NotificationExitMessage=notificationExitMessage,
                     ShowNotification=showNotification,
                     Persistent=persistent,
-                    StayedInThresholdDuration = stayedInThresholdDuration
+                    StayedInThresholdDuration = TimeSpan.FromMilliseconds(stayedInThresholdDuration)
 
                 };
 
@@ -112,7 +112,7 @@ namespace Geofence.Plugin
             prefs.PutString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), region.NotificationStayMessage);
             prefs.PutBoolean(GetGeofenceFieldKey(id, ShowNotificationGeofenceRegionKey), region.ShowNotification);
             prefs.PutBoolean(GetGeofenceFieldKey(id, PersistentGeofenceRegionKey), region.Persistent);
-            prefs.PutInt(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey), region.StayedInThresholdDuration);
+            prefs.PutInt(GetGeofenceFieldKey(id, StayedInThresholdDurationGeofenceRegionKey), (int)region.StayedInThresholdDuration.TotalMilliseconds);
 			// Commit the changes
 			prefs.Commit ();
            

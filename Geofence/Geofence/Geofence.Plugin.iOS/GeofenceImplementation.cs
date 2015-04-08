@@ -90,8 +90,15 @@ namespace Geofence.Plugin
 
               foreach (CLCircularRegion region in monitoredRegions)
               {
-
-                  locationManager.RequestState(region);
+                  if (!Regions.ContainsKey(region.Identifier))
+                  {
+                      locationManager.StopMonitoring(region);
+                  }
+                  else
+                  {
+                      locationManager.RequestState(region);
+                  }
+                 
               }
 
               locationManager.StartMonitoringSignificantLocationChanges();
@@ -140,6 +147,20 @@ namespace Geofence.Plugin
 
             string message = string.Format("{0} - {1}", CrossGeofence.Id, "Restarted monitoring to nearest 20 regions");
             System.Diagnostics.Debug.WriteLine(message);
+        }
+        else
+        {
+            //Check any current monitored regions not in loaded persistent regions and stop monitoring them
+            foreach (CLCircularRegion region in locationManager.MonitoredRegions)
+            {
+                if (!Regions.ContainsKey(region.Identifier))
+                {
+                    locationManager.StopMonitoring(region);
+                    string message = string.Format("{0} - Stopped monitoring region {1} wasn't in persistent loaded regions", CrossGeofence.Id, region.Identifier);
+                    System.Diagnostics.Debug.WriteLine(message);
+                }
+            }
+           
         }
       
         System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}", CrossGeofence.Id, "Location update",lastLocation.Coordinate.Latitude,lastLocation.Coordinate.Longitude));
@@ -223,9 +244,9 @@ namespace Geofence.Plugin
 
 
 
-          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].NotifyOnStay && Regions[region.Identifier].StayedInThresholdDuration != 0)
+          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].NotifyOnStay && Regions[region.Identifier].StayedInThresholdDuration.TotalMilliseconds != 0)
           {
-              await Task.Delay(Regions[region.Identifier].StayedInThresholdDuration);
+              await Task.Delay((int)Regions[region.Identifier].StayedInThresholdDuration.TotalMilliseconds);
 
               if (GeofenceResults[region.Identifier].LastExitTime == null && GeofenceResults[region.Identifier].Transition != GeofenceTransition.Stayed)
               {
