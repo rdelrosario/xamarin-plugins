@@ -33,28 +33,6 @@ namespace Geofence.Plugin
 
       public GeofenceImplementation()
       {
-          RequestAlwaysAuthorization();
-
-          if (!CLLocationManager.LocationServicesEnabled)
-          {
-              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enable Location Services");
-              System.Diagnostics.Debug.WriteLine(message);
-              CrossGeofence.GeofenceListener.OnError(message);
-          }
-          else if (CLLocationManager.Status == CLAuthorizationStatus.Denied || CLLocationManager.Status == CLAuthorizationStatus.Restricted)
-          {
-              string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to authorize Location Services");
-              System.Diagnostics.Debug.WriteLine(message);
-              CrossGeofence.GeofenceListener.OnError(message);
-
-          }
-          else if (!CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
-          {
-              string message = string.Format("{0} - {1}", CrossGeofence.Id, "Plugin requires region monitoring, which is unavailable on this device");
-              System.Diagnostics.Debug.WriteLine(message);
-
-              CrossGeofence.GeofenceListener.OnError(message);
-          }
 
           mGeofenceResults = new Dictionary<string, GeofenceResult>();
 
@@ -100,15 +78,7 @@ namespace Geofence.Plugin
               System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Id, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
           }
 
-          if (CrossGeofence.EnableLocalNotifications)
-          {
-              var settings = UIUserNotificationSettings.GetSettingsForTypes(
-                UIUserNotificationType.Alert
-                | UIUserNotificationType.Badge
-                | UIUserNotificationType.Sound,
-                new NSSet());
-              UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
-          }
+         
 
           if (locationManager.MonitoredRegions.Count > 0 && IsMonitoring)
           {
@@ -315,6 +285,9 @@ namespace Geofence.Plugin
               throw NewGeofenceNotInitializedException();
           }
 
+          RequestAlwaysAuthorization();
+
+     
           if (!CLLocationManager.LocationServicesEnabled)
           {
               string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enable Location Services");
@@ -329,6 +302,13 @@ namespace Geofence.Plugin
 
           }else if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
           {
+              var settings = UIUserNotificationSettings.GetSettingsForTypes(
+                UIUserNotificationType.Alert
+                | UIUserNotificationType.Badge
+                | UIUserNotificationType.Sound,
+                new NSSet());
+              UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+
               if (IsMonitoring)
               {
                   StopMonitoring();
@@ -418,7 +398,7 @@ namespace Geofence.Plugin
           locationManager.StopMonitoringSignificantLocationChanges();
           mRegions.Clear();
           mGeofenceResults.Clear();
-
+          
    
           CrossGeofence.GeofenceListener.OnMonitoringStopped();
         

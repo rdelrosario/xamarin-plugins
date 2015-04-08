@@ -17,17 +17,28 @@ namespace Geofence.Plugin
     internal class GeofenceStore : BaseGeofenceStore
     {
         private static GeofenceStore sharedInstance = new GeofenceStore();
-        private NSString GeofenceIdsKey=new NSString(@"Geofence.KeyIds");
+        private string GeofenceIdsKey="Geofence.KeyIds";
         public static GeofenceStore SharedInstance { get { return sharedInstance; } }
-        private NSMutableDictionary geofenceIds;
+        private ISet<string> geofenceIds;
+        private const string IdSeparator = "|";
         private GeofenceStore()
         {
-            if (NSUserDefaults.StandardUserDefaults.ValueForKey(GeofenceIdsKey)==null)
+            geofenceIds = new HashSet<string>();
+
+            if (!string.IsNullOrEmpty(NSUserDefaults.StandardUserDefaults.StringForKey(GeofenceIdsKey)))
             {
-                NSUserDefaults.StandardUserDefaults.SetValueForKey(new NSMutableDictionary(),GeofenceIdsKey);
+                //GeofenceIdsKey
+                string[] keys = NSUserDefaults.StandardUserDefaults.StringForKey(GeofenceIdsKey).Split(IdSeparator[0]);
+
+                foreach(string k in keys)
+                {
+
+                    geofenceIds.Add(k);
+
+                }
+
             }
 
-            geofenceIds = (NSMutableDictionary)NSUserDefaults.StandardUserDefaults.ValueForKey(GeofenceIdsKey);
         }
        
         public override Dictionary<string, GeofenceCircularRegion> GetGeofenceRegions()
@@ -35,7 +46,7 @@ namespace Geofence.Plugin
 
             Dictionary<string, GeofenceCircularRegion> regions = new Dictionary<string, GeofenceCircularRegion>();
 
-            foreach (NSString key in geofenceIds.Keys)
+            foreach (NSString key in geofenceIds)
             {
 
 
@@ -118,56 +129,53 @@ namespace Geofence.Plugin
                NSUserDefaults.StandardUserDefaults.SetString(region.StayMessage, GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey));
             }
 
-            geofenceIds.Add(new NSString(id),new NSString(GetGeofenceFieldKey(id, IdGeofenceRegionKey)));
-           
-            NSUserDefaults.StandardUserDefaults.SetValueForKey(geofenceIds, GeofenceIdsKey);
-  
+            geofenceIds.Add(id);
+            
+            NSUserDefaults.StandardUserDefaults.SetString(string.Join(IdSeparator,geofenceIds.ToArray<string>()),GeofenceIdsKey);
+            
             NSUserDefaults.StandardUserDefaults.Synchronize();
         }
 
         public override void ClearGeofenceRegions()
         {
-            NSDictionary geofenceIds=(NSDictionary)NSUserDefaults.StandardUserDefaults.ValueForKey(GeofenceIdsKey);
-   
-            foreach (NSString key in geofenceIds.Keys)
-            {
-                RemoveGeofenceRegion(key.ToString());
-            }
-
             
+            foreach (string key in geofenceIds)
+            {
+                ClearKeysForId(key);
+            }
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GeofenceIdsKey);
+            
+        }
+
+        public void ClearKeysForId(string id)
+        {
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, IdGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey));
         }
 
         public override void RemoveGeofenceRegion(string id)
         {
              if(!string.IsNullOrEmpty(NSUserDefaults.StandardUserDefaults.StringForKey(GetGeofenceFieldKey(id, IdGeofenceRegionKey))))
              {
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, IdGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, LatitudeGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, LongitudeGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, RadiusGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey));
-                 NSUserDefaults.StandardUserDefaults.RemoveObject(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey));
 
-                 if(geofenceIds.Count>1)
-                 {
-                     NSString key = new NSString(id);
+                 ClearKeysForId(id);
 
-                     if(geofenceIds.ContainsKey(key))
-                     {
-                         geofenceIds.Remove(key);
-                     }
 
-                     NSUserDefaults.StandardUserDefaults.SetValueForKey(geofenceIds,GeofenceIdsKey);
+                if(geofenceIds.Contains(id))
+                {
+                         geofenceIds.Remove(id);
 
-                 }
-                 else
-                 {
-                     NSUserDefaults.StandardUserDefaults.RemoveObject(GeofenceIdsKey);
-                 }
+                         NSUserDefaults.StandardUserDefaults.SetString(string.Join(IdSeparator, geofenceIds.ToArray<string>()), GeofenceIdsKey);
+                }
+    
                  
 
                  NSUserDefaults.StandardUserDefaults.Synchronize();
