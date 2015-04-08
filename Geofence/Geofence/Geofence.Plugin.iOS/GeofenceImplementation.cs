@@ -218,7 +218,7 @@ namespace Geofence.Plugin
        
           if(CrossGeofence.EnableLocalNotifications)
           {
-              CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].EntryMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].EntryMessage);
+              CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationEntryMessage);
           }
           
 
@@ -234,7 +234,7 @@ namespace Geofence.Plugin
 
                   if (CrossGeofence.EnableLocalNotifications)
                   {
-                      CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].StayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].StayMessage);
+                      CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationStayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationStayMessage);
                   }
 
 
@@ -269,7 +269,7 @@ namespace Geofence.Plugin
 
           if (CrossGeofence.EnableLocalNotifications)
           {
-              CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].ExitMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].ExitMessage);
+              CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(GeofenceResults[region.Identifier].Transition), "geofence region:", region.Identifier) : Regions[region.Identifier].NotificationExitMessage);
           }
       }
 

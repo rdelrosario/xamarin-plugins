@@ -18,9 +18,9 @@ namespace Geofence.Plugin.Abstractions
         protected const string NotifyOnEntryGeofenceRegionKey = "Geofence.Region.NotifyOnEntry";
         protected const string NotifyOnExitGeofenceRegionKey = "Geofence.Region.NotifyOnExit";
         protected const string NotifyOnStayGeofenceRegionKey = "Geofence.Region.NotifyOnStay";
-        protected const string EntryMessageGeofenceRegionKey = "Geofence.Region.EntryMessage";
-        protected const string ExitMessageGeofenceRegionKey = "Geofence.Region.ExitMessage";
-        protected const string StayMessageGeofenceRegionKey = "Geofence.Region.StayMessage";
+        protected const string NotificationEntryMessageGeofenceRegionKey = "Geofence.Region.NotificationEntryMessage";
+        protected const string NotificationExitMessageGeofenceRegionKey = "Geofence.Region.NotificationExitMessage";
+        protected const string NotificationStayMessageGeofenceRegionKey = "Geofence.Region.NotificationStayMessage";
         /// <summary>
         /// Given a Geofence object's ID and the name of a field , return the keyname of the object's values in Store
         /// </summary>

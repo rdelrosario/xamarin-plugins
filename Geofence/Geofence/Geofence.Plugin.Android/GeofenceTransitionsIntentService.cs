@@ -98,13 +98,13 @@ namespace Geofence.Plugin
                           switch(gTransition)
                          {
                            case GeofenceTransition.Entered:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].EntryMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].EntryMessage;
+                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationEntryMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationEntryMessage;
                                break;
                            case GeofenceTransition.Exited:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].ExitMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].ExitMessage;
+                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationExitMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationExitMessage;
                                break;
                            case GeofenceTransition.Stayed:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].StayMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].StayMessage;
+                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationStayMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationStayMessage;
                                break;
 
                          }
@@ -143,7 +143,7 @@ namespace Geofence.Plugin
 
                     if (CrossGeofence.EnableLocalNotifications)
                     {
-                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].StayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[regionId].Transition), "geofence region:", regionId) : CrossGeofence.Current.Regions[regionId].StayMessage);
+                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? string.Format("{0} {1} {2}", GeofenceResult.GetTransitionString(CrossGeofence.Current.GeofenceResults[regionId].Transition), "geofence region:", regionId) : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
                     }
 
                 }

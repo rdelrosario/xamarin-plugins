@@ -47,9 +47,9 @@ namespace Geofence.Plugin
             bool notifyOnEntry = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), false);
             bool notifyOnExit = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), false);
             bool notifyOnStay = mPrefs.GetBoolean(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey), false);
-            string entryMessage = mPrefs.GetString(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey), string.Empty);
-            string exitMessage = mPrefs.GetString(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey), string.Empty);
-            string stayMessage = mPrefs.GetString(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey), string.Empty);
+            string NotificationEntryMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey), string.Empty);
+            string NotificationExitMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey), string.Empty);
+            string NotificationStayMessage = mPrefs.GetString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), string.Empty);
             //long expirationDuration = mPrefs.GetLong(GetGeofenceFieldKey(id, ExpirationDurationGeofenceRegionKey), InvalidLongValue);
             //int transitionType = mPrefs.GetInt(GetGeofenceFieldKey(id, TransitionTypeGeofenceRegionKey), InvalidIntValue);
 
@@ -69,9 +69,9 @@ namespace Geofence.Plugin
                     NotifyOnEntry=notifyOnEntry,
                     NotifyOnExit=notifyOnExit,
                     NotifyOnStay=notifyOnStay,
-                    EntryMessage=entryMessage,
-                    StayMessage=stayMessage,
-                    ExitMessage=exitMessage,
+                    NotificationEntryMessage=NotificationEntryMessage,
+                    NotificationStayMessage=NotificationStayMessage,
+                    NotificationExitMessage=NotificationExitMessage,
                 };
 
 			// Otherwise return null
@@ -95,9 +95,9 @@ namespace Geofence.Plugin
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey), region.NotifyOnEntry);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey), region.NotifyOnExit);
             prefs.PutBoolean(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey), region.NotifyOnStay);
-            prefs.PutString(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey), region.EntryMessage);
-            prefs.PutString(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey), region.ExitMessage);
-            prefs.PutString(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey), region.StayMessage);
+            prefs.PutString(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey), region.NotificationEntryMessage);
+            prefs.PutString(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey), region.NotificationExitMessage);
+            prefs.PutString(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey), region.NotificationStayMessage);
 			// Commit the changes
 			prefs.Commit ();
            
@@ -123,9 +123,9 @@ namespace Geofence.Plugin
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnEntryGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnExitGeofenceRegionKey));
                 prefs.Remove(GetGeofenceFieldKey(id, NotifyOnStayGeofenceRegionKey));
-                prefs.Remove(GetGeofenceFieldKey(id, EntryMessageGeofenceRegionKey));
-                prefs.Remove(GetGeofenceFieldKey(id, ExitMessageGeofenceRegionKey));
-                prefs.Remove(GetGeofenceFieldKey(id, StayMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, NotificationEntryMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, NotificationExitMessageGeofenceRegionKey));
+                prefs.Remove(GetGeofenceFieldKey(id, NotificationStayMessageGeofenceRegionKey));
                 // Commit the changes
                 prefs.Commit();
 
