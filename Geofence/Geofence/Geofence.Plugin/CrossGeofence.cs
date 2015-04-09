@@ -35,6 +35,7 @@ namespace Geofence.Plugin
 
         if (GeofenceListener == null)
         {
+           
             GeofenceListener = (IGeofenceListener)Activator.CreateInstance(typeof(T));
             Debug.WriteLine("Geofence plugin initialized.");
         }
@@ -51,6 +52,11 @@ namespace Geofence.Plugin
     {
       get
       {
+        //Should always initialize plugin before use
+        if (!CrossGeofence.IsInitialized)
+        {
+           throw GeofenceNotInitializedException();
+        }
         var ret = Implementation.Value;
         if (ret == null)
         {
@@ -72,6 +78,12 @@ namespace Geofence.Plugin
     internal static Exception NotImplementedInReferenceAssembly()
     {
       return new NotImplementedException("This functionality is not implemented in the portable version of this assembly.  You should reference the NuGet package from your main application project in order to reference the platform-specific implementation.");
+    }
+    internal static GeofenceNotInitializedException GeofenceNotInitializedException()
+    {
+        string description = string.Format("{0} - {1}", CrossGeofence.Id, "Plugin is not initialized. Should initialize before use with CrossGeofence Initialize method. Example:  CrossGeofence.Initialize<CrossGeofenceListener>()");
+
+        return new GeofenceNotInitializedException(description);
     }
   }
 }

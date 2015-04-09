@@ -40,6 +40,7 @@
   <ItemGroup>
     <Compile Include="BaseGeofenceStore.cs" />
     <Compile Include="GeofenceCircularRegion.cs" />
+    <Compile Include="GeofenceLocation.cs" />
     <Compile Include="GeofenceNotInitializedException.cs" />
     <Compile Include="GeofencePriority.cs" />
     <Compile Include="GeofenceResult.cs" />

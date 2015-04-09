@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Geofence.Plugin.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,6 +25,8 @@ namespace Geofence.Plugin
         {
             //Location Updated
             System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}",CrossGeofence.Id,"Location Update",location.Latitude,location.Longitude));
+            ((GeofenceImplementation)CrossGeofence.Current).SetLastKnownLocation(location);
+            
         }
     }
 }
