@@ -102,7 +102,7 @@ namespace Geofence.Plugin
       /// <param name="region"></param>
       public void StartMonitoring(GeofenceCircularRegion region)
       {
-          if (IsMonitoring)
+          if (IsMonitoring && mGoogleApiClient.IsConnected)
           {
               Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
           }
@@ -144,7 +144,7 @@ namespace Geofence.Plugin
       /// <param name="regions"></param>
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)
       {
-          if (IsMonitoring)
+          if (IsMonitoring && mGoogleApiClient.IsConnected)
           {
               Android.Gms.Location.LocationServices.GeofencingApi.RemoveGeofences(mGoogleApiClient, GeofenceTransitionPendingIntent).SetResultCallback(this);
           }

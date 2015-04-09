@@ -37,7 +37,7 @@ namespace Geofence.Plugin.Abstractions
         /// <returns>The full key name o a value in Store</returns>
         /// <param name="id">The ID of a GeofenceCircularRegion object</param>
         /// <param name="fieldName">The field represented by the key</param>
-        protected string GetFieldKey(String id, String fieldName)
+        protected string GetFieldKey(string id, string fieldName)
         {
             return GeofenceStoreId + "_" + id + "_" + fieldName;
         }
