@@ -82,20 +82,11 @@ namespace Geofence.Plugin
                bool persistent = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, PersistentGeofenceRegionKey));
                int stayedInThresholdDuration = (int)NSUserDefaults.StandardUserDefaults.IntForKey(GetFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
 
-               region = new GeofenceCircularRegion()
+               region = new GeofenceCircularRegion(id,lat,lon,radius,notifyOnEntry,notifyOnExit,notifyOnStay,showNotification,persistent)
                {
-                   Id = id,
-                   Latitude = lat,
-                   Longitude = lon,
-                   Radius = radius,
-                   NotifyOnEntry = notifyOnEntry,
-                   NotifyOnExit = notifyOnExit,
-                   NotifyOnStay = notifyOnStay,
                    NotificationEntryMessage = notificationEntryMessage,
                    NotificationStayMessage = notificationStayMessage,
                    NotificationExitMessage = notificationExitMessage,
-                   ShowNotification=showNotification,
-                   Persistent=persistent,
                    StayedInThresholdDuration=TimeSpan.FromMilliseconds(stayedInThresholdDuration)
                };
            }

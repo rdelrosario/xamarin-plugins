@@ -65,20 +65,13 @@ namespace Geofence.Plugin
                 // && expirationDuration != InvalidLongValue
                 //&& transitionType != InvalidIntValue
                 )
-                return new GeofenceCircularRegion()
+                return new GeofenceCircularRegion(id,lat,lng,radius,notifyOnEntry,notifyOnExit,notifyOnStay,showNotification,persistent)
                 {
-                    Id = id,
-                    Latitude = lat,
-                    Longitude = lng,
-                    Radius = radius,
-                    NotifyOnEntry=notifyOnEntry,
-                    NotifyOnExit=notifyOnExit,
-                    NotifyOnStay=notifyOnStay,
+
                     NotificationEntryMessage=notificationEntryMessage,
                     NotificationStayMessage=notificationStayMessage,
                     NotificationExitMessage=notificationExitMessage,
-                    ShowNotification=showNotification,
-                    Persistent=persistent,
+                   
                     StayedInThresholdDuration = TimeSpan.FromMilliseconds(stayedInThresholdDuration)
 
                 };

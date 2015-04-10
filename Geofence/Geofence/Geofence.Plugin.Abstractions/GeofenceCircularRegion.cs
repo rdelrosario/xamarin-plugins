@@ -11,6 +11,22 @@ namespace Geofence.Plugin.Abstractions
     /// </summary>
     public class GeofenceCircularRegion
     {
+        internal GeofenceCircularRegion()
+        {
+
+        }
+        public GeofenceCircularRegion(string id, double centerLatitude, double centerLongitude,double radius, bool notifyOnEntry = true, bool notifyOnExit = true, bool notifyOnStay = false,bool showNotification = true, bool persistent = true)
+        {
+            Id=id;
+            Latitude = centerLatitude;
+            Longitude = centerLongitude;
+            Radius = radius;
+            NotifyOnEntry = notifyOnEntry;
+            NotifyOnExit = notifyOnExit;
+            NotifyOnStay = notifyOnStay;
+            ShowNotification = showNotification;
+            Persistent = persistent;
+        }
         /// <summary>
         /// Region identifier
         /// </summary>

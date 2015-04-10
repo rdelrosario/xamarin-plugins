@@ -19,23 +19,23 @@ namespace $rootnamespace$.Helpers
 
         public void OnMonitoringStopped()
         {
-            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "Monitoring stopped for all regions"));
+            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Monitoring stopped for all regions"));
         }
 
         public void OnMonitoringStopped(string identifier)
         {
-            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Monitoring stopped in region", identifier));
+            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Id, "Monitoring stopped in region", identifier));
         }
 
         public void OnError(string error)
         {
-            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Error", error));
+            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Id, "Error", error));
         }
 
 
         public void OnRegionStateChanged(GeofenceResult result)
         {
-            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, result.ToString()));
+            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, result.ToString()));
         }
     }
 }
