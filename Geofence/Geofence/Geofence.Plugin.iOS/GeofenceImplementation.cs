@@ -33,6 +33,8 @@ namespace Geofence.Plugin
 
       private GeofenceLocation lastKnownGeofenceLocation;
 
+      private const string ViewAction = "View";
+
       public GeofenceLocation LastKnownLocation { get { return lastKnownGeofenceLocation; } }
 
       public GeofenceImplementation()
@@ -211,7 +213,7 @@ namespace Geofence.Plugin
           OnRegionEntered(e.Region);
         
       }
-      async void OnRegionEntered(CLRegion region)
+      void OnRegionEntered(CLRegion region)
       {
           if (GeofenceResults.ContainsKey(region.Identifier) && GeofenceResults[region.Identifier].Transition == GeofenceTransition.Entered)
           {
@@ -231,35 +233,44 @@ namespace Geofence.Plugin
           mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now;
           mGeofenceResults[region.Identifier].LastExitTime = null;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
-         
-          CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
-
-          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification)
+          if(region.NotifyOnEntry)
           {
-              CreateNotification("View",string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationEntryMessage);
+              CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
+
+              if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification)
+              {
+                  CreateNotification(ViewAction, string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationEntryMessage);
+              }
+
           }
 
 
+          //Checks if device has stayed asynchronously
+          CheckIfStayed(region.Identifier);
 
-          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].NotifyOnStay && Regions[region.Identifier].StayedInThresholdDuration.TotalMilliseconds != 0)
+        
+      }
+      public async Task CheckIfStayed(string regionId)
+      {
+         
+          if (CrossGeofence.Current.GeofenceResults.ContainsKey(regionId) && CrossGeofence.Current.Regions.ContainsKey(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds != 0)
           {
-              await Task.Delay((int)Regions[region.Identifier].StayedInThresholdDuration.TotalMilliseconds);
+              await Task.Delay((int)CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds);
 
-              if (GeofenceResults[region.Identifier].LastExitTime == null && GeofenceResults[region.Identifier].Transition != GeofenceTransition.Stayed)
+              if (CrossGeofence.Current.GeofenceResults[regionId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[regionId].Transition != GeofenceTransition.Stayed)
               {
-                  mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Stayed;
-                  CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
+                  CrossGeofence.Current.GeofenceResults[regionId].Transition = GeofenceTransition.Stayed;
 
-                  if (Regions[region.Identifier].ShowNotification)
+                  CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[regionId]);
+
+                  if (CrossGeofence.Current.Regions[regionId].ShowNotification)
                   {
-                      CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationStayMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationStayMessage);
+                      CreateNotification(ViewAction, string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? CrossGeofence.Current.GeofenceResults[regionId].ToString() : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
                   }
-
 
               }
           }
       }
-
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
           if (!GeofenceResults.ContainsKey(e.Region.Identifier)||GeofenceResults[e.Region.Identifier].Transition != GeofenceTransition.Exited)
@@ -287,7 +298,7 @@ namespace Geofence.Plugin
 
           if (Regions[region.Identifier].ShowNotification)
           {
-              CreateNotification("View", string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationExitMessage);
+              CreateNotification(ViewAction, string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationExitMessage);
           }
       }
 
@@ -403,7 +414,7 @@ namespace Geofence.Plugin
           }
 
 
-          cRegion.NotifyOnEntry = region.NotifyOnEntry;
+          cRegion.NotifyOnEntry = region.NotifyOnEntry || region.NotifyOnStay;
           cRegion.NotifyOnExit = region.NotifyOnExit;
 
 

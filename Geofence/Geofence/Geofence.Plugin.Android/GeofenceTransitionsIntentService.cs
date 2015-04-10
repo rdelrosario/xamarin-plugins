@@ -119,7 +119,8 @@ namespace Geofence.Plugin
 
 
                     //Check if device has stayed in region asynchronosly
-                    CheckIfStayed(geofence.RequestId);
+                    //Commented because is already handled using DWELL on Android
+                    //CheckIfStayed(geofence.RequestId);
                    
                    
                 }

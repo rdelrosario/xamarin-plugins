@@ -67,6 +67,11 @@ namespace Geofence.Plugin.Abstractions
         /// </summary>
         public TimeSpan StayedInThresholdDuration;
 
+        /// <summary>
+        /// Sets the expiration duration milliseconds of geofence. This geofence will be removed automatically after this period of time.
+        /// </summary>
+        //public long ExpirationDuration;
+
    
         public override string ToString()
         {
