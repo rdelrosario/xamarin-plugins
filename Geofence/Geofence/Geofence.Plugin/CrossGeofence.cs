@@ -23,7 +23,6 @@ namespace Geofence.Plugin
     #if __ANDROID__
       public static int IconResource { get; set; }
       public static Android.Net.Uri SoundUri { get; set; }
-      public static bool EnableMonitoringRestore { get; set; }
       public static int LocationUpdatesInterval { get; set; }
       public static int FastestLocationUpdatesInterval { get; set; }
    #endif

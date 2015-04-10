@@ -59,7 +59,7 @@ namespace Geofence.Plugin
                 CrossGeofence.Current.GeofenceResults[geofence.RequestId].Accuracy = geofencingEvent.TriggeringLocation.Accuracy;
 
                 double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
-                DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local).AddSeconds(seconds);
+                DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
 
                 //DateTime resultDate = DateTime.Now;
 

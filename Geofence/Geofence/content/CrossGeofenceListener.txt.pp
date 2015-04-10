@@ -12,9 +12,9 @@ namespace $rootnamespace$.Helpers
    //Class to handle geofence events such as start/stop monitoring, region state changes and errors.
     public class CrossGeofenceListener : IGeofenceListener
     {
-        public void OnMonitoringStarted(string identifier)
+       public void OnMonitoringStarted(string region)
         {
-            Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Monitoring started for region",identifier));
+	    Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Id, "Monitoring in region",region));
         }
 
         public void OnMonitoringStopped()
