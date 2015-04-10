@@ -378,11 +378,11 @@ This wouldn't be possible without all these great developer posts, articles and 
 * http://stackoverflow.com/questions/19434999/android-geofence-only-works-with-opened-app
 
 #####General References:
-*http://whatis.techtarget.com/definition/geofencing
-*http://welltechnically.com/?p=4691
-*http://jwegan.com/growth-hacking/effective-geofencing/
-*https://github.com/cowbell/cordova-plugin-geofence
-*https://github.com/cowbell/cordova-plugin-geofence-wp8.1/tree/master/GeofenceComponent
+* http://whatis.techtarget.com/definition/geofencing
+* http://welltechnically.com/?p=4691
+* http://jwegan.com/growth-hacking/effective-geofencing/
+* https://github.com/cowbell/cordova-plugin-geofence
+* https://github.com/cowbell/cordova-plugin-geofence-wp8.1/tree/master/GeofenceComponent
 
 Thanks!
 

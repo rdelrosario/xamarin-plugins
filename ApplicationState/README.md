@@ -2,10 +2,6 @@
 
 Simple cross platform plugin to check if application is on foreground or background. 
 
-### Setup
-* Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.ApplicationState
-* Install into your PCL project and Client projects.
-
 **Supports**
 * Xamarin.iOS
 * Xamarin.iOS (x64 Unified)
