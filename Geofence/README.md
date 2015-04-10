@@ -303,7 +303,7 @@ This are special features you can enable or change values
     public static float SmallestDisplacement { get; set; }
 
 ```
-##### Android Specific Features
+##### Android Specifics
 
 There are a few things you can configure in Android project using the following properties from CrossGeofence class:
 ```
