@@ -109,10 +109,18 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Geofence.Plugin.WindowsPhone81\GeofenceImplementation.cs">
+      <Link>GeofenceImplementation.cs</Link>
+    </Compile>
+    <Compile Include="..\Geofence.Plugin.WindowsPhone81\GeofenceStore.cs">
+      <Link>GeofenceStore.cs</Link>
+    </Compile>
+    <Compile Include="..\Geofence.Plugin.WindowsPhone81\GeofenceTask.cs">
+      <Link>GeofenceTask.cs</Link>
+    </Compile>
     <Compile Include="..\Geofence.Plugin\CrossGeofence.cs">
       <Link>CrossGeofence.cs</Link>
     </Compile>
-    <Compile Include="GeofenceImplementation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

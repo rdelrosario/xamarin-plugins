@@ -39,6 +39,7 @@
       <Link>CrossGeofence.cs</Link>
     </Compile>
     <Compile Include="GeofenceImplementation.cs" />
+    <Compile Include="GeofenceStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

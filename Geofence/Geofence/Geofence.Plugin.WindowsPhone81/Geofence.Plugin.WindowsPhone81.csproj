@@ -91,6 +91,8 @@
       <Link>CrossGeofence.cs</Link>
     </Compile>
     <Compile Include="GeofenceImplementation.cs" />
+    <Compile Include="GeofenceStore.cs" />
+    <Compile Include="GeofenceTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

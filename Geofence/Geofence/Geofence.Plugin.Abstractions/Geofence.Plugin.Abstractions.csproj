@@ -38,13 +38,16 @@
     <!-- A reference to the entire .NET Framework is automatically included -->
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseGeofenceStore.cs" />
     <Compile Include="GeofenceCircularRegion.cs" />
+    <Compile Include="GeofenceLocation.cs" />
     <Compile Include="GeofenceNotInitializedException.cs" />
     <Compile Include="GeofencePriority.cs" />
     <Compile Include="GeofenceResult.cs" />
     <Compile Include="GeofenceTransition.cs" />
     <Compile Include="IGeofence.cs" />
     <Compile Include="IGeofenceListener.cs" />
+    <Compile Include="IGeofenceStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />

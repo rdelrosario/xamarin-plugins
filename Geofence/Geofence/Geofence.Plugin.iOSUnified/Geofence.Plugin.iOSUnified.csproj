@@ -38,6 +38,9 @@
     <Compile Include="..\Geofence.Plugin.iOS\GeofenceImplementation.cs">
       <Link>GeofenceImplementation.cs</Link>
     </Compile>
+    <Compile Include="..\Geofence.Plugin.iOS\GeofenceStore.cs">
+      <Link>GeofenceStore.cs</Link>
+    </Compile>
     <Compile Include="..\Geofence.Plugin\CrossGeofence.cs">
       <Link>CrossGeofence.cs</Link>
     </Compile>
