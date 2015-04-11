@@ -305,7 +305,7 @@ CrossGeofence.Current.StartMonitoring(new GeofenceCircularRegion ("My Region",18
 
 ##### CrossGeofence Features
 
-This are special features you can enable or change values
+This are special features you can enable or change values. By default plugin uses Balanced Power Priority.
 
 ```csharp
     //Set the Priority for the Geofence Tracking Location Accuracy
@@ -313,6 +313,41 @@ This are special features you can enable or change values
 
     //Set the smallest displacement should be done from current location before a location update
     public static float SmallestDisplacement { get; set; }
+```
+
+Geofence Accuracy Precision Priority enum
+
+```csharp
+    /// <summary>
+    /// Geofence Accuracy Precision Priority enum
+    /// </summary>
+    public enum GeofencePriority
+    {
+        /// <summary>
+        /// Sets the location updates for balanced power accurancy basing location on Cells and WiFi spots.
+        /// </summary>
+        BalancedPower,
+        /// <summary>
+        /// Highest accuracy uses GPS and other sources to determine best location precision
+        /// </summary>
+        HighAccuracy,
+        /// <summary>
+        /// Acceptable accuracy 
+        /// </summary>
+        AcceptableAccuracy,
+        /// <summary>
+        /// Medium accuracy  - Low Battery Usage
+        /// </summary>
+        MediumAccuracy,
+        /// <summary>
+        /// Low accuracy - Low Battery Usage
+        /// </summary>
+        LowAccuracy,
+        /// <summary>
+        /// Lowest Acurracy - No Power
+        /// </summary>
+        LowestAccuracy
+    }
 ```
 
 ##### Android Specifics
