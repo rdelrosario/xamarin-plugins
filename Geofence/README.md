@@ -28,7 +28,7 @@ This methods initializes geofence plugin. The generic <b>T</b> should be a class
 
 ####iOS
  On the AppDelegate:
-```
+```csharp
 public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 {
     //Initialization...
@@ -42,7 +42,7 @@ public override bool FinishedLaunching (UIApplication app, NSDictionary options)
  On the Android Application class, is better to use the OnCreate of the Android Application class so you can handle geofence events even when activities are closed or app not running by starting a sticky android service to keep listening to geofence events. <b>(See Helpers/GeofenceService.txt and GeofenceAppStarter.txt)</b>
 
 Initialization on your MainActivity/Application class.
-```
+```csharp
 public override void OnCreate()
 {
     base.OnCreate();
@@ -57,7 +57,7 @@ public override void OnCreate()
 
 Must implement IGeofenceListener. This would be commonly implemented in the Core project if sharing code between Android or iOS. In the case you are using the plugin only for a specific platform this would be implemented in that platform.
 
-```
+```csharp
 public class  CrossGeofenceListener : IGeofenceListener
 {
          public void OnMonitoringStarted(string region)
@@ -90,7 +90,7 @@ public class  CrossGeofenceListener : IGeofenceListener
 
 Enum of Geofence Transaction Types:
 
-```
+```csharp
     /// <summary>
     /// GeofenceTransition enum
     /// </summary>
@@ -118,7 +118,7 @@ Enum of Geofence Transaction Types:
 
 Class to define and configure geofence region
 
-```
+```csharp
  /// <summary>
  /// Region identifier
  /// </summary>
@@ -179,7 +179,7 @@ Class to define and configure geofence region
 
 When there is a geofence event update you will get an instance of this class.
 
-```
+```csharp
  /// <summary>
  /// Last time entered the geofence region
  /// </summary>
@@ -225,13 +225,13 @@ Methods and properties
 
 Start monitoring in specified region 
 
-```
+```csharp
 void StartMonitoring(GeofenceCircularRegion region);
 ```
 
 Starts monitoring multiple regions
 
-```
+```csharp
 void StartMonitoring(IList<GeofenceCircularRegion> regions);
 ```
 
@@ -239,13 +239,13 @@ void StartMonitoring(IList<GeofenceCircularRegion> regions);
 
 Stop monitoring specified geofence region. 
 
-```
+```csharp
 void StopMonitoring(GeofenceCircularRegion region);
 ```
 
 Stop monitoring multiple regions. 
 
-```
+```csharp
 void StopMonitoring(IList<GeofenceCircularRegion> regions);
 ```
 
@@ -253,7 +253,7 @@ void StopMonitoring(IList<GeofenceCircularRegion> regions);
 
 Stop monitoring all geofence regions. 
 
-```
+```csharp
 void StopMonitoringAllRegions();
 ```
 
@@ -261,7 +261,7 @@ void StopMonitoringAllRegions();
 
 Last known geofence location. This location will be null if isn't monitoring any regions yet.
 
-```
+```csharp
 GeofenceLocation LastKnownLocation { get; }
 ```
 
@@ -269,7 +269,7 @@ GeofenceLocation LastKnownLocation { get; }
 
 Indicator that is true if at least one region is been monitored
 
-```
+```csharp
 bool IsMonitoring { get; }
 ```
 
@@ -277,7 +277,7 @@ bool IsMonitoring { get; }
 
 Dictionary that contains all regions been monitored
 
-```
+```csharp
 IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get; }
 ```
 
@@ -285,27 +285,45 @@ IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get; }
 
 Dicitonary that contains all geofence results received
 
-```
+```csharp
 IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get; }
 ```
+#### Example 
 
+Start monitoring a region
+
+```csharp
+CrossGeofence.Current.StartMonitoring(new GeofenceCircularRegion ("My Region",18.4802878,-69.9469203,52220) {
+      
+      //To get notified if user stays in region for at least 5 minutes
+						NotifyOnStay=true,  
+						StayedInThresholdDuration=TimeSpan.FromMinutes(5)
+
+	});
+```
 #### Notes
 
 ##### CrossGeofence Features
 
 This are special features you can enable or change values
 
-```
+```csharp
     //Set the Priority for the Geofence Tracking Location Accuracy
     public static GeofencePriority GeofencePriority { get; set; }
 
     //Set the smallest displacement should be done from current location before a location update
     public static float SmallestDisplacement { get; set; }
 
-```
+```csharp
 ##### Android Specifics
 
-There are a few things you can configure in Android project using the following properties from CrossGeofence class:
+* Requires the following permissions:
+   * <b>android.permission.ACCESS_FINE_LOCATION</b>
+   * <b>android.permission.ACCESS_COARSE_LOCATION</b>
+   * <b>com.google.android.providers.gsf.permission.READ_GSERVICES* permissions</b>
+   *  <b>android.permission.RECEIVE_BOOT_COMPLETED</b>. This permission allows the plugin to restore any geofence region previously monitored marked as persistent when rebooting.
+
+* There are a few things you can configure in Android project using the following properties from CrossGeofence class:
 ```
 
     //The sets the resource id for the icon will be used for the notification
@@ -322,11 +340,6 @@ There are a few things you can configure in Android project using the following 
 
 
 ```
-* Requires the following permissions:
-   * <b>android.permission.ACCESS_FINE_LOCATION</b>
-   * <b>android.permission.ACCESS_COARSE_LOCATION</b>
-   * <b>com.google.android.providers.gsf.permission.READ_GSERVICES* permissions</b>
-   *  <b>android.permission.RECEIVE_BOOT_COMPLETED</b>. This permission allows the plugin to restore any geofence region previously monitored marked as persistent when rebooting.
 
 * The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 * Make sure you have updated your Android SDK Manager libraries:
