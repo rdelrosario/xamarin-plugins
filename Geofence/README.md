@@ -313,8 +313,8 @@ This are special features you can enable or change values
 
     //Set the smallest displacement should be done from current location before a location update
     public static float SmallestDisplacement { get; set; }
+```
 
-```csharp
 ##### Android Specifics
 
 * Requires the following permissions:
@@ -324,7 +324,8 @@ This are special features you can enable or change values
    *  <b>android.permission.RECEIVE_BOOT_COMPLETED</b>. This permission allows the plugin to restore any geofence region previously monitored marked as persistent when rebooting.
 
 * There are a few things you can configure in Android project using the following properties from CrossGeofence class:
-```
+
+```csharp
 
     //The sets the resource id for the icon will be used for the notification
     public static int IconResource { get; set; }
@@ -337,8 +338,6 @@ This are special features you can enable or change values
 
     //Sets fastest interval for the location updates
     public static int FastestLocationUpdatesInterval { get; set; }
-
-
 ```
 
 * The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
