@@ -28,7 +28,7 @@ namespace Geofence.Plugin
    #endif
 
 
-    public static void Initialize<T>()
+    public static void Initialize<T>(GeofencePriority priority=GeofencePriority.BalancedPower, float smallestDisplacement = 0)
      where T : IGeofenceListener, new()
     {
 
@@ -42,6 +42,9 @@ namespace Geofence.Plugin
         {
             Debug.WriteLine("Geofence plugin already initialized.");
         }
+        GeofencePriority = priority;
+        SmallestDisplacement = smallestDisplacement;
+
        
     }
     /// <summary>
