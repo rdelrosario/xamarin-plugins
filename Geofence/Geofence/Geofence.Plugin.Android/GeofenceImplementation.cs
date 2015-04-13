@@ -211,12 +211,16 @@ namespace Geofence.Plugin
                     }
                     CrossGeofence.GeofenceListener.OnMonitoringStarted(region.Id);
                 }
-               
-                Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
-            
-                Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
 
-                CurrentRequestType = RequestType.Default;
+               if(geofenceList.Count>0)
+               {
+                   Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
+
+                   Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
+
+                   CurrentRequestType = RequestType.Default;
+               }
+              
 
             }catch(Java.Lang.Exception ex1)
             {
