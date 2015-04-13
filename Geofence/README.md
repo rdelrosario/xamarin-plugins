@@ -355,7 +355,7 @@ Geofence Accuracy Precision Priority enum
 * Requires the following permissions:
    * <b>android.permission.ACCESS_FINE_LOCATION</b>
    * <b>android.permission.ACCESS_COARSE_LOCATION</b>
-   * <b>com.google.android.providers.gsf.permission.READ_GSERVICES* permissions</b>
+   * <b>com.google.android.providers.gsf.permission.READ_GSERVICES</b>
    *  <b>android.permission.RECEIVE_BOOT_COMPLETED</b>. This permission allows the plugin to restore any geofence region previously monitored marked as persistent when rebooting.
 
 * There are a few things you can configure in Android project using the following properties from CrossGeofence class:
