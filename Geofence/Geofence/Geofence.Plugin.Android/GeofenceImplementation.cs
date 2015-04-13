@@ -38,7 +38,7 @@ namespace Geofence.Plugin
       private IGoogleApiClient mGoogleApiClient;
 
       // Defines the allowable request types
-	  public enum RequestType { Add,Update, Default }
+	  public enum RequestType { Add,Update,Delete, Default }
 
       public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
 
@@ -211,6 +211,7 @@ namespace Geofence.Plugin
                     }
                     CrossGeofence.GeofenceListener.OnMonitoringStarted(region.Id);
                 }
+               
                 Android.Gms.Location.GeofencingRequest request = new Android.Gms.Location.GeofencingRequest.Builder().SetInitialTrigger(Android.Gms.Location.GeofencingRequest.InitialTriggerEnter).AddGeofences(geofenceList).Build();
             
                 Android.Gms.Location.LocationServices.GeofencingApi.AddGeofences(mGoogleApiClient, request, GeofenceTransitionPendingIntent).SetResultCallback(this);
@@ -287,6 +288,26 @@ namespace Geofence.Plugin
         }
         public void StopMonitoringAllRegions()
         {
+            if (IsMonitoring && mGoogleApiClient.IsConnected)
+            {
+                RemoveGeofences();
+            }
+            else
+            {
+                //If not connection then connect
+                if (!mGoogleApiClient.IsConnecting)
+                {
+                    mGoogleApiClient.Connect();
+
+                }
+                //Request to add geofence regions once connected
+                CurrentRequestType = RequestType.Delete;
+            }
+            
+
+        }
+        private void RemoveGeofences()
+        {
             GeofenceStore.SharedInstance.RemoveAll();
             mRegions.Clear();
             mGeofenceResults.Clear();
@@ -294,7 +315,6 @@ namespace Geofence.Plugin
             StopLocationUpdates();
             mGoogleApiClient.Disconnect();
             CrossGeofence.GeofenceListener.OnMonitoringStopped();
-
         }
 
         private void InitializeGoogleAPI()
@@ -361,6 +381,9 @@ namespace Geofence.Plugin
             {
                 AddGeofences();
           
+            }else if(CurrentRequestType == RequestType.Delete)
+            {
+                RemoveGeofences();
             }
 
             StartLocationUpdates();
