@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage  Latitude="{Binding Latitude, Mode=OneWayToSource}" Longitude="{Binding Longitude, Mode=OneWayToSource}" Title="Map" xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:local="clr-namespace:CrossGeofenceSample;assembly=CrossGeofenceSample" xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps" x:Class="CrossGeofenceSample.MapPage">
+   <ContentPage.BindingContext>
+     <local:MapViewModel x:Name="viewModel"></local:MapViewModel>
+    </ContentPage.BindingContext>
+    <AbsoluteLayout x:Name="parentLayout">
+    <maps:Map AbsoluteLayout.LayoutBounds="0, 0, 1, 1" AbsoluteLayout.LayoutFlags="All"  HorizontalOptions="FillAndExpand" x:Name="mapView" IsShowingUser="true" MapType="Street">
+    </maps:Map>
+      <StackLayout Padding="10,0,10,0" AbsoluteLayout.LayoutBounds="0.0, 0.15" HorizontalOptions="FillAndExpand"  AbsoluteLayout.LayoutFlags="PositionProportional">
+       <Label Text="Place the geofence icon where you want to set the geofence region radius center" TextColor="Navy" FontAttributes="Bold" BackgroundColor="White" XAlign="Center" HorizontalOptions="CenterAndExpand"  IsVisible="{Binding IsEditing}" IsEnabled="{Binding IsNotBusy}" />
+      </StackLayout>
+      <Image  Source="geofence" Aspect="AspectFill" IsVisible="{Binding IsNotEditing}" HeightRequest="50" WidthRequest="50" VerticalOptions="Start"  AbsoluteLayout.LayoutBounds="0.05, 0.75"  AbsoluteLayout.LayoutFlags="PositionProportional">
+         <Image.GestureRecognizers>
+             <TapGestureRecognizer Command="{Binding EditCommand}"/>
+          </Image.GestureRecognizers>
+      </Image>
+      <Image Source="trash" HeightRequest="50" WidthRequest="50"  AbsoluteLayout.LayoutBounds="0.05, 0.95" AbsoluteLayout.LayoutFlags="PositionProportional" IsVisible="{Binding IsNotEditing}" Aspect="AspectFill" HorizontalOptions="FillAndExpand">
+	   <Image.GestureRecognizers>
+             <TapGestureRecognizer Command="{Binding ClearCommand}"/>
+          </Image.GestureRecognizers>
+      </Image>
+      <Label Text="Loading regions..." TextColor="Navy" BackgroundColor="White" FontAttributes="Bold" FontSize="Large" XAlign="Center" HorizontalOptions="CenterAndExpand" AbsoluteLayout.LayoutBounds="0.5, 0.5"  AbsoluteLayout.LayoutFlags="PositionProportional" IsVisible="{Binding IsBusy}" />
+     
+	 <Image Source="geofence" HeightRequest="50" WidthRequest="50"  AbsoluteLayout.LayoutBounds="0.5, 0.5" AbsoluteLayout.LayoutFlags="PositionProportional" IsVisible="{Binding IsEditing}" Aspect="AspectFill" HorizontalOptions="FillAndExpand"/>
+	 <Image Source="ok" AbsoluteLayout.LayoutBounds="0.30, 0.85" HeightRequest="60" WidthRequest="60" AbsoluteLayout.LayoutFlags="PositionProportional" IsVisible="{Binding IsEditing}" Aspect="AspectFill" HorizontalOptions="FillAndExpand">
+	  <Image.GestureRecognizers>
+             <TapGestureRecognizer Command="{Binding AddCommand}"/>
+       </Image.GestureRecognizers>
+	 </Image>
+	 <Image Source="cancel" AbsoluteLayout.LayoutBounds="0.70,0.85" HeightRequest="60" WidthRequest="60" AbsoluteLayout.LayoutFlags="PositionProportional" IsVisible="{Binding IsEditing}" Aspect="AspectFill" HorizontalOptions="FillAndExpand">
+	   <Image.GestureRecognizers>
+             <TapGestureRecognizer Command="{Binding CancelCommand}" />
+       </Image.GestureRecognizers>
+	 </Image>
+	</AbsoluteLayout>
+</ContentPage>

@@ -1,0 +1,32 @@
+﻿<Properties StartupItem="Droid/CrossGeofenceSample.Droid.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Release" PreferredExecutionTarget="Android.MonoForAndroid_API_15" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="CrossGeofenceSample/Views/MapPage.xaml.cs">
+    <Files>
+      <File FileName="CrossGeofenceSample/ViewModels/MapViewModel.cs" Line="139" Column="5" />
+      <File FileName="CrossGeofenceSample/Helpers/CrossGeofenceListener.cs" Line="35" Column="26" />
+      <File FileName="CrossGeofenceSample/obj/Debug/EventsPage.xaml.g.cs" Line="1" Column="1" />
+      <File FileName="CrossGeofenceSample/obj/Debug/LocationsPage.xaml.g.cs" Line="1" Column="1" />
+      <File FileName="CrossGeofenceSample/Views/MapPage.xaml.cs" Line="74" Column="16" />
+      <File FileName="CrossGeofenceSample/Views/HomePage.xaml" Line="2" Column="230" />
+      <File FileName="CrossGeofenceSample/ViewModels/EventsViewModel.cs" Line="18" Column="45" />
+      <File FileName="CrossGeofenceSample/Views/EventViewCell.xaml" Line="2" Column="11" />
+      <File FileName="CrossGeofenceSample/Views/EventViewCell.xaml.cs" Line="19" Column="4" />
+      <File FileName="CrossGeofenceSample/Views/EventsPage.xaml" Line="2" Column="14" />
+      <File FileName="CrossGeofenceSample/Helpers/Settings.cs" Line="26" Column="2" />
+      <File FileName="CrossGeofenceSample/Views/MapPage.xaml" Line="2" Column="14" />
+      <File FileName="CrossGeofenceSample/Views/EventsPage.xaml.cs" Line="1" Column="1" />
+      <File FileName="iOS/Renderers/CustomMapRenderer.cs" Line="1" Column="1" />
+      <File FileName="Droid/Properties/AndroidManifest.xml" Line="1" Column="1" />
+      <File FileName="Droid/Helpers/GeofenceService.cs" Line="1" Column="1" />
+      <File FileName="Droid/Properties/_SettingsStarted.txt" Line="1" Column="1" />
+      <File FileName="Droid/GeofenceAppStarter.cs" Line="1" Column="1" />
+      <File FileName="CrossGeofenceSample/Views/HomePage.xaml.cs" Line="1" Column="1" />
+      <File FileName="CrossGeofenceSample/ViewModels/HomeViewModel.cs" Line="1" Column="1" />
+      <File FileName="CrossGeofenceSample/CrossGeofenceSample.cs" Line="16" Column="57" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
