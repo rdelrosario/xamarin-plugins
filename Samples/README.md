@@ -1,7 +1,7 @@
 xamarin-plugins
 ===============
 
-Sample Project
+Sample Projects
 
 # Current Plugins Samples:
 
