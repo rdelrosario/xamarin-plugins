@@ -19,6 +19,10 @@ Simple cross platform plugin to handle geofence events such as entering, leaving
 * Geofence general settings configuration support
 * Android support for more than 100 geofence regions
 
+### Sample 
+
+Here is a sample project: **[Geofence Sample](https://github.com/domaven/xamarin-plugins/tree/master/Samples/Geofence)**
+
 ### API Usage
 
 Call **CrossGeofence.Current** from any project or PCL to gain access to APIs. Must initialize plugin on each platform before use. Should only be used after initialization, if not will get <b>GeofenceNotInitializedException</b>.
