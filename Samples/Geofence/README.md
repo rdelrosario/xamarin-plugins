@@ -13,6 +13,6 @@ To use the Google Maps API on Android you must generate an **API key** and add i
 
     <meta-data android:name="com.google.android.maps.v2.API_KEY" android:value="ApiKeyValueGoesHere" />
 
-You need to follow these instructions in order for the map data to display in MobileCRM on Android.
+You need to follow these instructions in order for the map data to display in CrossGeofenceSample on Android.
 
 Without a valid API key the maps control will display as a grey box on Android.
