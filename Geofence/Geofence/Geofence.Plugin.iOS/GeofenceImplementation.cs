@@ -124,9 +124,10 @@ namespace Geofence.Plugin
               {
                   lastKnownGeofenceLocation = new GeofenceLocation();
               }
+             
               lastKnownGeofenceLocation.Latitude = location.Coordinate.Latitude;
               lastKnownGeofenceLocation.Longitude = location.Coordinate.Longitude;
-
+              lastKnownGeofenceLocation.Accuracy = location.HorizontalAccuracy;
               DateTime referenceDate = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(2001, 1, 1, 0, 0, 0));
               referenceDate.AddSeconds(location.Timestamp.SecondsSinceReferenceDate);
 
@@ -227,9 +228,20 @@ namespace Geofence.Plugin
                   RegionId = region.Identifier
               });
           }
+
+          if (LastKnownLocation != null)
+          {
+              mGeofenceResults[region.Identifier].Latitude = LastKnownLocation.Latitude;
+              mGeofenceResults[region.Identifier].Longitude = LastKnownLocation.Longitude;
+              mGeofenceResults[region.Identifier].Accuracy = LastKnownLocation.Accuracy;
+          }
+          else
+          {
+              mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
+              mGeofenceResults[region.Identifier].Longitude = region.Center.Longitude;
+              mGeofenceResults[region.Identifier].Accuracy = region.Radius;
+          }
      
-          mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
-          mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
           mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now;
           mGeofenceResults[region.Identifier].LastExitTime = null;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
@@ -289,8 +301,19 @@ namespace Geofence.Plugin
               });
           }
 
-          mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
-          mGeofenceResults[region.Identifier].Latitude = region.Center.Longitude;
+          if(LastKnownLocation!=null)
+          {
+              mGeofenceResults[region.Identifier].Latitude = LastKnownLocation.Latitude;
+              mGeofenceResults[region.Identifier].Longitude = LastKnownLocation.Longitude;
+              mGeofenceResults[region.Identifier].Accuracy = LastKnownLocation.Accuracy;
+          }
+          else
+          {
+              mGeofenceResults[region.Identifier].Latitude = region.Center.Latitude;
+              mGeofenceResults[region.Identifier].Longitude = region.Center.Longitude;
+              mGeofenceResults[region.Identifier].Accuracy = region.Radius;
+          }
+        
           mGeofenceResults[region.Identifier].LastExitTime = DateTime.Now;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Exited;
          

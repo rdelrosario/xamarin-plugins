@@ -30,6 +30,7 @@ namespace Geofence.Plugin.Abstractions
         protected const string ShowNotificationGeofenceRegionKey = "Geofence.Region.ShowNotification";
         protected const string PersistentGeofenceRegionKey = "Geofence.Region.Persistent";
         protected const string StayedInThresholdDurationGeofenceRegionKey = "Geofence.Region.StayedInThresholdDuration";
+        protected const string ExitThresholdDurationGeofenceRegionKey = "Geofence.Region.ExitThresholdDuration";
         /// <summary>
         /// Given a GeofenceCircularRegion object's ID and the name of a field , return the keyname of the object's values in Store
         /// </summary>

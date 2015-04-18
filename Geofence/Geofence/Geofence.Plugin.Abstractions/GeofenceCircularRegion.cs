@@ -88,6 +88,11 @@ namespace Geofence.Plugin.Abstractions
         /// </summary>
         //public long ExpirationDuration;
 
+        /// <summary>
+        /// Sets minimum duration time span before passing to exit transition after an entry 
+        /// </summary>
+        // public TimeSpan ExitThresholdDuration;
+
    
         public override string ToString()
         {
