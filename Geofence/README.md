@@ -410,7 +410,6 @@ This wouldn't be possible without all these great developer posts, articles and 
 * http://hayageek.com/ios-geofencing-api/
 * http://developer.xamarin.com/recipes/ios/multitasking/geofencing/
 * http://nevan.net/2014/09/core-location-manager-changes-in-ios-8/
-* http://www.rapidvaluesolutions.com/tech_blog/geofencing-using-core-location-for-regional-monitoring-in-ios-applications/
 
 #####Android References:
 
