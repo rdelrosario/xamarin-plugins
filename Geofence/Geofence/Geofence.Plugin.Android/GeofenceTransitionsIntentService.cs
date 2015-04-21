@@ -19,8 +19,12 @@ namespace Geofence.Plugin
     [Service]
     public class GeofenceTransitionsIntentService : IntentService
     {
-        public static int NotificationId = 0;
-        public const int  NotificationMaxId = 6;
+        static int NotificationId = 0;
+        const int  NotificationMaxId = 6;
+        /// <summary>
+        /// Handles geofence intent arrival
+        /// </summary>
+        /// <param name="intent"></param>
         protected override void OnHandleIntent(Intent intent)
         {
             Context context = Android.App.Application.Context;
@@ -132,7 +136,7 @@ namespace Geofence.Plugin
            
         }
 
-        public async Task CheckIfStayed(string regionId)
+        /*public async Task CheckIfStayed(string regionId)
         {
             Context context = Android.App.Application.Context;
             if (CrossGeofence.Current.GeofenceResults.ContainsKey(regionId) && CrossGeofence.Current.Regions.ContainsKey(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds != 0)
@@ -152,7 +156,7 @@ namespace Geofence.Plugin
 
                 }
             }
-        }
+        }*/
        
         /// <summary>
         /// Create local notification

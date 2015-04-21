@@ -15,6 +15,9 @@ namespace Geofence.Plugin
     {
         private static GeofenceLocationListener sharedInstance = new GeofenceLocationListener();
 
+        /// <summary>
+        /// Location listener instance
+        /// </summary>
         public static GeofenceLocationListener SharedInstance { get { return sharedInstance; } }
         
         private GeofenceLocationListener()

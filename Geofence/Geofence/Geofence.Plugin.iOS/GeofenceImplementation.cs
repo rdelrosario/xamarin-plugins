@@ -27,16 +27,29 @@ namespace Geofence.Plugin
 
       private Dictionary<string, GeofenceCircularRegion> mRegions=GeofenceStore.SharedInstance.GetAll();
       private Dictionary<string, GeofenceResult> mGeofenceResults;
+      /// <summary>
+      /// Monitored regions
+      /// </summary>
       public IReadOnlyDictionary<string, GeofenceCircularRegion> Regions { get { return mRegions; } }
+      /// <summary>
+      /// Geofence results
+      /// </summary>
       public IReadOnlyDictionary<string, GeofenceResult> GeofenceResults { get { return mGeofenceResults; } }
+      /// <summary>
+      /// Checks if is monitoring regions
+      /// </summary>
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
 
       private GeofenceLocation lastKnownGeofenceLocation;
 
       private const string ViewAction = "View";
-
+      /// <summary>
+      /// Last known location
+      /// </summary>
       public GeofenceLocation LastKnownLocation { get { return lastKnownGeofenceLocation; } }
-
+      /// <summary>
+      /// Geofence plugin iOS implementation
+      /// </summary>
       public GeofenceImplementation()
       {
 
@@ -166,7 +179,14 @@ namespace Geofence.Plugin
         System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}", CrossGeofence.Id, "Location update",lastLocation.Coordinate.Latitude,lastLocation.Coordinate.Longitude));
        
       }
-
+      /// <summary>
+      /// Calculates distance between two locations
+      /// </summary>
+      /// <param name="lat1"></param>
+      /// <param name="lon1"></param>
+      /// <param name="lat2"></param>
+      /// <param name="lon2"></param>
+      /// <returns></returns>
       public double CalculateDistance(double lat1,double lon1,double lat2,double lon2)
       {
 
@@ -262,6 +282,11 @@ namespace Geofence.Plugin
 
         
       }
+      /// <summary>
+      /// Checks if has passed to stayed state
+      /// </summary>
+      /// <param name="regionId"></param>
+      /// <returns></returns>
       public async Task CheckIfStayed(string regionId)
       {
          
@@ -329,6 +354,10 @@ namespace Geofence.Plugin
       {
           CrossGeofence.GeofenceListener.OnMonitoringStarted(e.Region.Identifier); 
       }
+      /// <summary>
+      /// Checks if is available for monitoring
+      /// </summary>
+      /// <returns></returns>
       public bool AvailableForMonitoring()
       {
           bool retVal = false;
@@ -371,6 +400,10 @@ namespace Geofence.Plugin
           return retVal;
 
       }
+      /// <summary>
+      /// Starts monitoring region
+      /// </summary>
+      /// <param name="region"></param>
       public void StartMonitoring(GeofenceCircularRegion region)
       {
 
@@ -445,6 +478,10 @@ namespace Geofence.Plugin
           locationManager.StartMonitoring(cRegion);
           locationManager.RequestState(cRegion);
       }
+      /// <summary>
+      /// Start monitoring regions
+      /// </summary>
+      /// <param name="regions"></param>
       public void StartMonitoring(IList<GeofenceCircularRegion> regions)
       {
 
@@ -484,7 +521,11 @@ namespace Geofence.Plugin
           }
           
       }
-
+      /// <summary>
+      /// Get current 20 monitored regions.
+      /// </summary>
+      /// <param name="regions"></param>
+      /// <returns></returns>
       public IList<GeofenceCircularRegion> GetCurrentRegions(IList<GeofenceCircularRegion> regions)
       {
           IList<GeofenceCircularRegion> nearestRegions = null;
@@ -510,7 +551,9 @@ namespace Geofence.Plugin
 
           return nearestRegions;
       }
-
+      /// <summary>
+      /// Stops monitoring all regions
+      /// </summary>
       public void StopMonitoringAllRegions()
       {
           if (AvailableForMonitoring())
@@ -530,7 +573,10 @@ namespace Geofence.Plugin
          
          
       }
-
+      /// <summary>
+      /// Stops monitoring region
+      /// </summary>
+      /// <param name="regionIdentifier"></param>
       public void StopMonitoring(string regionIdentifier)
       {
           if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
@@ -549,7 +595,10 @@ namespace Geofence.Plugin
 
 
       }
-
+      /// <summary>
+      /// Stop monitoring regions
+      /// </summary>
+      /// <param name="regionIdentifiers"></param>
       public void StopMonitoring(IList<string> regionIdentifiers)
       {
           if (AvailableForMonitoring())
