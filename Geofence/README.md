@@ -395,7 +395,7 @@ Geofence Accuracy Precision Priority enum
 
 ##### Important Notes
 
-* The region monitoring feature of iOS only provides the possibility to monitor up to 20 regions at a time. Trying to monitor more than 20 regions will result in an error, indicating that the limit is crossed. See more at: [Reference](http://www.rapidvaluesolutions.com/tech_blog/geofencing-using-core-location-for-regional-monitoring-in-ios-applications/#sthash.AYIWNg19.dpuf). Actually this plugin handle this by only monitoring the 20 nearest regions when there is more than 20 regions been monitored by using significant location updates.
+* The region monitoring feature of iOS only provides the possibility to monitor up to 20 regions at a time. Trying to monitor more than 20 regions will result in an error, indicating that the limit is crossed. See more at: [Reference](http://www.rapidvaluesolutions.com/tech_blog/geofencing-using-core-location-for-regional-monitoring-in-ios-applications/#sthash.AYIWNg19.dpuf). Actually this plugin handle this by only monitoring the 20 nearest regions when there is more than 20 regions been monitored by using significant location updates. [Need to add more than 20 regions](http://stackoverflow.com/questions/29654154/need-to-get-more-than-20-notification-for-region-monitoring/29703957#29703957)
 * The region monitoring feature of Android has a limit of 100 regions per device user. Currently the plugin is not handling more than 100 regions on Android.
 
 #### Contributors
