@@ -5,6 +5,7 @@ Simple cross platform plugin to handle push notification events such as register
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
 * Install into your PCL project and Client projects.
+* Step by step instructions: [Adding Push Notification Post](http://lemoncode.net/2015/04/17/adding-push-notifications-to-your-xamarin-forms-application-part-1/)
 
 **Supports**
 * Xamarin.iOS
