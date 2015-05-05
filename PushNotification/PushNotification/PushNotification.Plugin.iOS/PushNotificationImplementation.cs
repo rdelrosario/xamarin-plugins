@@ -105,6 +105,7 @@ namespace PushNotification.Plugin
 				trimmedDeviceToken = trimmedDeviceToken.Trim('<');
 				trimmedDeviceToken = trimmedDeviceToken.Trim('>');
                 trimmedDeviceToken = trimmedDeviceToken.Trim();
+                trimmedDeviceToken = trimmedDeviceToken.Replace(" ","");
 			}
 			Console.WriteLine("{0} - Token: {1}", PushNotificationKey.DomainName, trimmedDeviceToken);
 
@@ -119,14 +120,14 @@ namespace PushNotification.Plugin
             }
 
 
-            
-            NSUserDefaults.StandardUserDefaults.SetString (PushNotificationKey.Token,trimmedDeviceToken);
+
+            NSUserDefaults.StandardUserDefaults.SetString(trimmedDeviceToken, PushNotificationKey.Token);
 			NSUserDefaults.StandardUserDefaults.Synchronize ();
 		}
 
 		public void OnUnregisteredSuccess ()
 		{
-            NSUserDefaults.StandardUserDefaults.SetString(PushNotificationKey.Token, "");
+            NSUserDefaults.StandardUserDefaults.SetString(string.Empty, PushNotificationKey.Token);
             NSUserDefaults.StandardUserDefaults.Synchronize();
 
             if (CrossPushNotification.IsInitialized)
