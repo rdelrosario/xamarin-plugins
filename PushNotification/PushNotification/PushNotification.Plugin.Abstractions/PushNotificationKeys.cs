@@ -19,5 +19,7 @@ namespace PushNotification.Plugin.Abstractions
 	  public const string Token = "token";
 	  public const string AppVersion = "appVersion";
       public const string IntentFromGcmMessage = "com.google.android.c2dm.intent.RECEIVE";
+      public const string Tag = "tag";
+      public const string Id = "id";
     }
 }

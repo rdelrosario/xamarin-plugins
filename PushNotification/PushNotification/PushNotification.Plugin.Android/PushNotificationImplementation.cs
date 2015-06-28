@@ -123,8 +123,10 @@ namespace PushNotification.Plugin
 
                         try
                         {
+                            int notifyId = 0;
                             string title = context.ApplicationInfo.LoadLabel(context.PackageManager);
                             string message = "";
+                            string tag = "";
 
                             if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTextKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTextKey))
                             {
@@ -160,12 +162,27 @@ namespace PushNotification.Plugin
                                     message = parameters[PushNotificationKey.Title].ToString();
                                 }
                             }
+                            if (parameters.ContainsKey(PushNotificationKey.Id))
+                            {
+                                var str = parameters[PushNotificationKey.Id].ToString();
+                                try
+                                {
+                                    notifyId = Convert.ToInt32(str);
+                                }
+                                catch (System.Exception)
+                                {
+                                    // Keep the default value of zero for the notify_id, but log the conversion problem.
+                                    System.Diagnostics.Debug.WriteLine("Failed to convert {0} to an interger", str);
+                                }
+                            }
+                            if (parameters.ContainsKey(PushNotificationKey.Tag))
+                            {
+                                tag = parameters[PushNotificationKey.Tag].ToString();
+                            }
 
                             if (!parameters.ContainsKey(PushNotificationKey.Silent) || !System.Boolean.Parse(parameters[PushNotificationKey.Silent].ToString()))
                             {
-
-                                  CreateNotification(title, message);
-
+                                  CreateNotification(title, message, notifyId, tag);
                             }
 
                         }
@@ -341,7 +358,7 @@ namespace PushNotification.Plugin
                 editor.PutInt(PushNotificationKey.AppVersion, appVersion);
                 editor.Commit();
             }
-        public static void CreateNotification(string title, string message)
+        public static void CreateNotification(string title, string message, int notifyId, string tag)
         {
            
              NotificationCompat.Builder builder = null;
@@ -397,7 +414,7 @@ namespace PushNotification.Plugin
                       .SetContentText(message); // the message to display.
 
             NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
-            notificationManager.Notify(0, builder.Build());
+            notificationManager.Notify(tag, notifyId, builder.Build());
        }
 
 
