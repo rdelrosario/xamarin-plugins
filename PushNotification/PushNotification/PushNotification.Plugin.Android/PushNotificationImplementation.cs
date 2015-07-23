@@ -26,7 +26,7 @@ namespace PushNotification.Plugin
         public class PushNotificationImplementation : IntentService, IPushNotification
         {
             private const string GcmPreferencesKey = "GCMPreferences";
-
+            private int DefaultBackOffMilliseconds = 3000;
            
 
             public IPushNotificationListener Listener { get; set; }
@@ -59,7 +59,7 @@ namespace PushNotification.Plugin
                 else if (string.IsNullOrEmpty(Token))
                 {
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Registering for Push Notifications", PushNotificationKey.DomainName));
-
+                    //ResetBackoff();
                     InternalRegister();
 
                 }
@@ -78,6 +78,7 @@ namespace PushNotification.Plugin
 
                     throw NewPushNotificationNotInitializedException();
                 }
+                //ResetBackoff();
                 InternalUnRegister();
             }
 
@@ -339,6 +340,29 @@ namespace PushNotification.Plugin
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.PutString(PushNotificationKey.Token, regId);
                 editor.PutInt(PushNotificationKey.AppVersion, appVersion);
+                editor.Commit();
+            }
+
+            internal void ResetBackoff()
+            {
+               // Logger.Debug("resetting backoff for " + context.PackageName);
+                Context context = Android.App.Application.Context;
+                SetBackoff(DefaultBackOffMilliseconds);
+            }
+
+            internal int GetBackoff()
+            {
+                Context context = Android.App.Application.Context;
+                var prefs = GetGCMPreferences(context);
+                return prefs.GetInt(PushNotificationKey.BackOffMilliseconds, DefaultBackOffMilliseconds);
+            }
+
+            internal void SetBackoff(int backoff)
+            {
+                Context context = Android.App.Application.Context;
+                var prefs = GetGCMPreferences(context);
+                var editor = prefs.Edit();
+                editor.PutInt(PushNotificationKey.BackOffMilliseconds, backoff);
                 editor.Commit();
             }
         public static void CreateNotification(string title, string message)
