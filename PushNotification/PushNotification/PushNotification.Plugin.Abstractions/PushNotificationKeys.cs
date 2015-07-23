@@ -21,5 +21,7 @@ namespace PushNotification.Plugin.Abstractions
       public const string IntentFromGcmMessage = "com.google.android.c2dm.intent.RECEIVE";
       public const string BackOffMilliseconds = "backoff_ms";
       public const string ErrorServiceNotAvailable= "SERVICE_NOT_AVAILABLE";
+      public const string Tag = "tag";
+      public const string Id = "id";
     }
 }

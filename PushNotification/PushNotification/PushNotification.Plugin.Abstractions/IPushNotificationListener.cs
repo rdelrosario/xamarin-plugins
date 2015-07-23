@@ -13,5 +13,7 @@ namespace PushNotification.Plugin
         void OnRegistered(string Token, DeviceType deviceType);
         void OnUnregistered( DeviceType deviceType);
         void OnError(string message,DeviceType deviceType);
+
+        bool ShouldShowNotification();
     }
 }

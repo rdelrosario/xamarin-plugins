@@ -33,5 +33,10 @@ namespace $rootnamespace$.Helpers
         {
             Debug.WriteLine(string.Format("Push notification error - {0}",message));
         }
+
+        bool IPushNotificationListener.ShouldShowNotification()
+        {
+            return true;
+        }
     }
 }
