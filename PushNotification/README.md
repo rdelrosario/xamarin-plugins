@@ -84,7 +84,7 @@ public class  CrossPushNotificationListener : IPushNotificationListener
             Debug.WriteLine(string.Format("Push notification error - {0}",message));
         }
         
-         //Enables/Disbales Showing the notification
+         //Enable/Disable Showing the notification
         bool IPushNotificationListener.ShouldShowNotification()
         {
             return true;
