@@ -358,13 +358,13 @@ namespace Geofence.Plugin
 
         private void InitializeGoogleAPI()
         {
-            int queryResult = GooglePlayServicesUtil.IsGooglePlayServicesAvailable(Android.App.Application.Context);
+            int queryResult = GoogleApiAvailability.Instance.IsGooglePlayServicesAvailable(Android.App.Application.Context);
 
             if (queryResult == ConnectionResult.Success)
             {
                 if(mGoogleApiClient==null)
                 {
-                    mGoogleApiClient = new GoogleApiClientBuilder(Android.App.Application.Context).AddApi(Android.Gms.Location.LocationServices.Api).AddConnectionCallbacks(this).AddOnConnectionFailedListener(this).Build();
+                    mGoogleApiClient = new GoogleApiClientBuilder(Android.App.Application.Context).AddApi(Android.Gms.Location.LocationServices.API).AddConnectionCallbacks(this).AddOnConnectionFailedListener(this).Build();
                     string message = string.Format("{0} - {1}", CrossGeofence.Id, "Google Play services is available.");
                     System.Diagnostics.Debug.WriteLine(message);
                 }
