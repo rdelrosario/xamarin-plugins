@@ -15,6 +15,7 @@ using Android.Preferences;
 using Android.Support.V4.App;
 using Android.Media;
 using Android;
+using Android.Gms.Gcm.Iid;
 
 
 namespace PushNotification.Plugin
@@ -22,276 +23,70 @@ namespace PushNotification.Plugin
 	  /// <summary>
 	  /// Implementation for Feature
 	  /// </summary>
-        [Service]
-        public class PushNotificationImplementation : IntentService, IPushNotification
+        public class PushNotificationImplementation : IPushNotification
         {
             private const string GcmPreferencesKey = "GCMPreferences";
             private int DefaultBackOffMilliseconds = 3000;
+         
            
+            /// <summary>
+            /// Push Notification Listener
+            /// </summary>
+            internal static IPushNotificationListener Listener { get; set; }
 
-            public IPushNotificationListener Listener { get; set; }
-
+           /// <summary>
+           /// GCM Token
+           /// </summary>
             public string Token { get { return GetRegistrationId(); } }
 
+            /// <summary>
+            /// Register for Push Notifications
+            /// </summary>
             public void Register()
             {
-                if (!CrossPushNotification.IsInitialized)
-                {
-              
-                   throw NewPushNotificationNotInitializedException();
-                }
-             
+
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering push notifications", PushNotificationKey.DomainName));
+
                 if (string.IsNullOrEmpty(CrossPushNotification.SenderId))
                 {
 
 
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register - SenderId is missing.", PushNotificationKey.DomainName));
                  
-                    if (CrossPushNotification.IsInitialized)
-                    {
-                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.", PushNotificationKey.DomainName), DeviceType.Android);
-                    }
-                    else
-                    {
-                        throw NewPushNotificationNotInitializedException();
-                    }
+                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.", PushNotificationKey.DomainName), DeviceType.Android);
+             
                 }
                 else if (string.IsNullOrEmpty(Token))
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Registering for Push Notifications", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
                     //ResetBackoff();
-                    InternalRegister();
+                    Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
+                    Android.App.Application.Context.StartService(intent);
 
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Already Registered for Push Notifications", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Already Registered for Push Notifications", PushNotificationKey.DomainName));
 
                 }
 
             }
 
+            /// <summary>
+            /// Unregister push notifications
+            /// </summary>
             public void Unregister()
             {
-                if (!CrossPushNotification.IsInitialized)
-                {
-
-                    throw NewPushNotificationNotInitializedException();
-                }
-                //ResetBackoff();
-                InternalUnRegister();
-            }
-
-            protected override void OnHandleIntent(Intent intent)
-            {
-
-                Bundle extras = intent.Extras;
-                
-
-                if (extras != null && !extras.IsEmpty)
-                {
-                    System.Diagnostics.Debug.WriteLine(intent.Action);
-
-                    if (intent.Action.Equals(PushNotificationKey.IntentFromGcmMessage))
-                    {
-                    /*    StoreRegistrationId(Android.App.Application.Context, extras.GetString("registration_id"));
-                    }
-                    else
-                    {*/
-                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - Push Received", PushNotificationKey.DomainName));
-
-                        System.Diagnostics.Debug.WriteLine(intent.Action);
-
-                        var parameters = new Dictionary<string, object>();
-
-                        foreach (var key in intent.Extras.KeySet())
-                        {
-
-                            parameters.Add(key, intent.Extras.Get(key));
-
-                        }
-
-                        Context context = Android.App.Application.Context;
-
-                        if (CrossPushNotification.IsInitialized)
-                        {
-                            CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.Android);
-                        }
-                        else
-                        {
-                            throw NewPushNotificationNotInitializedException();
-                        }
-
-                        try
-                        {
-                            int notifyId = 0;
-                            string title = context.ApplicationInfo.LoadLabel(context.PackageManager);
-                            string message = "";
-                            string tag = "";
-
-                            if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTextKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTextKey))
-                            {
-                                message = parameters[CrossPushNotification.NotificationContentTextKey].ToString();
-                            }
-                            else if (parameters.ContainsKey(PushNotificationKey.Message))
-                            {
-                                message = parameters[PushNotificationKey.Message].ToString();
-                            }
-                            else if (parameters.ContainsKey(PushNotificationKey.Subtitle))
-                            {
-                                message = parameters[PushNotificationKey.Subtitle].ToString();
-                            }
-                            else if (parameters.ContainsKey(PushNotificationKey.Text))
-                            {
-                                message = parameters[PushNotificationKey.Text].ToString();
-                            }
-
-                            if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTitleKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTitleKey))
-                            {
-                                title = parameters[CrossPushNotification.NotificationContentTitleKey].ToString();
-
-                            }
-                            else if (parameters.ContainsKey(PushNotificationKey.Title))
-                            {
-
-                                if (!string.IsNullOrEmpty(message))
-                                {
-                                    title = parameters[PushNotificationKey.Title].ToString();
-                                }
-                                else
-                                {
-                                    message = parameters[PushNotificationKey.Title].ToString();
-                                }
-                            }
-                            if (parameters.ContainsKey(PushNotificationKey.Id))
-                            {
-                                var str = parameters[PushNotificationKey.Id].ToString();
-                                try
-                                {
-                                    notifyId = Convert.ToInt32(str);
-                                }
-                                catch (System.Exception)
-                                {
-                                    // Keep the default value of zero for the notify_id, but log the conversion problem.
-                                    System.Diagnostics.Debug.WriteLine("Failed to convert {0} to an integer", str);
-                                }
-                            }
-                            if (parameters.ContainsKey(PushNotificationKey.Tag))
-                            {
-                                tag = parameters[PushNotificationKey.Tag].ToString();
-                            }
-
-                            if (!parameters.ContainsKey(PushNotificationKey.Silent) || !System.Boolean.Parse(parameters[PushNotificationKey.Silent].ToString()))
-                            {
-                                if (CrossPushNotification.PushNotificationListener.ShouldShowNotification())
-                                {
-                                    CreateNotification(title, message, notifyId, tag);
-                                }
-                            }
-
-                        }
-                        catch (Java.Lang.Exception ex)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ex.ToString());
-                        }
-                        catch (System.Exception ex1)
-                        {
-                            System.Diagnostics.Debug.WriteLine(ex1.ToString());
-                        }
-                    }
-
-
-                }
-                // Release the wake lock provided by the WakefulBroadcastReceiver.
-                PushNotificationsReceiver.CompleteWakefulIntent(intent);
-            }
-           
-            private async Task InternalUnRegister()
-            {
-
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregistering push notifications", PushNotificationKey.DomainName));
-                GoogleCloudMessaging gcm = GoogleCloudMessaging.GetInstance(Android.App.Application.Context);
-
-
-                await Task.Run(() =>
-                {
-                    gcm.Unregister();
-                });
-
-
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications", PushNotificationKey.DomainName));
                
+                InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
+                instanceID.DeleteToken(CrossPushNotification.SenderId, GoogleCloudMessaging.InstanceIdScope);
 
-                if (CrossPushNotification.IsInitialized)
-                {
-                    CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
-                }
-                else
-                {
-                    throw NewPushNotificationNotInitializedException();
-                }
-                StoreRegistrationId(Android.App.Application.Context, string.Empty);
+                CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
+                PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, string.Empty);
 
             }
 
-            private async Task InternalRegister()
-            {
-                Context context = Android.App.Application.Context;
-
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Registering push notifications", PushNotificationKey.DomainName));
-
-                if (CrossPushNotification.SenderId == null)
-                    throw new ArgumentException("No Sender Id Specified");
-
-                try
-                {
-                    GoogleCloudMessaging gcm = GoogleCloudMessaging.GetInstance(context);
-
-                    string regId = await Task.Run(() =>
-                        {
-                            return gcm.Register(CrossPushNotification.SenderId);
-                        });
-
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Device registered, registration ID=" + regId, PushNotificationKey.DomainName));
-
-
-                
-                    if (CrossPushNotification.IsInitialized)
-                    {
-                        CrossPushNotification.PushNotificationListener.OnRegistered(regId,DeviceType.Android);
-                    }
-                    else
-                    {
-                        throw NewPushNotificationNotInitializedException();
-                    }
-                    // Persist the regID - no need to register again.
-                    StoreRegistrationId(context, regId);
-
-
-
-                }
-                catch (System.Exception ex)
-                {
-
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, PushNotificationKey.DomainName));
-        
-                    if (CrossPushNotification.IsInitialized)
-                    {
-                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), PushNotificationKey.DomainName), DeviceType.Android);
-                    }
-                    else
-                    {
-                        throw NewPushNotificationNotInitializedException();
-                    }
-                }
-
-
-            }
-            PushNotificationNotInitializedException NewPushNotificationNotInitializedException()
-            {
-                string description = "CrossPushNotification Plugin is not initialized. Should initialize before use with CrossPushNotification Initialize method. Example:  CrossPushNotification.Initialize<CrossPushNotificationListener>()";
-
-                return new PushNotificationNotInitializedException(description); 
-            }
 
 
             private string GetRegistrationId()
@@ -302,11 +97,11 @@ namespace PushNotification.Plugin
 
                 ISharedPreferences prefs = GetGCMPreferences(context);
 
-                string registrationId = prefs.GetString(PushNotificationKey.Token, "");
+                string registrationId = prefs.GetString(PushNotificationKey.Token, string.Empty);
 
                 if (string.IsNullOrEmpty(registrationId))
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - - Registration not found.", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Registration not found.", PushNotificationKey.DomainName));
 
                     return retVal;
                 }
@@ -327,7 +122,7 @@ namespace PushNotification.Plugin
 
                 return retVal;
             }
-            private ISharedPreferences GetGCMPreferences(Context context)
+            internal static ISharedPreferences GetGCMPreferences(Context context)
             {
                 // This sample app persists the registration ID in shared preferences, but
                 // how you store the registration ID in your app is up to you.
@@ -335,7 +130,7 @@ namespace PushNotification.Plugin
                 return context.GetSharedPreferences(GcmPreferencesKey, FileCreationMode.Private);
             }
 
-            private static int GetAppVersion(Context context)
+            internal static int GetAppVersion(Context context)
             {
                 try
                 {
@@ -350,12 +145,12 @@ namespace PushNotification.Plugin
 
             }
 
-            private void StoreRegistrationId(Context context, string regId)
+            internal static void StoreRegistrationId(Context context, string regId)
             {
                 ISharedPreferences prefs = GetGCMPreferences(context);
                 int appVersion = GetAppVersion(context);
 
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Saving regId on app version " + appVersion, PushNotificationKey.DomainName));
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Saving token on app version " + appVersion, PushNotificationKey.DomainName));
 
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.PutString(PushNotificationKey.Token, regId);
@@ -364,7 +159,7 @@ namespace PushNotification.Plugin
             }
 
 
-            internal void ResetBackoff()
+           /* internal void ResetBackoff()
             {
                // Logger.Debug("resetting backoff for " + context.PackageName);
                 Context context = Android.App.Application.Context;
@@ -385,67 +180,9 @@ namespace PushNotification.Plugin
                 var editor = prefs.Edit();
                 editor.PutInt(PushNotificationKey.BackOffMilliseconds, backoff);
                 editor.Commit();
-            }
+            }*/
 
-        public static void CreateNotification(string title, string message, int notifyId, string tag)
-        {
-           
-             NotificationCompat.Builder builder = null;
-             Context context = Android.App.Application.Context;
-
-             if(CrossPushNotification.SoundUri==null)
-             {
-                 CrossPushNotification.SoundUri = RingtoneManager.GetDefaultUri(RingtoneType.Notification);
-             }
-             try
-             {
-                
-                 if (CrossPushNotification.IconResource == null || CrossPushNotification.IconResource == 0 )
-                 {
-                     CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
-                 }
-                 else
-                 {
-                     string name = context.Resources.GetResourceName(CrossPushNotification.IconResource);
-
-                     if (name == null)
-                     {
-                         CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
-
-                     }
-                 }
-                 
-             }
-             catch (Android.Content.Res.Resources.NotFoundException ex)
-             {
-                 CrossPushNotification.IconResource = context.ApplicationInfo.Icon;
-                 System.Diagnostics.Debug.WriteLine(ex.ToString());
-             }
-
-
-            Intent resultIntent = context.PackageManager.GetLaunchIntentForPackage(context.PackageName);
-
-            //Intent resultIntent = new Intent(context, typeof(T));
-           
-
-             
-            // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
-            const int pendingIntentId = 0;
-            PendingIntent resultPendingIntent = PendingIntent.GetActivity(context, pendingIntentId, resultIntent, PendingIntentFlags.OneShot);
-          
-            // Build the notification
-            builder = new NotificationCompat.Builder(context)
-                      .SetAutoCancel(true) // dismiss the notification from the notification area when the user clicks on it
-                      .SetContentIntent(resultPendingIntent) // start up this activity when the user clicks the intent.
-                      .SetContentTitle(title) // Set the title
-                      .SetSound(CrossPushNotification.SoundUri)                           
-                      .SetSmallIcon(CrossPushNotification.IconResource) // This is the icon to display
-                      .SetContentText(message); // the message to display.
-
-            NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
-            notificationManager.Notify(tag, notifyId, builder.Build());
-
-       }
+      
       
 
     }
