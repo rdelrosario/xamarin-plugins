@@ -42,7 +42,10 @@ namespace PushNotification.Plugin
                     {
 
                         parameters.Add(key, extras.Get(key));
+                        
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - GCM Listener - Push Params {1} : {2}", PushNotificationKey.DomainName, key, extras.Get(key)));
 
+                   
                     }
 
                     Context context = Android.App.Application.Context;
@@ -141,6 +144,7 @@ namespace PushNotification.Plugin
 
         void CreateNotification(string title, string message, int notifyId, string tag)
         {
+            System.Diagnostics.Debug.WriteLine(string.Format("{0} - PushNotification - Message {1} : {2}", PushNotificationKey.DomainName,title,message));
 
             NotificationCompat.Builder builder = null;
             Context context = Android.App.Application.Context;

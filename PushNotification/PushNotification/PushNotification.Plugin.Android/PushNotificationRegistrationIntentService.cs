@@ -29,7 +29,7 @@ namespace PushNotification.Plugin
         {
             try
             {
-                 Bundle extras = intent.Extras;
+                Bundle extras = intent.Extras;
                 lock (syncLock)
                 {
                     InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);

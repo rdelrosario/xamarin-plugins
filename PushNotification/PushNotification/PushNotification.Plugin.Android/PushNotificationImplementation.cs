@@ -16,6 +16,8 @@ using Android.Support.V4.App;
 using Android.Media;
 using Android;
 using Android.Gms.Gcm.Iid;
+using System.Threading;
+using Java.IO;
 
 
 namespace PushNotification.Plugin
@@ -27,7 +29,7 @@ namespace PushNotification.Plugin
         {
             private const string GcmPreferencesKey = "GCMPreferences";
             private int DefaultBackOffMilliseconds = 3000;
-         
+            const string Tag = "PushNotification";
            
             /// <summary>
             /// Push Notification Listener
@@ -60,8 +62,12 @@ namespace PushNotification.Plugin
                 {
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
                     //ResetBackoff();
-                    Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
-                    Android.App.Application.Context.StartService(intent);
+                    ThreadPool.QueueUserWorkItem(state =>
+                    {
+                        Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
+                        Android.App.Application.Context.StartService(intent);
+                    });
+                   
 
                 }
                 else
@@ -77,13 +83,30 @@ namespace PushNotification.Plugin
             /// </summary>
             public void Unregister()
             {
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications", PushNotificationKey.DomainName));
-               
-                InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
-                instanceID.DeleteToken(CrossPushNotification.SenderId, GoogleCloudMessaging.InstanceIdScope);
 
-                CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
-                PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, string.Empty);
+
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications", PushNotificationKey.DomainName));
+                    try
+                    {
+                        InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
+                        instanceID.DeleteToken(CrossPushNotification.SenderId, GoogleCloudMessaging.InstanceIdScope);
+
+                        CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
+                        PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, string.Empty);
+                    }catch(IOException ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+
+                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Unregister - " + ex.ToString(), Tag), DeviceType.Android);
+              
+
+                    }
+                });
+                 
+                
+               
 
             }
 
