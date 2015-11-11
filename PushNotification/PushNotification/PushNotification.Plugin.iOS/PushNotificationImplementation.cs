@@ -68,6 +68,16 @@ namespace PushNotification.Plugin
 
 			foreach (NSString key in userInfo.Keys)
 			{
+                if(key == "aps")
+				{
+					NSDictionary aps = userInfo.ValueForKey(key) as NSDictionary;
+
+    				if(aps != null)
+					{
+						foreach(var apsKey in aps)
+							parameters.Add(apsKey.Key.ToString(), apsKey.Value);
+					}
+				}
 				parameters.Add(key, userInfo.ValueForKey(key));
 			}
           

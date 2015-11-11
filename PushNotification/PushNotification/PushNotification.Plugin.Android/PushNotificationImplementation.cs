@@ -62,11 +62,26 @@ namespace PushNotification.Plugin
                 {
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
                     //ResetBackoff();
-                    ThreadPool.QueueUserWorkItem(state =>
-                    {
-                        Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
-                        Android.App.Application.Context.StartService(intent);
-                    });
+                    
+
+                        ThreadPool.QueueUserWorkItem(state =>
+                        {
+                            try
+                            {
+                               Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
+                               Android.App.Application.Context.StartService(intent);
+                            }
+                            catch (System.Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+
+                                CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag), DeviceType.Android);
+
+                            }
+                     
+                        });
+
+                    
                    
 
                 }
@@ -95,6 +110,7 @@ namespace PushNotification.Plugin
 
                         CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
                         PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, string.Empty);
+
                     }catch(IOException ex)
                     {
                         System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
