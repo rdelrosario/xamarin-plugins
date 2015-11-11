@@ -122,7 +122,7 @@ namespace PushNotification.Plugin
                         {
                             if (CrossPushNotification.PushNotificationListener.ShouldShowNotification())
                             {
-                                CreateNotification(title, message, notifyId, tag);
+                                CreateNotification(title, message, notifyId, tag, extras);
                             }
                         }
 
@@ -142,7 +142,7 @@ namespace PushNotification.Plugin
         }
      
 
-        void CreateNotification(string title, string message, int notifyId, string tag)
+        void CreateNotification(string title, string message, int notifyId, string tag, Bundle extras)
         {
             System.Diagnostics.Debug.WriteLine(string.Format("{0} - PushNotification - Message {1} : {2}", PushNotificationKey.DomainName,title,message));
 
@@ -183,7 +183,7 @@ namespace PushNotification.Plugin
 
             //Intent resultIntent = new Intent(context, typeof(T));
 
-
+             if (extras != null) { resultIntent.PutExtras(extras); }
 
             // Create a PendingIntent; we're only using one PendingIntent (ID = 0):
             const int pendingIntentId = 0;
