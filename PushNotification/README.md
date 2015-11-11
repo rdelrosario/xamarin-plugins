@@ -162,6 +162,7 @@ There are a few things you can configure in Android project using the following 
 * [aflorenzan](https://github.com/aflorenzan)
 * [totemika](https://github.com/totemika)
 * [howbazaar](https://github.com/howbazaar)
+* [jmeadecvlt](https://github.com/jmeadecvlt)
 
 Thanks!
 
