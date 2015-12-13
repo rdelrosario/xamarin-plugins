@@ -52,13 +52,19 @@ namespace PushNotification.Plugin
 
                     if (CrossPushNotification.IsInitialized)
                     {
-                        CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.Android);
+                       CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.Android);
+
+                       if (IsGenericTypeOf(CrossPushNotification.PushNotificationListener.GetType(), typeof(IPushNotificationListener<>)))
+                       {
+                         // CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.Android);
+                       }
+   
                     }
                     else
                     {
                         throw CrossPushNotification.NewPushNotificationNotInitializedException();
                     }
-
+               
                     try
                     {
                         int notifyId = 0;
@@ -69,6 +75,10 @@ namespace PushNotification.Plugin
                         if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTextKey) && parameters.ContainsKey(CrossPushNotification.NotificationContentTextKey))
                         {
                             message = parameters[CrossPushNotification.NotificationContentTextKey].ToString();
+                        }
+                        else if (parameters.ContainsKey(PushNotificationKey.Alert))
+                        {
+                            message = parameters[PushNotificationKey.Alert].ToString();
                         }
                         else if (parameters.ContainsKey(PushNotificationKey.Message))
                         {
@@ -107,7 +117,7 @@ namespace PushNotification.Plugin
                             {
                                 notifyId = Convert.ToInt32(str);
                             }
-                            catch (System.Exception)
+                            catch (System.Exception ex)
                             {
                                 // Keep the default value of zero for the notify_id, but log the conversion problem.
                                 System.Diagnostics.Debug.WriteLine("Failed to convert {0} to an integer", str);
@@ -140,7 +150,15 @@ namespace PushNotification.Plugin
 
             }
         }
-     
+
+        static bool IsGenericTypeOf(Type genericType, Type someType)
+        {
+            if (someType.IsGenericType
+                    && genericType == someType.GetGenericTypeDefinition()) return true;
+
+            return someType.BaseType != null
+                    && IsGenericTypeOf(genericType, someType.BaseType);
+        }
 
         void CreateNotification(string title, string message, int notifyId, string tag, Bundle extras)
         {

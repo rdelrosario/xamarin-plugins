@@ -45,9 +45,13 @@ namespace PushNotification.Plugin.Abstractions
       /// </summary>
       public const string Silent = "silent";
       /// <summary>
+      /// Alert
+      /// </summary>
+      public const string Alert = "alert";
+      /// <summary>
       /// Token
       /// </summary>
-	  public const string Token = "token";
+      public const string Token = "token";
       /// <summary>
       /// App Version
       /// </summary>

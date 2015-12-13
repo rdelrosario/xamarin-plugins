@@ -38,4 +38,18 @@ namespace PushNotification.Plugin
         /// </summary>
         bool ShouldShowNotification();
     }
+
+    /// <summary>
+    /// Push Events Listener
+    /// </summary>
+    public interface IPushNotificationListener<T> : IPushNotificationListener
+    {
+        /// <summary>
+        /// On Message Received
+        /// </summary>
+        /// <param name="Parameters"></param>
+        /// <param name="deviceType"></param>
+        void OnMessage(T Parameters, DeviceType deviceType);
+       
+    }
 }
