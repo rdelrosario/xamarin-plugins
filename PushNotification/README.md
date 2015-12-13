@@ -62,7 +62,7 @@ public class  CrossPushNotificationListener : IPushNotificationListener
     {
         //Here you will receive all push notification messages
         //Messages arrives as a dictionary, the device type is also sent in order to check specific keys correctly depending on the platform.
-        void IPushNotificationListener.OnMessage(IDictionary<string, object> Parameters, DeviceType deviceType)
+        void IPushNotificationListener.OnMessage(JObject arameters, DeviceType deviceType)
         {
             Debug.WriteLine("Message Arrived");
         }
@@ -134,6 +134,9 @@ There are a few things you can configure in Android project using the following 
    
     //The sets the key associated with the value will be used to show the text for the notification
     public static string NotificationContentTextKey { get; set; }
+    
+    //The sets the key associated with the root value will be used to show the text inside it for the notification
+    public static string NotificationContentDataKey { get; set; }
 
     //The sets the resource id for the icon will be used for the notification
     public static int IconResource { get; set; }
