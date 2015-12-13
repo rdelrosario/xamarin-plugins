@@ -133,8 +133,66 @@ void Unregister();
 
 ![image](https://cloud.githubusercontent.com/assets/2547751/6440604/1b0afb64-c0b5-11e4-93b8-c496e2bfa588.png)
 
-There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
-```
+* If you wish to receive push notitfications even when app closed. Instead of initializing the plugin in the MainActivity.cs. Do the following:
+
+   Implement an Android Application class in your Droid project and initialize plugin there. Here a brief snippet:
+
+   ```
+   [Application]
+   public class YourAndroidApplication : Application
+   {
+        public static Context AppContext;
+
+        public YourAndroidApplication(IntPtr javaReference, JniHandleOwnership transfer) : base(javaReference, transfer)
+        {
+
+        }
+
+        public override void OnCreate()
+        {
+            base.OnCreate();
+
+            AppContext = this.ApplicationContext;
+
+             //TODO: Initialize CrossPushNotification Plugin
+             //TODO: Replace string parameter with your Android SENDER ID
+             //TODO: Specify the listener class implementing IPushNotificationListener interface in the Initialize generic
+             CrossPushNotification.Initialize<CrossPushNotificationListener>("<ANDROID SENDER ID>");
+
+             //This service will keep your app receiving push even when closed.             
+             StartPushService();
+        }
+
+        public static void StartPushService()
+        {
+            AppContext.StartService(new Intent(AppContext, typeof(PushNotificationService)));
+
+            if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+            {
+
+                PendingIntent pintent = PendingIntent.GetService(AppContext, 0, new Intent(AppContext, typeof(PushNotificationService)), 0);
+                AlarmManager alarm = (AlarmManager)AppContext.GetSystemService(Context.AlarmService);
+                alarm.Cancel(pintent);
+            }
+        }
+
+        public static void StopPushService()
+        {
+            AppContext.StopService(new Intent(AppContext, typeof(PushNotificationService)));
+                        if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
+            {
+                PendingIntent pintent = PendingIntent.GetService(AppContext, 0, new Intent(AppContext, typeof(PushNotificationService)), 0);
+                AlarmManager alarm = (AlarmManager)AppContext.GetSystemService(Context.AlarmService);
+                alarm.Cancel(pintent);
+            }
+       }
+    }
+    ```
+Just move your initialization stuff from MainActivity.cs to this Android Application class. Also Replace YourAndroidApplication name to your App name.
+
+
+* There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
+    ```
     //The sets the key associated with the value will be used to show the title for the notification
     public static string NotificationContentTitleKey { get; set; }
    
@@ -150,7 +208,7 @@ There are a few things you can configure in Android project using the following 
     //The sets the sound  uri will be used for the notification
     public static Android.Net.Uri SoundUri { get; set; }
 
-```
+   ```
 * By default displays a notification looking for the key <i><b>title</b></i>  to display notification title and <i><b>message</b></i>  to display notification message. If <i><b>title</b></i>  key not present will use the application name.
 * If you send a key called <i><b>silent</b></i> with value true it won't display a notification just will listen to message arrival.
 
