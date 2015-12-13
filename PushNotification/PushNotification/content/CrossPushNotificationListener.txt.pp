@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using PushNotification.Plugin;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace $rootnamespace$.Helpers
 {
@@ -13,28 +15,28 @@ namespace $rootnamespace$.Helpers
     public class  CrossPushNotificationListener : IPushNotificationListener
     {
 
-        void IPushNotificationListener.OnMessage(IDictionary<string, object> Parameters, DeviceType deviceType)
+        void OnMessage(JObject values, DeviceType deviceType)
         {
             Debug.WriteLine("Message Arrived");
         }
 
-        void IPushNotificationListener.OnRegistered(string Token, DeviceType deviceType)
+        void OnRegistered(string token, DeviceType deviceType)
         {
             Debug.WriteLine(string.Format("Push Notification - Device Registered - Token : {0}", Token));
         }
 
-        void IPushNotificationListener.OnUnregistered(DeviceType deviceType)
+        void OnUnregistered(DeviceType deviceType)
         {
             Debug.WriteLine("Push Notification - Device Unnregistered");
        
         }
 
-        void IPushNotificationListener.OnError(string message, DeviceType deviceType)
+        void OnError(string message, DeviceType deviceType)
         {
             Debug.WriteLine(string.Format("Push notification error - {0}",message));
         }
 
-        bool IPushNotificationListener.ShouldShowNotification()
+        bool ShouldShowNotification()
         {
             return true;
         }

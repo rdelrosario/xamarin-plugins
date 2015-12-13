@@ -1,6 +1,8 @@
 ﻿using PushNotification.Plugin.Abstractions;
 using System;
 using System.Diagnostics;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace PushNotification.Plugin
 {
@@ -13,11 +15,12 @@ namespace PushNotification.Plugin
     static Lazy<IPushNotification> Implementation = new Lazy<IPushNotification>(() => CreatePushNotification(), System.Threading.LazyThreadSafetyMode.PublicationOnly);
     public static bool IsInitialized { get { return (PushNotificationListener != null);  } }
     public static IPushNotificationListener PushNotificationListener { get; private set; }
-  
+
 #if __ANDROID__
     public static string SenderId { get; set; }
     public static string NotificationContentTitleKey { get; set; }
     public static string NotificationContentTextKey { get; set; }
+    public static string NotificationContentDataKey { get; set; }
     public static int IconResource { get; set; }
     public static Android.Net.Uri SoundUri { get; set; }
     public static void Initialize<T>(string senderId)
@@ -55,10 +58,10 @@ namespace PushNotification.Plugin
 
 
 
-    /// <summary>
-    /// Current settings to use
-    /// </summary>
-    public static IPushNotification Current
+        /// <summary>
+        /// Current settings to use
+        /// </summary>
+        public static IPushNotification Current
     {
       get
       {
@@ -96,5 +99,28 @@ namespace PushNotification.Plugin
 
         return new PushNotificationNotInitializedException(description);
     }
-  }
+
+     internal static bool ValidateJSON(string s)
+        {
+            try
+            {
+                JToken.Parse(s);
+                return true;
+            }
+            catch (JsonReaderException ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.ToString());
+                return false;
+            }
+        }
+
+      /*internal static bool IsGenericTypeOf(Type genericType, Type someType)
+        {
+            if (someType.IsGenericType
+                    && genericType == someType.GetGenericTypeDefinition()) return true;
+
+            return someType.BaseType != null
+                    && IsGenericTypeOf(genericType, someType.BaseType);
+        }*/
+    }
 }

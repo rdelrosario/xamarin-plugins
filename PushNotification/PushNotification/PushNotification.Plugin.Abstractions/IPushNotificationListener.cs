@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Newtonsoft.Json.Linq;
 namespace PushNotification.Plugin
 {
     /// <summary>
@@ -15,20 +15,20 @@ namespace PushNotification.Plugin
         /// <summary>
         /// On Message Received
         /// </summary>
-        /// <param name="Parameters"></param>
+        /// <param name="values"></param>
         /// <param name="deviceType"></param>
-        void OnMessage(IDictionary<string, object> Parameters,DeviceType deviceType);
+        void OnMessage(JObject values, DeviceType deviceType);
         /// <summary>
         /// On Registered
         /// </summary>
-        /// <param name="Token"></param>
+        /// <param name="token"></param>
         /// <param name="deviceType"></param>
-        void OnRegistered(string Token, DeviceType deviceType);
+        void OnRegistered(string token, DeviceType deviceType);
         /// <summary>
         /// On Unregistered
         /// </summary>
         /// <param name="deviceType"></param>
-        void OnUnregistered( DeviceType deviceType);
+        void OnUnregistered(DeviceType deviceType);
         /// <summary>
         /// OnError
         /// </summary>
@@ -39,17 +39,4 @@ namespace PushNotification.Plugin
         bool ShouldShowNotification();
     }
 
-    /// <summary>
-    /// Push Events Listener
-    /// </summary>
-    public interface IPushNotificationListener<T> : IPushNotificationListener
-    {
-        /// <summary>
-        /// On Message Received
-        /// </summary>
-        /// <param name="Parameters"></param>
-        /// <param name="deviceType"></param>
-        void OnMessage(T Parameters, DeviceType deviceType);
-       
-    }
 }
