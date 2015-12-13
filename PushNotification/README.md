@@ -127,6 +127,12 @@ void Unregister();
 
 ##### Android Specifics
 
+* Must compile against 21 as plugin is using API 21 specific things. Here is a great breakdown: http://redth.codes/such-android-api-levels-much-confuse-wow/
+* The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
+* Make sure you have updated your Android SDK Manager libraries:
+
+![image](https://cloud.githubusercontent.com/assets/2547751/6440604/1b0afb64-c0b5-11e4-93b8-c496e2bfa588.png)
+
 There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
 ```
     //The sets the key associated with the value will be used to show the title for the notification
@@ -147,10 +153,6 @@ There are a few things you can configure in Android project using the following 
 ```
 * By default displays a notification looking for the key <i><b>title</b></i>  to display notification title and <i><b>message</b></i>  to display notification message. If <i><b>title</b></i>  key not present will use the application name.
 * If you send a key called <i><b>silent</b></i> with value true it won't display a notification just will listen to message arrival.
-* The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
-* Make sure you have updated your Android SDK Manager libraries:
-
-![image](https://cloud.githubusercontent.com/assets/2547751/6440604/1b0afb64-c0b5-11e4-93b8-c496e2bfa588.png)
 
 
 ##### iOS Specifics
