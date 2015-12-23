@@ -104,7 +104,7 @@ namespace PushNotification.Plugin
         {
             try
             {
-                JToken.Parse(s);
+                JObject.Parse(s);
                 return true;
             }
             catch (JsonReaderException ex)
