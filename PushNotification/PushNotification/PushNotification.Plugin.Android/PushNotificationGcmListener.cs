@@ -141,7 +141,7 @@ namespace PushNotification.Plugin
 
                         }
                     }
-                        else
+                        else if (parameters.ContainsKey(PushNotificationKey.Title))
                         {
                             message = parameters[PushNotificationKey.Title].ToString();
                         }
