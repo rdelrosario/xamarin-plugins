@@ -139,12 +139,27 @@ namespace PushNotification.Plugin
                                 message = data[PushNotificationKey.Text].ToString();
                             }
 
+                            if (!string.IsNullOrEmpty(CrossPushNotification.NotificationContentTitleKey) && data[CrossPushNotification.NotificationContentTitleKey]!=null)
+                            {
+                                title = data[CrossPushNotification.NotificationContentTitleKey].ToString();
+
+                            }
+                            else if (data[PushNotificationKey.Title]!=null)
+                            {
+
+                                if (!string.IsNullOrEmpty(message))
+                                {
+                                    title = data[PushNotificationKey.Title].ToString();
+                                }
+                                else
+                                {
+                                    message = data[PushNotificationKey.Title].ToString();
+                                }
+                            }
+
                         }
                     }
-                        else if (parameters.ContainsKey(PushNotificationKey.Title))
-                        {
-                            message = parameters[PushNotificationKey.Title].ToString();
-                        }
+                        
                     
                     if (parameters.ContainsKey(PushNotificationKey.Id))
                         {
