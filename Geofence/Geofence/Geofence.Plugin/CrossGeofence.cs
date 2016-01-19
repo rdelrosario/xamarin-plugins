@@ -34,11 +34,31 @@ namespace Geofence.Plugin
     /// </summary>
     public static float SmallestDisplacement { get; set; }
 
+    /// <summary>
+    /// Request the user for Notifications Permission.  Set to false if this is already handled in the client application.
+    /// </summary>
+    /// <value><c>true</c> if request notification permission; otherwise, <c>false</c>.</value>
+    public static bool RequestNotificationPermission { get; set; }
+
+    /// <summary>
+    /// Request the user for Location Services Permissions. Set to false if this is already handled in the client application. 
+    /// </summary>
+    /// <value><c>true</c> if request location permission; otherwise, <c>false</c>.</value>
+    public static bool RequestLocationPermission { get; set; }
+
     #if __ANDROID__
       /// <summary>
       /// Icon resource used for notification
       /// </summary>
       public static int IconResource { get; set; }
+      /// <summary>
+      /// ARGB Color used for notification
+      /// </summary>
+      public static int Color { get; set; }
+      /// <summary>
+      /// Large icon resource used for notification
+      /// </summary>
+      public static Android.Graphics.Bitmap LargeIconResource { get; set; }
       /// <summary>
       /// Sound for notification
       /// </summary>
@@ -59,7 +79,7 @@ namespace Geofence.Plugin
     /// <typeparam name="T"></typeparam>
     /// <param name="priority"></param>
     /// <param name="smallestDisplacement"></param>
-    public static void Initialize<T>(GeofencePriority priority=GeofencePriority.BalancedPower, float smallestDisplacement = 0)
+    public static void Initialize<T>(GeofencePriority priority=GeofencePriority.BalancedPower, float smallestDisplacement = 0, bool requestNotificationPermission = true, bool requestLocationPermission = true)
      where T : IGeofenceListener, new()
     {
 
@@ -76,7 +96,8 @@ namespace Geofence.Plugin
         GeofencePriority = priority;
         SmallestDisplacement = smallestDisplacement;
 
-       
+        RequestNotificationPermission = requestNotificationPermission;
+        RequestLocationPermission = requestLocationPermission;
     }
     /// <summary>
     /// Current settings to use
@@ -104,7 +125,10 @@ namespace Geofence.Plugin
 #if PORTABLE
         return null;
 #else
-        return new GeofenceImplementation();
+        var geofenceImplementation = new GeofenceImplementation();
+        geofenceImplementation.RequestNotificationPermission = RequestNotificationPermission;
+        geofenceImplementation.RequestLocationPermission = RequestLocationPermission;
+        return geofenceImplementation;
 #endif
     }
 

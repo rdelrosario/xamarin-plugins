@@ -39,8 +39,24 @@ namespace Geofence.Plugin
       /// Checks if is monitoring regions
       /// </summary>
       public bool IsMonitoring { get { return mRegions.Count > 0; } }
+      /// <summary>
+      /// This checks if we are currently prompting for location permissions to avoid the double prompt from multiple simultaneous regions
+      /// </summary>
+      bool isPromptingLocationPermission;
 
       private GeofenceLocation lastKnownGeofenceLocation;
+
+      /// <summary>
+      /// Set this flag to false if the application is already asking the user for permissions to send Notifications.
+      /// </summary>
+      /// <value><c>true</c> if request notification permission; otherwise, <c>false</c>.</value>
+      public bool RequestNotificationPermission { get; set; }
+
+      /// <summary>
+      /// Set this flag to false if the application is already prompting the user to use Location Services.
+      /// </summary>
+      /// <value><c>true</c> if request location permission; otherwise, <c>false</c>.</value>
+      public bool RequestLocationPermission { get; set; }
 
       private const string ViewAction = "View";
       /// <summary>
@@ -55,13 +71,18 @@ namespace Geofence.Plugin
 
           mGeofenceResults = new Dictionary<string, GeofenceResult>();
 
-          locationManager = new CLLocationManager();
-          locationManager.DidStartMonitoringForRegion += DidStartMonitoringForRegion;
-          locationManager.RegionEntered += RegionEntered;
-          locationManager.RegionLeft +=RegionLeft;
-          locationManager.Failed += OnFailure;
-          locationManager.DidDetermineState += DidDetermineState;
-          locationManager.LocationsUpdated += LocationsUpdated;
+          using (var pool = new NSAutoreleasePool())
+          {
+              pool.InvokeOnMainThread(() => {
+                  locationManager = new CLLocationManager();
+                  locationManager.DidStartMonitoringForRegion += DidStartMonitoringForRegion;
+                  locationManager.RegionEntered += RegionEntered;
+                  locationManager.RegionLeft += RegionLeft;
+                  locationManager.Failed += OnFailure;
+                  locationManager.DidDetermineState += DidDetermineState;
+                  locationManager.LocationsUpdated += LocationsUpdated;
+              });
+          } 
           string priorityType = "Balanced Power";
           switch(CrossGeofence.GeofencePriority)
           {
@@ -198,7 +219,7 @@ namespace Geofence.Plugin
 
           double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) + Math.Sin(dLon / 2) * Math.Sin(dLon / 2) * Math.Cos(lat1) * Math.Cos(lat2);
           double c = 2 * Math.Asin(Math.Sqrt(a));
-          return (R * 2 * Math.Asin(Math.Sqrt(a))) * 1000; //meters
+          return (R * c) * 1000; //meters
       }
 
     
@@ -207,10 +228,12 @@ namespace Geofence.Plugin
           switch (e.State)
           {
               case CLRegionState.Inside:
-                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "StartedRegion: " + e.Region));
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "InsideRegion: " + e.Region));
                   OnRegionEntered(e.Region);
                   break;
               case CLRegionState.Outside:
+                  System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "OutsideRegion: " + e.Region));
+                  OnRegionLeft(e.Region);
                   break;
               default:
                   string message = string.Format("{0} - {1}", CrossGeofence.Id, "Unknown region state");
@@ -265,11 +288,13 @@ namespace Geofence.Plugin
           mGeofenceResults[region.Identifier].LastEnterTime = DateTime.Now;
           mGeofenceResults[region.Identifier].LastExitTime = null;
           mGeofenceResults[region.Identifier].Transition = GeofenceTransition.Entered;
+          if (mRegions.ContainsKey(region.Identifier))
+              region.NotifyOnEntry = mRegions[region.Identifier].NotifyOnEntry;
           if(region.NotifyOnEntry)
           {
               CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-              if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification)
+              if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification && Regions[region.Identifier].ShowEntryNotification)
               {
                   CreateNotification(ViewAction, string.IsNullOrEmpty(Regions[region.Identifier].NotificationEntryMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationEntryMessage);
               }
@@ -300,7 +325,7 @@ namespace Geofence.Plugin
 
                   CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[regionId]);
 
-                  if (CrossGeofence.Current.Regions[regionId].ShowNotification)
+                  if (CrossGeofence.Current.Regions[regionId].ShowNotification && CrossGeofence.Current.Regions[regionId].ShowStayNotification)
                   {
                       CreateNotification(ViewAction, string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? CrossGeofence.Current.GeofenceResults[regionId].ToString() : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
                   }
@@ -344,7 +369,7 @@ namespace Geofence.Plugin
          
           CrossGeofence.GeofenceListener.OnRegionStateChanged(mGeofenceResults[region.Identifier]);
 
-          if (Regions[region.Identifier].ShowNotification)
+          if (Regions.ContainsKey(region.Identifier) && Regions[region.Identifier].ShowNotification && Regions[region.Identifier].ShowExitNotification)
           {
               CreateNotification(ViewAction, string.IsNullOrEmpty(Regions[region.Identifier].NotificationExitMessage) ? GeofenceResults[region.Identifier].ToString() : Regions[region.Identifier].NotificationExitMessage);
           }
@@ -379,13 +404,20 @@ namespace Geofence.Plugin
           }
           else if (CLLocationManager.IsMonitoringAvailable(typeof(CLRegion)))
           {
-              var settings = UIUserNotificationSettings.GetSettingsForTypes(
-                UIUserNotificationType.Alert
-                | UIUserNotificationType.Badge
-                | UIUserNotificationType.Sound,
-                new NSSet());
-              UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
-
+              if (RequestNotificationPermission)
+              {
+                  using (var pool = new NSAutoreleasePool())
+                  {
+                      pool.InvokeOnMainThread(() => {
+                          var settings = UIUserNotificationSettings.GetSettingsForTypes(
+                                             UIUserNotificationType.Alert
+                                             | UIUserNotificationType.Badge
+                                             | UIUserNotificationType.Sound,
+                                             new NSSet());
+                          UIApplication.SharedApplication.RegisterUserNotificationSettings(settings);
+                      });
+                  }
+              }
               retVal = true;
           }
           else
@@ -474,9 +506,13 @@ namespace Geofence.Plugin
           cRegion.NotifyOnExit = region.NotifyOnExit;
 
 
-
           locationManager.StartMonitoring(cRegion);
-          locationManager.RequestState(cRegion);
+
+          // Request state for this region, putting request behind a timer per thread: http://stackoverflow.com/questions/24543814/diddeterminestate-not-always-called
+          Task.Run(async() => {
+              await Task.Delay(TimeSpan.FromSeconds(2));
+              locationManager.RequestState(cRegion);
+          });
       }
       /// <summary>
       /// Start monitoring regions
@@ -651,7 +687,11 @@ namespace Geofence.Plugin
 
       void  CreateNotification(string  title,string  message)
       {
-               UILocalNotification notification = new UILocalNotification();
+               // Do nothing if we have no notification permission at this time, or we will get a buildup of stale notifications
+               if (UIApplication.SharedApplication.CurrentUserNotificationSettings.Types == UIUserNotificationType.None)
+                   return;
+            
+               var notification = new UILocalNotification();
 
                notification.AlertAction = title;
                notification.AlertBody = message;
@@ -667,32 +707,54 @@ namespace Geofence.Plugin
       }
       void RequestAlwaysAuthorization()
       {
+          if (!RequestLocationPermission)
+              return;
+
+          if (isPromptingLocationPermission)
+              return;
+          isPromptingLocationPermission = true;
+
           CLAuthorizationStatus status = CLLocationManager.Status;
           if(status ==CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.Denied)
           {
               string title = (status == CLAuthorizationStatus.Denied) ? "Location services are off" : "Background location is not enabled";
               string message = "To use background location you must turn on 'Always' in the Location Services Settings";
 
-              UIAlertView alertView = new UIAlertView(title, message, null, "Cancel", "Settings");
-            
-
-              alertView.Clicked += (sender, buttonArgs) => 
+              using (var pool = new NSAutoreleasePool())
               {
-                  if (buttonArgs.ButtonIndex == 1)
-                  {
-                      // Send the user to the Settings for this app
-                      NSUrl settingsUrl = new NSUrl(UIApplication.OpenSettingsUrlString);
-                      UIApplication.SharedApplication.OpenUrl(settingsUrl);
+                  pool.InvokeOnMainThread(() => {
+                      UIAlertView alertView = new UIAlertView(title, message, null, "Cancel", "Settings");
 
-                  }
-              };
+                      alertView.Clicked += (sender, buttonArgs) => 
+                      {
+                          if (buttonArgs.ButtonIndex == 1)
+                          {
+                              // Send the user to the Settings for this app
+                              NSUrl settingsUrl = new NSUrl(UIApplication.OpenSettingsUrlString);
+                              UIApplication.SharedApplication.OpenUrl(settingsUrl);
+                          }
+                          isPromptingLocationPermission = false;
+                      };
 
-              alertView.Show();
+                      alertView.Show();
+                  });
+              }
           }
           else if (status == CLAuthorizationStatus.NotDetermined)
           {
               locationManager.RequestAlwaysAuthorization();
           }
+      }
+
+      /// <summary>
+      /// For iOS, it's AuthorizedAlways or it's not authorized.
+      /// </summary>
+      /// <returns>true</returns>
+      /// <c>false</c>
+      /// <param name="returnAction">Return action.</param>
+      public void IsLocationEnabled(Action<bool> returnAction)
+      {
+          returnAction(CLLocationManager.Status == CLAuthorizationStatus.AuthorizedAlways);
       }
 
 
