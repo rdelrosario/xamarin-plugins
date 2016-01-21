@@ -443,6 +443,8 @@ Geofence Accuracy Precision Priority enum
 * [aflorenzan](https://github.com/aflorenzan)
 * [frankelydiaz](https://github.com/frankelydiaz)
 * [jphbrivo](https://github.com/jphbrivo)
+* [hbanzon](https://github.com/hbanzon)
+* [ephremshiferaw](https://github.com/ephremshiferaw)
 
 This wouldn't be possible without all these great developer posts, articles and references:
 
