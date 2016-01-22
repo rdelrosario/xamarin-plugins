@@ -80,9 +80,12 @@ namespace Geofence.Plugin
                string notificationStayMessage = NSUserDefaults.StandardUserDefaults.StringForKey(GetFieldKey(id, NotificationStayMessageGeofenceRegionKey));
                bool showNotification = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, ShowNotificationGeofenceRegionKey));
                bool persistent = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, PersistentGeofenceRegionKey));
+               bool showEntryNotification = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, ShowEntryNotificationGeofenceRegionKey));
+               bool showExitNotification = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, ShowExitNotificationGeofenceRegionKey));
+               bool showStayNotification = NSUserDefaults.StandardUserDefaults.BoolForKey(GetFieldKey(id, ShowStayNotificationGeofenceRegionKey));
                int stayedInThresholdDuration = (int)NSUserDefaults.StandardUserDefaults.IntForKey(GetFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
 
-               region = new GeofenceCircularRegion(id,lat,lon,radius,notifyOnEntry,notifyOnExit,notifyOnStay,showNotification,persistent)
+               region = new GeofenceCircularRegion(id,lat,lon,radius,notifyOnEntry,notifyOnExit,notifyOnStay,showNotification,persistent,showEntryNotification,showExitNotification,showStayNotification)
                {
                    NotificationEntryMessage = notificationEntryMessage,
                    NotificationStayMessage = notificationStayMessage,
@@ -112,6 +115,10 @@ namespace Geofence.Plugin
             NSUserDefaults.StandardUserDefaults.SetDouble(region.Radius,GetFieldKey(id, RadiusGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.SetBool(region.ShowNotification, GetFieldKey(id, ShowNotificationGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.SetBool(region.Persistent, GetFieldKey(id, PersistentGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.SetBool(region.ShowEntryNotification, GetFieldKey(id, ShowEntryNotificationGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.SetBool(region.ShowExitNotification, GetFieldKey(id, ShowExitNotificationGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.SetBool(region.ShowStayNotification, GetFieldKey(id, ShowStayNotificationGeofenceRegionKey));
+
             NSUserDefaults.StandardUserDefaults.SetInt((int)region.StayedInThresholdDuration.TotalMilliseconds, GetFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
 
             if(!string.IsNullOrEmpty(region.NotificationEntryMessage))
@@ -161,6 +168,9 @@ namespace Geofence.Plugin
             NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, NotificationStayMessageGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, ShowNotificationGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, PersistentGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, ShowEntryNotificationGeofenceRegionKey));
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, ShowExitNotificationGeofenceRegionKey));           
+            NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, ShowStayNotificationGeofenceRegionKey));
             NSUserDefaults.StandardUserDefaults.RemoveObject(GetFieldKey(id, StayedInThresholdDurationGeofenceRegionKey));
         }
 

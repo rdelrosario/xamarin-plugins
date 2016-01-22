@@ -15,7 +15,10 @@ namespace Geofence.Plugin.Abstractions
         {
 
         }
-        public GeofenceCircularRegion(string id, double centerLatitude, double centerLongitude,double radius, bool notifyOnEntry = true, bool notifyOnExit = true, bool notifyOnStay = false,bool showNotification = true, bool persistent = true)
+        public GeofenceCircularRegion(string id, double centerLatitude, double centerLongitude, double radius, 
+                                      bool notifyOnEntry = true, bool notifyOnExit = true, bool notifyOnStay = false, 
+                                      bool showNotification = true, bool persistent = true, 
+                                      bool showEntryNotification = true, bool showExitNotification = true, bool showStayNotification = true)
         {
             Id=id;
             Latitude = centerLatitude;
@@ -26,6 +29,9 @@ namespace Geofence.Plugin.Abstractions
             NotifyOnStay = notifyOnStay;
             ShowNotification = showNotification;
             Persistent = persistent;
+            ShowEntryNotification = showEntryNotification;
+            ShowExitNotification = showExitNotification;
+            ShowStayNotification = showStayNotification;
         }
         /// <summary>
         /// Region identifier
@@ -73,10 +79,25 @@ namespace Geofence.Plugin.Abstractions
         /// </summary>
         public bool Persistent { get; set; }
         /// <summary>
-        /// Enables showing local notifications 
+        /// Enables showing local notifications. Defaults to showing all notifications, unless setting ShowEntry/Exit/StayNotification entries to false.
         /// Messages could be configured using properties: NotificationEntryMessage, NotificationExitMessage, NotificationStayMessage
         /// </summary>
         public bool ShowNotification { get; set; }
+        /// <summary>
+        /// Enables showing local notifications. ShowNotification must be true.
+        /// Messages could be configured using properties: NotificationEntryMessage
+        /// </summary>
+        public bool ShowEntryNotification { get; set; }
+        /// <summary>
+        /// Enables showing local notifications. ShowNotification must be true.
+        /// Messages could be configured using properties: NotificationExitMessage
+        /// </summary>
+        public bool ShowExitNotification { get; set; }
+        /// <summary>
+        /// Enables showing local notifications. ShowNotification must be true.
+        /// Messages could be configured using properties: NotificationStayMessage
+        /// </summary>
+        public bool ShowStayNotification { get; set; }
 
         /// <summary>
         /// Sets minimum duration time span before passing to stayed in transition after an entry 

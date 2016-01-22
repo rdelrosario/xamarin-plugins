@@ -53,7 +53,7 @@ public override void OnCreate()
 
      //Initialization
                         
-     CrossGeofence.Initialize<CrossGeofenceListener>();            
+     CrossGeofence.Initialize<CrossGeofenceListener>();      
 }
 ```
 
@@ -83,7 +83,12 @@ public class  CrossGeofenceListener : IGeofenceListener
         {
             Debug.WriteLine(string.Format("{0} - {1}: {2}", CrossGeofence.Tag, "Error", error));
         }
-
+	
+	// Note that you must call CrossGeofence.GeofenceListener.OnAppStarted() from your app when you want this method to run.
+	public void OnAppStarted()
+    	{
+      	    Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "App started"));
+    	}
 
         public void OnRegionStateChanged(GeofenceResult result)
         {
@@ -169,10 +174,25 @@ Class to define and configure geofence region
  /// </summary>
  public bool Persistent { get; set; }
  /// <summary>
- /// Enables showing local notifications 
+ /// Enables showing local notifications. Defaults to showing all notifications, unless setting ShowEntry/Exit/StayNotification entries to false. 
  /// Messages could be configured using properties: NotificationEntryMessage, NotificationExitMessage, NotificationStayMessage
  /// </summary>
  public bool ShowNotification { get; set; }
+ /// <summary>
+ /// Enables showing local entry notifications. ShowNotification must be true.
+ /// Messages could be configured using properties: NotificationEntryMessage
+ /// </summary>
+ public bool ShowEntryNotification { get; set; }
+ /// <summary>
+ /// Enables showing local exit notifications. ShowNotification must be true.
+ /// Messages could be configured using properties: NotificationExitMessage
+ /// </summary>
+ public bool ShowExitNotification { get; set; }
+ /// <summary>
+ /// Enables showing local stay notifications. ShowNotification must be true.
+ /// Messages could be configured using properties: NotificationStayMessage
+ /// </summary>
+ public bool ShowStayNotification { get; set; }
  /// <summary>
  /// Sets minimum duration time span before passing to stayed in transition after an entry 
  /// </summary>
@@ -261,6 +281,14 @@ Stop monitoring all geofence regions.
 void StopMonitoringAllRegions();
 ```
 
+**IsLocationEnabled**
+
+Determines whether location is enabled and returns the result to the specified action.
+
+```csharp
+void IsLocationEnabled(Action<bool> returnAction);
+```
+
 **LastKnownLocation**
 
 Last known geofence location. This location will be null if isn't monitoring any regions yet.
@@ -317,6 +345,12 @@ This are special features you can enable or change values. By default plugin use
 
     //Set the smallest displacement should be done from current location before a location update
     public static float SmallestDisplacement { get; set; }
+    
+    /// Request the user for Notifications Permission.  Set to false if this is already handled in the client application.
+    public static bool RequestNotificationPermission { get; set; }
+ 
+    /// Request the user for Location Services Permissions. Set to false if this is already handled in the client application. 
+    public static bool RequestLocationPermission { get; set; }
 ```
 
 Geofence Accuracy Precision Priority enum
@@ -371,6 +405,12 @@ Geofence Accuracy Precision Priority enum
 
     //The sets the sound  uri will be used for the notification
     public static Android.Net.Uri SoundUri { get; set; }
+    
+    /// ARGB Color used for notification
+    public static int Color { get; set; }
+     
+    /// Large icon resource used for notification
+    public static Android.Graphics.Bitmap LargeIconResource { get; set; }
 
     //Sets update interval for the location updates
     public static int LocationUpdatesInterval { get; set; }
@@ -402,6 +442,9 @@ Geofence Accuracy Precision Priority enum
 * [rdelrosario](https://github.com/rdelrosario)
 * [aflorenzan](https://github.com/aflorenzan)
 * [frankelydiaz](https://github.com/frankelydiaz)
+* [jphbrivo](https://github.com/jphbrivo)
+* [hbanzon](https://github.com/hbanzon)
+* [ephremshiferaw](https://github.com/ephremshiferaw)
 
 This wouldn't be possible without all these great developer posts, articles and references:
 
@@ -410,6 +453,7 @@ This wouldn't be possible without all these great developer posts, articles and 
 * http://hayageek.com/ios-geofencing-api/
 * http://developer.xamarin.com/recipes/ios/multitasking/geofencing/
 * http://nevan.net/2014/09/core-location-manager-changes-in-ios-8/
+* http://stackoverflow.com/questions/24543814/diddeterminestate-not-always-called
 
 #####Android References:
 

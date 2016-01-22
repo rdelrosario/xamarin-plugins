@@ -27,8 +27,20 @@ namespace Geofence.Plugin
         void Android.Gms.Location.ILocationListener.OnLocationChanged(Android.Locations.Location location)
         {
             //Location Updated
+            var currentGeofenceImplementation = CrossGeofence.Current as GeofenceImplementation; 
+                  
+            // Check if we need to reset the listener in case there was an error, e.g. location services turned off
+            if (currentGeofenceImplementation.LocationHasError)
+            {
+                // Reset the broadcast receiver here
+                currentGeofenceImplementation.AddGeofences();
+
+                // Reset
+                currentGeofenceImplementation.LocationHasError = false;
+            }
+      
             System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}",CrossGeofence.Id,"Location Update",location.Latitude,location.Longitude));
-            ((GeofenceImplementation)CrossGeofence.Current).SetLastKnownLocation(location);
+            currentGeofenceImplementation.SetLastKnownLocation(location);
             
         }
     }

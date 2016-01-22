@@ -29,6 +29,9 @@ namespace Geofence.Plugin.Abstractions
         protected const string NotificationStayMessageGeofenceRegionKey = "Geofence.Region.NotificationStayMessage";
         protected const string ShowNotificationGeofenceRegionKey = "Geofence.Region.ShowNotification";
         protected const string PersistentGeofenceRegionKey = "Geofence.Region.Persistent";
+        protected const string ShowEntryNotificationGeofenceRegionKey = "Geofence.Region.ShowEntryNotification";
+        protected const string ShowExitNotificationGeofenceRegionKey = "Geofence.Region.ShowExitNotification";
+        protected const string ShowStayNotificationGeofenceRegionKey = "Geofence.Region.ShowStayNotification";
         protected const string StayedInThresholdDurationGeofenceRegionKey = "Geofence.Region.StayedInThresholdDuration";
         protected const string ExitThresholdDurationGeofenceRegionKey = "Geofence.Region.ExitThresholdDuration";
         /// <summary>

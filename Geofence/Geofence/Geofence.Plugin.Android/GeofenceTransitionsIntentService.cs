@@ -36,7 +36,10 @@ namespace Geofence.Plugin
                 string errorMessage = Android.Gms.Location.GeofenceStatusCodes.GetStatusCodeString(geofencingEvent.ErrorCode);
                 string message = string.Format("{0} - {1}", CrossGeofence.Id, errorMessage);
                 System.Diagnostics.Debug.WriteLine(message);
+                ((GeofenceImplementation)CrossGeofence.Current).LocationHasError = true;
                 CrossGeofence.GeofenceListener.OnError(message);
+                
+                return;
             }
 
             // Get the transition type.
@@ -102,16 +105,23 @@ namespace Geofence.Plugin
                        
                         if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
                        {
-                          switch(gTransition)
+                         var region = CrossGeofence.Current.Regions[geofence.RequestId];
+                         switch(gTransition)
                          {
                            case GeofenceTransition.Entered:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationEntryMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationEntryMessage;
+                               if (!region.ShowEntryNotification)
+                                 return;
+                               message=string.IsNullOrEmpty(region.NotificationEntryMessage)?message:region.NotificationEntryMessage;
                                break;
                            case GeofenceTransition.Exited:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationExitMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationExitMessage;
+                               if (!region.ShowExitNotification)
+                                 return;
+                               message=string.IsNullOrEmpty(region.NotificationExitMessage)?message:region.NotificationExitMessage;
                                break;
                            case GeofenceTransition.Stayed:
-                               message=string.IsNullOrEmpty(CrossGeofence.Current.Regions[geofence.RequestId].NotificationStayMessage)?message:CrossGeofence.Current.Regions[geofence.RequestId].NotificationStayMessage;
+                               if (!region.ShowStayNotification)
+                                 return;
+                               message=string.IsNullOrEmpty(region.NotificationStayMessage)?message:region.NotificationStayMessage;
                                break;
 
                          }
@@ -216,6 +226,14 @@ namespace Geofence.Plugin
                         .SetSound(CrossGeofence.SoundUri)
                         .SetSmallIcon(CrossGeofence.IconResource) // This is the icon to display
                         .SetContentText(message); // the message to display.
+
+                // Set the icon resource if we have one
+                if(CrossGeofence.LargeIconResource != null)
+                    builder.SetLargeIcon(CrossGeofence.LargeIconResource);
+
+                // Set the color if we have one
+                if(CrossGeofence.Color != 0)
+                    builder.SetColor(CrossGeofence.Color);
 
 
                 NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);

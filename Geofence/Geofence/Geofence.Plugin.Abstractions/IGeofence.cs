@@ -48,7 +48,12 @@ namespace Geofence.Plugin.Abstractions
       /// Stops monitoring all regions
       /// </summary>
       void StopMonitoringAllRegions();
-
+      /// <summary>
+      /// Determines whether location enabled and returns the result to the specified action.
+      /// </summary>
+      /// <returns><c>true</c> if this instance is location enabled the specified returnAction; otherwise, <c>false</c>.</returns>
+      /// <param name="returnAction">Return action.</param>
+      void IsLocationEnabled(Action<bool> returnAction);
 
 
 

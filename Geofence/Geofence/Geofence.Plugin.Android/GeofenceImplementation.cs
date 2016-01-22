@@ -15,7 +15,7 @@ using Android.Text;
 using System.Runtime.Remoting.Messaging;
 using Java.Interop;
 using System.Collections.ObjectModel;
-using Android.Gms.Common.Apis;
+using Android.Gms.Location;
 
 namespace Geofence.Plugin
 {
@@ -23,14 +23,14 @@ namespace Geofence.Plugin
     /// Implementation for Feature
     /// </summary>
     /// 
-    public class GeofenceImplementation : Java.Lang.Object, IGeofence, GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, IResultCallback
+    public class GeofenceImplementation : Java.Lang.Object, Geofence.Plugin.Abstractions.IGeofence, GoogleApiClient.IConnectionCallbacks, GoogleApiClient.IOnConnectionFailedListener, IResultCallback
     {
 
         internal const string GeoReceiverAction = "ACTION_RECEIVE_GEOFENCE";
   
         private Dictionary<string,GeofenceCircularRegion> mRegions = GeofenceStore.SharedInstance.GetAll();
 
-        private  Dictionary<string, GeofenceResult> mGeofenceResults = new Dictionary<string, GeofenceResult>();
+        private Dictionary<string, GeofenceResult> mGeofenceResults = new Dictionary<string, GeofenceResult>();
 
         private GeofenceLocation lastKnownGeofenceLocation;
 
@@ -72,6 +72,16 @@ namespace Geofence.Plugin
         /// Checks if region are been monitored
         /// </summary>
         public bool IsMonitoring { get { return mRegions.Count > 0; } }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this <see cref="Geofence.Plugin.GeofenceImplementation"/> location has error.
+        /// </summary>
+        /// <value><c>true</c> if location has error; otherwise, <c>false</c>.</value>
+        public bool LocationHasError { get; set; }
+     
+        public bool RequestNotificationPermission { get; set; }
+        public bool RequestLocationPermission { get; set; }
+
       
         //IsMonitoring?RequestType.Add:
 
@@ -99,28 +109,55 @@ namespace Geofence.Plugin
         {
 
             //Check if location services are enabled
-            if (!((Android.Locations.LocationManager)Android.App.Application.Context.GetSystemService(Context.LocationService)).IsProviderEnabled(Android.Locations.LocationManager.GpsProvider))
-            {
-                string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enable Location Services");
-                System.Diagnostics.Debug.WriteLine(message);
-                CrossGeofence.GeofenceListener.OnError(message);
-                return;
-            }
+            IsLocationEnabled((bool locationIsEnabled) => {
+                if(locationIsEnabled)
+                {
+                    CurrentRequestType = RequestType.Default;
+                    if(IsMonitoring)
+                    {
+                        StartMonitoring(Regions.Values.ToList());
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Monitoring was restored"));
+                    }
+                }
+                else
+                {
+                    string message = string.Format("{0} - {1}", CrossGeofence.Id, "You need to enabled Location Services");
+                    System.Diagnostics.Debug.WriteLine(message);
+                    CrossGeofence.GeofenceListener.OnError(message);
+                }
+            });
+        }
 
-            CurrentRequestType = RequestType.Default;
-
+        public void IsLocationEnabled(Action<bool> returnAction)
+        {
             InitializeGoogleAPI();
 
-            if (IsMonitoring)
-            { 
-                StartMonitoring(Regions.Values.ToList());
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, "Monitoring was restored"));
+            var locationRequestPriority = LocationRequest.PriorityBalancedPowerAccuracy;
+            switch (CrossGeofence.GeofencePriority)
+            {
+                case GeofencePriority.HighAccuracy:
+                    locationRequestPriority = LocationRequest.PriorityHighAccuracy;
+                    break;
+                case GeofencePriority.LowAccuracy:
+                    locationRequestPriority = LocationRequest.PriorityLowPower;
+                    break;
+                case GeofencePriority.LowestAccuracy:
+                    locationRequestPriority = LocationRequest.PriorityNoPower;
+                    break;
             }
-          
-         
-         
-    
+            var locationRequest = new LocationRequest();
+            locationRequest.SetPriority(locationRequestPriority);
+            locationRequest.SetInterval(CrossGeofence.LocationUpdatesInterval);
+            locationRequest.SetFastestInterval(CrossGeofence.FastestLocationUpdatesInterval);
 
+            LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().AddLocationRequest(locationRequest);
+            var pendingResult = LocationServices.SettingsApi.CheckLocationSettings(mGoogleApiClient, builder.Build());
+            pendingResult.SetResultCallback((LocationSettingsResult locationSettingsResult) => {
+                if (locationSettingsResult != null)
+                {
+                    returnAction(locationSettingsResult.Status.StatusCode <= CommonStatusCodes.Success);
+                } 
+            });
         }
 
         /// <summary>
@@ -200,7 +237,7 @@ namespace Geofence.Plugin
                 });
         }
 
-        private void AddGeofences()
+        public void AddGeofences()
         {
             try
             {
@@ -272,8 +309,7 @@ namespace Geofence.Plugin
             }
             
         }
-
-
+      
         /// <summary>
         /// Stops monitoring a specific geofence region
         /// </summary>
@@ -521,8 +557,10 @@ namespace Geofence.Plugin
 
             if (statusCode != Android.Gms.Location.GeofenceStatusCodes.Success && statusCode != Android.Gms.Location.GeofenceStatusCodes.SuccessCache && IsMonitoring)
             {
-                StopMonitoringAllRegions();
-
+                // Rather than force killing all running geofences, delegate action on geofence failures to the application.
+                // This lets the application decide to ignore the error, perform retry logic, stop monitoring as below, or any other behavior.
+                // StopMonitoringAllRegions();
+                ((GeofenceImplementation)CrossGeofence.Current).LocationHasError = true;
 
                 if (!string.IsNullOrEmpty(message))
                     CrossGeofence.GeofenceListener.OnError(message);
@@ -587,8 +625,17 @@ namespace Geofence.Plugin
                 mLocationRequest.SetSmallestDisplacement(CrossGeofence.SmallestDisplacement);
                 System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2} meters", CrossGeofence.Id, "Location smallest displacement set to", CrossGeofence.SmallestDisplacement));
             }
-     
-            Android.Gms.Location.LocationServices.FusedLocationApi.RequestLocationUpdates(mGoogleApiClient, mLocationRequest, GeofenceLocationListener.SharedInstance);
+            
+            try 
+            {
+                Android.Gms.Location.LocationServices.FusedLocationApi.RequestLocationUpdates(mGoogleApiClient, mLocationRequest, GeofenceLocationListener.SharedInstance);
+            }
+            catch(System.Exception e)
+            {
+                // Do not crash the app if permissions are disabled on Android Marshmallow
+                System.Diagnostics.Debug.WriteLine(e.Message);
+                CrossGeofence.GeofenceListener.OnError(e.Message);
+            }
         }
 
         internal void StopLocationUpdates()
