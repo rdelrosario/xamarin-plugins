@@ -37,5 +37,11 @@ namespace $rootnamespace$.Helpers
         {
             Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, result.ToString()));
         }
+
+        // Note that you must call CrossGeofence.GeofenceListener.OnAppStarted() from your app when you want this method to run.
+        public void OnAppStarted()
+        {
+            Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Tag, "App started"));
+        }
     }
 }

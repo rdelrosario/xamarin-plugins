@@ -31,7 +31,7 @@ namespace $rootnamespace$
             //TODO: Initialize CrossGeofence Plugin
             //TODO: Specify the listener class implementing IGeofenceListener interface in the Initialize generic
             //CrossGeofence.Initialize<CrossGeofenceListener>();
-	
+	        //CrossGeofence.GeofenceListener.OnAppStarted();
             //Start a sticky service to keep receiving geofence events when app is closed.
 			StartService();
 		}
