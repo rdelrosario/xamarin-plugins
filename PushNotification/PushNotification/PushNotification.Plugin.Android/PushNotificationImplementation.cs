@@ -58,7 +58,7 @@ namespace PushNotification.Plugin
                     CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.", PushNotificationKey.DomainName), DeviceType.Android);
              
                 }
-                else if (string.IsNullOrEmpty(Token))
+                else //if (string.IsNullOrEmpty(Token))
                 {
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
                     //ResetBackoff();
@@ -85,11 +85,11 @@ namespace PushNotification.Plugin
                    
 
                 }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Already Registered for Push Notifications", PushNotificationKey.DomainName));
+                //else
+                //{
+                //    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Already Registered for Push Notifications", PushNotificationKey.DomainName));
 
-                }
+                //}
 
             }
 

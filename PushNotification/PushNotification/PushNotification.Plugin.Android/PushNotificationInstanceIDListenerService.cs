@@ -10,6 +10,8 @@ using Android.Runtime;
 using Android.Views;
 using Android.Widget;
 using Android.Gms.Gcm.Iid;
+using System.Threading;
+using PushNotification.Plugin.Abstractions;
 
 namespace PushNotification.Plugin
 {
@@ -27,8 +29,23 @@ namespace PushNotification.Plugin
         public override void OnTokenRefresh()
         {
  	       base.OnTokenRefresh();
-           Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
-           StartService(intent);
+
+            ThreadPool.QueueUserWorkItem(state =>
+            {
+                try
+                {
+                    Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
+                    Android.App.Application.Context.StartService(intent);
+                }
+                catch (System.Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+
+                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag), DeviceType.Android);
+
+                }
+
+            });
         }
     }
 }
