@@ -314,12 +314,11 @@ namespace Geofence.Plugin
       /// <returns></returns>
       public async Task CheckIfStayed(string regionId)
       {
-         
-          if (CrossGeofence.Current.GeofenceResults.ContainsKey(regionId) && CrossGeofence.Current.Regions.ContainsKey(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds != 0)
+          if (GeofenceRegionExists(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds != 0)
           {
               await Task.Delay((int)CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds);
 
-              if (CrossGeofence.Current.GeofenceResults[regionId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[regionId].Transition != GeofenceTransition.Stayed)
+              if (GeofenceRegionExists(regionId) && CrossGeofence.Current.GeofenceResults[regionId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[regionId].Transition != GeofenceTransition.Stayed)
               {
                   CrossGeofence.Current.GeofenceResults[regionId].Transition = GeofenceTransition.Stayed;
 
@@ -333,6 +332,17 @@ namespace Geofence.Plugin
               }
           }
       }
+
+      /// <summary>
+      /// Checks if a GeofenceRegion exists in the monitored regions
+      /// </summary>
+      /// <returns><c>true</c>, if it exists, <c>false</c> otherwise.</returns>
+      /// <param name="regionId">Region identifier.</param>
+      bool GeofenceRegionExists(string regionId)
+      {
+          return CrossGeofence.Current.GeofenceResults.ContainsKey (regionId) && CrossGeofence.Current.Regions.ContainsKey (regionId);
+      }
+
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
           if (!GeofenceResults.ContainsKey(e.Region.Identifier)||GeofenceResults[e.Region.Identifier].Transition != GeofenceTransition.Exited)
