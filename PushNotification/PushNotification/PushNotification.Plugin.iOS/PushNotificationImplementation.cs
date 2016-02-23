@@ -51,37 +51,39 @@ namespace PushNotification.Plugin
 
 		}
 
+      private static string DictionaryToJson(NSDictionary dictionary)
+      {
+          NSError error;
+          var json = NSJsonSerialization.Serialize(dictionary, NSJsonWritingOptions.PrettyPrinted, out error);
+
+          return json.ToString(NSStringEncoding.UTF8);
+      }
+
 		#region IPushNotificationListener implementation
 
 		public void OnMessageReceived (NSDictionary userInfo)
 		{
 			var parameters = new Dictionary<string, object>();
-            JObject values = new JObject();
-            foreach (NSString key in userInfo.Keys)
-			{
-                var value = userInfo.ValueForKey(key).ToString();
-                if (key == "aps")
-				{
-                 
+		    var json = DictionaryToJson(userInfo);
+		    JObject values = JObject.Parse(json);
 
-                    NSDictionary aps = userInfo.ValueForKey(key) as NSDictionary;
+		    var keyAps = new NSString("aps");
 
-                    if (aps != null)
+            if (userInfo.ContainsKey(keyAps))
+		    {
+                NSDictionary aps = userInfo.ValueForKey(keyAps) as NSDictionary;
+
+                if (aps != null)
+                {
+                    foreach (var apsKey in aps)
                     {
-                        foreach (var apsKey in aps)
-                        { 
-                          parameters.Add(apsKey.Key.ToString(), apsKey.Value);
-                          values.Add(apsKey.Key.ToString(), apsKey.Value.ToString());
-                        }
+                        parameters.Add(apsKey.Key.ToString(), apsKey.Value);
+                        JToken temp;
+                        if (!values.TryGetValue(apsKey.Key.ToString(), out temp))
+                            values.Add(apsKey.Key.ToString(), apsKey.Value.ToString());
                     }
-
-               
-                        
-                    
                 }
-                values.Add(key, value);
-                parameters.Add(key, userInfo.ValueForKey(key));
-			}
+		    }
 
             CrossPushNotification.PushNotificationListener.OnMessage(values, DeviceType.iOS);
 
