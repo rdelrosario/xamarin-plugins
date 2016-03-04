@@ -260,6 +260,13 @@ namespace PushNotification.Plugin
                       .SetSmallIcon(CrossPushNotification.IconResource) // This is the icon to display
                       .SetContentText(message); // the message to display.
 
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.JellyBean) {
+				// Using BigText notification style to support long message
+				var style = new NotificationCompat.BigTextStyle ();
+				style.BigText (message);
+				builder.SetStyle (style);
+			}
+
             NotificationManager notificationManager = (NotificationManager)context.GetSystemService(Context.NotificationService);
             notificationManager.Notify(tag, notifyId, builder.Build());
 
