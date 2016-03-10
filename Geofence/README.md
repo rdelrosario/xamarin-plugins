@@ -419,7 +419,7 @@ Geofence Accuracy Precision Priority enum
     public static int FastestLocationUpdatesInterval { get; set; }
 ```
 
-* The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
+* The <b>package name</b> of your Android aplication must <b>start with lower case</b> and shouldn't have any hyphen character or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 * Make sure you have updated your Android SDK Manager libraries:
 
 ![image](https://cloud.githubusercontent.com/assets/2547751/6440604/1b0afb64-c0b5-11e4-93b8-c496e2bfa588.png)
