@@ -1,7 +1,7 @@
-﻿using DeviceMotion.Plugin.Abstractions;
+﻿using Plugin.DeviceMotion.Abstractions;
 using System;
 
-namespace DeviceMotion.Plugin
+namespace Plugin.DeviceMotion
 {
   /// <summary>
   /// Cross platform DeviceMotion implemenations

@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("DeviceMotion.Plugin.WindowsStore")]
+[assembly: AssemblyTitle("Plugin.DeviceMotion.WindowsStore")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("DeviceMotion.Plugin.WindowsStore")]
+[assembly: AssemblyProduct("Plugin.DeviceMotion.WindowsStore")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
