@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Plugin.DeviceMotion.Abstractions
+namespace DeviceMotion.Plugin.Abstractions
 {
     /// <summary>
     /// Device motion Interface.

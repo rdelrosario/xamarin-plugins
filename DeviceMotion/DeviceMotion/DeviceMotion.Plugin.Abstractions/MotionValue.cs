@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Plugin.DeviceMotion.Abstractions
+namespace DeviceMotion.Plugin.Abstractions
 {
 	/// <summary>
 	/// Motion value.

@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="ScolioMetro.AboutPage"
+             Title="ScolioMetro"
+             BackgroundColor="White">
+  <StackLayout>
+    <!--
+    <Label Text="{Binding MainText}" FontSize="Large" FontAttributes="Bold" TextColor="Aqua" VerticalOptions="Start" HorizontalOptions="Start" />
+    -->
+    <Label HorizontalOptions="CenterAndExpand" VerticalOptions="Fill">
+      <Label.FormattedText>
+        <FormattedString>
+          <FormattedString.Spans>
+            <Span Text="This app mimics inclinometer (Scoliometer) medical tool using the accelerometer sensor to meassure the asymmetry of the scoliosis-tested patient's trunk and the angle of its rotation. " ForegroundColor="Aqua" FontAttributes="Bold" FontSize="Medium" />
+            <Span Text="To use hold the phone to the patient's back whilst the patient assumes Adam's forward bend test position, positioning the phone over spine vertebrae, reading angles then. Angle indicator settles after 2 seconds of still readings if average mode is not toggled off, showing both minimum and maximum angle result readings during that time also." ForegroundColor="Aqua" FontAttributes="Italic" FontSize="Medium" />
+          </FormattedString.Spans>
+        </FormattedString>
+      </Label.FormattedText>
+    </Label>
+    <Label TextColor="Aqua" FontSize="Small" HorizontalOptions="CenterAndExpand" VerticalOptions="EndAndExpand">
+      <Label.FormattedText>
+        <FormattedString>
+          <FormattedString.Spans>
+            <Span Text="In case the subject is being meassured whilst positioned on a non-prefectly leveled floor surface use 'Calibrate' action to remove the initial offset from meassurements. 'Reset' action nullifies previous calibrations. Over 7° indicates scoliosis ("/>
+            <Span Text="red" ForegroundColor="Red"/>
+            <Span Text="), under 5° does not ("/>
+            <Span Text="green" ForegroundColor="Green"/>
+            <Span Text="), in between being suspect ("/>
+            <Span Text="yellow" ForegroundColor="Yellow"/>
+            <Span Text=")."/>
+          </FormattedString.Spans>
+        </FormattedString>
+      </Label.FormattedText>
+    </Label>
+  </StackLayout>
+</ContentPage>

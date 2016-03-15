@@ -1,4 +1,4 @@
-using Plugin.DeviceMotion.Abstractions;
+using DeviceMotion.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,7 +13,7 @@ using MonoTouch.CoreLocation;
 #endif
 
 
-namespace Plugin.DeviceMotion
+namespace DeviceMotion.Plugin
 {
   /// <summary>
   /// Implementation for DeviceMotion

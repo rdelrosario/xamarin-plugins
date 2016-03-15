@@ -1,4 +1,4 @@
-using Plugin.DeviceMotion.Abstractions;
+using DeviceMotion.Plugin.Abstractions;
 using Android.Hardware;
 using Android.Content;
 using Android.App;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace Plugin.DeviceMotion
+namespace DeviceMotion.Plugin
 {
   /// <summary>
   /// Implementation for Feature

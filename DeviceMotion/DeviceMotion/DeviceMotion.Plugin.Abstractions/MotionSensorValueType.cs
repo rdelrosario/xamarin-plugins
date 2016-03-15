@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Plugin.DeviceMotion.Abstractions
+namespace DeviceMotion.Plugin.Abstractions
 {
 	/// <summary>
 	/// Motion sensor value type.
