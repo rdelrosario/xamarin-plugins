@@ -38,9 +38,9 @@ namespace PushNotification.Plugin
 
                     CrossPushNotification.PushNotificationListener.OnRegistered(token, DeviceType.Android);
                     PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, token);
+                    this.SubscribeTopics(token);
+
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - Device registered, registration ID=" + token, Tag));
-
-
                 }
 
             }catch(Exception ex)
@@ -59,13 +59,12 @@ namespace PushNotification.Plugin
 
         private void SubscribeTopics(string token)
         {
+            GcmPubSub pubSub = GcmPubSub.GetInstance(this);
+
             foreach(string topic in Topics) 
             {
-                 GcmPubSub pubSub = GcmPubSub.GetInstance(Android.App.Application.Context);
                  pubSub.Subscribe(token, "/topics/" + topic, null);
             }
-         
-           
         }
     }
 }
