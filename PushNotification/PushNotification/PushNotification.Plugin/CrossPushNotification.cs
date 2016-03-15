@@ -16,6 +16,7 @@ namespace PushNotification.Plugin
     public static bool IsInitialized { get { return (PushNotificationListener != null);  } }
     public static IPushNotificationListener PushNotificationListener { get; private set; }
 
+#if __MOBILE__
 #if __ANDROID__
     public static string SenderId { get; set; }
     public static string NotificationContentTitleKey { get; set; }
@@ -23,40 +24,46 @@ namespace PushNotification.Plugin
     public static string NotificationContentDataKey { get; set; }
     public static int IconResource { get; set; }
     public static Android.Net.Uri SoundUri { get; set; }
-    public static void Initialize<T>(string senderId)
-           where T : IPushNotificationListener, new()
-#endif
-#if __IOS__
-    public static void Initialize<T>()
-            where T : IPushNotificationListener, new()
 #endif
 
-
-
-#if __MOBILE__
-    {
-       
+    public static void Initialize<T>(
+      T listener
 #if __ANDROID__
-        
-        SenderId = senderId;
-
+      , string senderId
+#endif
+    )
+      where T : IPushNotificationListener
+    {
+#if __ANDROID__
+      SenderId = senderId;
 #endif
 
-        if (PushNotificationListener == null)
-        {
-            PushNotificationListener = (IPushNotificationListener)Activator.CreateInstance(typeof(T));
-            Debug.WriteLine("PushNotification plugin initialized.");
-        }
-        else
-        {
-            Debug.WriteLine("PushNotification plugin already initialized.");
-        }
-       
+      if (PushNotificationListener == null)
+      {
+         PushNotificationListener = listener;
+         Debug.WriteLine("PushNotification plugin initialized.");
+      }
+      else
+      {
+         Debug.WriteLine("PushNotification plugin already initialized.");
+      }
+    }
+
+    public static void Initialize<T>(
+#if __ANDROID__
+      string senderId
+#endif
+    )
+      where T : IPushNotificationListener, new()
+    {
+      Initialize<T>(
+        new T()
+#if __ANDROID__
+        , senderId    
+#endif
+      );
     }
 #endif
-
-
-
 
         /// <summary>
         /// Current settings to use
