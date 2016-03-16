@@ -131,6 +131,12 @@ namespace Geofence.Plugin
         public void IsLocationEnabled(Action<bool> returnAction)
         {
             InitializeGoogleAPI();
+            if(mGoogleApiClient == null)
+            {
+                returnAction(false);
+                return;
+            }
+
 
             var locationRequestPriority = LocationRequest.PriorityBalancedPowerAccuracy;
             switch (CrossGeofence.GeofencePriority)
