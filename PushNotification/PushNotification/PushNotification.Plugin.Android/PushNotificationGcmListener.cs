@@ -20,8 +20,8 @@ namespace PushNotification.Plugin
     /// <summary>
     /// Push Notification Message Handler
     /// </summary>
-    [Service(Exported=false)]
-    [IntentFilter(new string[] { "com.google.android.c2dm.intent.RECEIVE" })]
+    [Service(Exported=false, Name="pushnotification.plugin.PushNotificationGcmListener")]
+    [IntentFilter(new string[] { "com.google.android.c2dm.intent.RECEIVE" }, Categories = new string[] { "@PACKAGE_NAME@" })]
     public class PushNotificationGcmListener : GcmListenerService
     {
         /// <summary>
