@@ -177,6 +177,7 @@ CrossDeviceMotion.Current.SensorValueChanged+=(s, a)=>{
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
+* [dimitrijevic](https://github.com/dimitrijevic)
 
 Thanks!
 
