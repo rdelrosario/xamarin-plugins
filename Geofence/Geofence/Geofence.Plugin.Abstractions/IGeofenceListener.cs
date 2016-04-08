@@ -14,5 +14,6 @@ namespace Geofence.Plugin.Abstractions
        void OnRegionStateChanged(GeofenceResult result);
        void OnError(String error);
        void OnAppStarted();
+       void OnLocationChanged(GeofenceLocation location);
     }
 }

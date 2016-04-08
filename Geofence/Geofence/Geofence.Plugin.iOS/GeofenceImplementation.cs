@@ -163,10 +163,10 @@ namespace Geofence.Plugin
               lastKnownGeofenceLocation.Longitude = location.Coordinate.Longitude;
               lastKnownGeofenceLocation.Accuracy = location.HorizontalAccuracy;
               DateTime referenceDate = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(2001, 1, 1, 0, 0, 0));
-              referenceDate.AddSeconds(location.Timestamp.SecondsSinceReferenceDate);
 
-              lastKnownGeofenceLocation.Date = referenceDate;
+              lastKnownGeofenceLocation.Date = referenceDate.AddSeconds(location.Timestamp.SecondsSinceReferenceDate);
 
+              CrossGeofence.GeofenceListener.OnLocationChanged(lastKnownGeofenceLocation);
           }
 
       }
