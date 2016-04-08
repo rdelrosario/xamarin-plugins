@@ -166,7 +166,7 @@ namespace Geofence.Plugin
               referenceDate.AddSeconds(location.Timestamp.SecondsSinceReferenceDate);
 
               lastKnownGeofenceLocation.Date = referenceDate;
-
+              CrossGeofence.GeofenceListener.OnLocationChanged(lastKnownGeofenceLocation);
           }
 
       }

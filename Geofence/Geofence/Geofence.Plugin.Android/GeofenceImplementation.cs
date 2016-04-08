@@ -474,7 +474,7 @@ namespace Geofence.Plugin
                 lastKnownGeofenceLocation.Longitude = location.Longitude;
                 double seconds = location.Time / 1000;
                 lastKnownGeofenceLocation.Date = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Local).AddSeconds(seconds);
-               
+                CrossGeofence.GeofenceListener.OnLocationChanged(lastKnownGeofenceLocation);
             }
 
         }
