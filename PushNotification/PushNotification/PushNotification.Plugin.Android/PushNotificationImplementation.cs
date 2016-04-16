@@ -46,51 +46,40 @@ namespace PushNotification.Plugin
             /// </summary>
             public void Register()
             {
-
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering push notifications", PushNotificationKey.DomainName));
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering push notifications",
+                    PushNotificationKey.DomainName));
 
                 if (string.IsNullOrEmpty(CrossPushNotification.SenderId))
                 {
-
-
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register - SenderId is missing.", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register - SenderId is missing.",
+                        PushNotificationKey.DomainName));
                  
-                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.", PushNotificationKey.DomainName), DeviceType.Android);
+                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.",
+                        PushNotificationKey.DomainName), DeviceType.Android);
              
                 }
                 else //if (string.IsNullOrEmpty(Token))
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
-                    //ResetBackoff();
-                    
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications",
+                        PushNotificationKey.DomainName));
+                    //ResetBackoff();                    
 
-                        ThreadPool.QueueUserWorkItem(state =>
+                    ThreadPool.QueueUserWorkItem(state =>
+                    {
+                        try
                         {
-                            try
-                            {
-                               Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
-                               Android.App.Application.Context.StartService(intent);
-                            }
-                            catch (System.Exception ex)
-                            {
-                                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+                            Intent intent = new Intent(Android.App.Application.Context, typeof(PushNotificationRegistrationIntentService));
+                            Android.App.Application.Context.StartService(intent);
+                        }
+                        catch (System.Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
 
-                                CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag), DeviceType.Android);
-
-                            }
-                     
-                        });
-
-                    
-                   
-
+                            CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag),
+                                DeviceType.Android);
+                        }                     
+                    });   
                 }
-                //else
-                //{
-                //    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Already Registered for Push Notifications", PushNotificationKey.DomainName));
-
-                //}
-
             }
 
             /// <summary>
@@ -98,11 +87,10 @@ namespace PushNotification.Plugin
             /// </summary>
             public void Unregister()
             {
-
-
                 ThreadPool.QueueUserWorkItem(state =>
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications",
+                        PushNotificationKey.DomainName));
                     try
                     {
                         InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
@@ -111,24 +99,68 @@ namespace PushNotification.Plugin
                         CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Android);
                         PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, string.Empty);
 
-                    }catch(IOException ex)
+                    } catch(IOException ex)
                     {
                         System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Unregister - " + ex.ToString(), Tag),
+                            DeviceType.Android);
+                    }
+                }); 
+            }
 
-                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Unregister - " + ex.ToString(), Tag), DeviceType.Android);
-              
+            /// <summary>
+            /// Subscribe Topics to your app
+            /// </summary>
+            public void SubscribeTopics(string[] Topics)
+            {
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    try
+                    {
+                        GcmPubSub pubSub = GcmPubSub.GetInstance(Android.App.Application.Context);
 
+                        foreach (string topic in Topics)
+                        {
+                            pubSub.Subscribe(Token, "/topics/" + topic, null);
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, "SubscribeTopic"));
+
+                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), "SubscribeTopic"),
+                            DeviceType.Android);
+                    }
+                });             
+            }
+
+            /// <summary>
+            /// Unsubscribe Topics of your app
+            /// </summary>
+            public void UnsubscribeTopics(string[] Topics)
+            {
+                ThreadPool.QueueUserWorkItem(state =>
+                {
+                    try
+                    {
+                        GcmPubSub pubSub = GcmPubSub.GetInstance(Android.App.Application.Context);
+                        foreach (string topic in Topics)
+                        {
+                            pubSub.Unsubscribe(Token, topic);
+                        }
+                    }
+                    catch (System.Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, "UnsubscribeTopic"));
+
+                        CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), "UnsubscribeTopic"),
+                            DeviceType.Android);
                     }
                 });
-                 
-                
-               
-
             }
 
 
-
-            private string GetRegistrationId()
+        private string GetRegistrationId()
             {
                 string retVal = "";
 
@@ -149,9 +181,9 @@ namespace PushNotification.Plugin
                 // the new app version.
                 int registeredVersion = prefs.GetInt(PushNotificationKey.AppVersion, Integer.MinValue);
                 int currentVersion = GetAppVersion(context);
+
                 if (registeredVersion != currentVersion)
                 {
-
                     System.Diagnostics.Debug.WriteLine(string.Format("{0} - App version changed.", PushNotificationKey.DomainName));
 
                     return retVal;
@@ -161,11 +193,11 @@ namespace PushNotification.Plugin
 
                 return retVal;
             }
+
             internal static ISharedPreferences GetGCMPreferences(Context context)
             {
                 // This sample app persists the registration ID in shared preferences, but
                 // how you store the registration ID in your app is up to you.
-
                 return context.GetSharedPreferences(GcmPreferencesKey, FileCreationMode.Private);
             }
 
@@ -198,31 +230,31 @@ namespace PushNotification.Plugin
             }
 
 
-           /* internal void ResetBackoff()
-            {
-               // Logger.Debug("resetting backoff for " + context.PackageName);
-                Context context = Android.App.Application.Context;
-                SetBackoff(DefaultBackOffMilliseconds);
-            }
+            /* internal void ResetBackoff()
+             {
+                // Logger.Debug("resetting backoff for " + context.PackageName);
+                 Context context = Android.App.Application.Context;
+                 SetBackoff(DefaultBackOffMilliseconds);
+             }
 
-            internal int GetBackoff()
-            {
-                Context context = Android.App.Application.Context;
-                var prefs = GetGCMPreferences(context);
-                return prefs.GetInt(PushNotificationKey.BackOffMilliseconds, DefaultBackOffMilliseconds);
-            }
+             internal int GetBackoff()
+             {
+                 Context context = Android.App.Application.Context;
+                 var prefs = GetGCMPreferences(context);
+                 return prefs.GetInt(PushNotificationKey.BackOffMilliseconds, DefaultBackOffMilliseconds);
+             }
 
-            internal void SetBackoff(int backoff)
-            {
-                Context context = Android.App.Application.Context;
-                var prefs = GetGCMPreferences(context);
-                var editor = prefs.Edit();
-                editor.PutInt(PushNotificationKey.BackOffMilliseconds, backoff);
-                editor.Commit();
-            }*/
+             internal void SetBackoff(int backoff)
+             {
+                 Context context = Android.App.Application.Context;
+                 var prefs = GetGCMPreferences(context);
+                 var editor = prefs.Edit();
+                 editor.PutInt(PushNotificationKey.BackOffMilliseconds, backoff);
+                 editor.Commit();
+             }*/
 
-      
-      
+
+
 
     }
 }
