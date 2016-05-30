@@ -16,7 +16,6 @@ namespace PushNotification.Plugin
     public static bool IsInitialized { get { return (PushNotificationListener != null);  } }
     public static IPushNotificationListener PushNotificationListener { get; private set; }
 
-#if __MOBILE__
 #if __ANDROID__
     public static string SenderId { get; set; }
     public static string NotificationContentTitleKey { get; set; }
@@ -62,8 +61,7 @@ namespace PushNotification.Plugin
         , senderId    
 #endif
       );
-    }
-#endif
+}
 
         /// <summary>
         /// Current settings to use

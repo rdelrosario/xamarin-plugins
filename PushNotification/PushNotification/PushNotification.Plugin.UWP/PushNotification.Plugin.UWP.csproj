@@ -7,8 +7,8 @@
     <ProjectGuid>{807FD616-74A7-4800-AB46-481AAF966F1D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PushNotification.Plugin.UWP</RootNamespace>
-    <AssemblyName>PushNotification.Plugin.UWP</AssemblyName>
+    <RootNamespace>PushNotification.Plugin</RootNamespace>
+    <AssemblyName>PushNotification.Plugin</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
