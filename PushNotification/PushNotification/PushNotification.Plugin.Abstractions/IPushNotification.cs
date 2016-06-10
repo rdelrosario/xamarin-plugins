@@ -12,8 +12,8 @@ namespace PushNotification.Plugin.Abstractions
 	  string Token { get; }
       void Register();
       void Unregister();
-
- 
+      void SubscribeTopics(string[] Topics);
+      void UnsubscribeTopics(string[] Topics);
   }
 
 }
