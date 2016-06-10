@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PushNotification.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ namespace PushNotification.Plugin
     {
 
         private PushNotificationChannel channel;
+        private JsonSerializer serializer = new JsonSerializer() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore };
 
         public string Token
         {
@@ -55,32 +57,36 @@ namespace PushNotification.Plugin
         private void Channel_PushNotificationReceived(PushNotificationChannel sender, PushNotificationReceivedEventArgs args)
         {
 
+            Debug.WriteLine("Push Notification Received " + args.NotificationType);
+
             JObject jobject = null;
 
             switch (args.NotificationType)
             {
 
                 case PushNotificationType.Badge:
-                    jobject = JObject.FromObject(args.BadgeNotification);
+                    jobject = JObject.FromObject(args.BadgeNotification, serializer);
                     break;
 
                 case PushNotificationType.Raw:
-                    jobject = JObject.FromObject(args.RawNotification);
+                    jobject = JObject.FromObject(args.RawNotification, serializer);
                     break;
 
                 case PushNotificationType.Tile:
-                    jobject = JObject.FromObject(args.TileNotification);
+                    jobject = JObject.FromObject(args.TileNotification, serializer);
                     break;
-               #if WINDOWS_UWP || WINDOWS_PHONE_APP
+                #if WINDOWS_UWP || WINDOWS_PHONE_APP
                 case PushNotificationType.TileFlyout:
-                    jobject = JObject.FromObject(args.TileNotification);
+                    jobject = JObject.FromObject(args.TileNotification, serializer);
                     break;
-               #endif
+                #endif
                 case PushNotificationType.Toast:
-                    jobject = JObject.FromObject(args.ToastNotification);
+                    jobject = JObject.FromObject(args.ToastNotification, serializer);
                     break;
 
             }
+
+            Debug.WriteLine("Sending JObject to PushNotificationListener " + args.NotificationType);
 
             CrossPushNotification.PushNotificationListener.OnMessage(jobject, DeviceType.Windows);
 
@@ -92,12 +98,12 @@ namespace PushNotification.Plugin
             if(channel!=null)
             {
 
-                channel.PushNotificationReceived -= Channel_PushNotificationReceived;
-                channel = null;
-
-                CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Windows);
+            channel.PushNotificationReceived -= Channel_PushNotificationReceived;
+            channel = null;
 
             }
+
+            CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.Windows);
 
         }
     }

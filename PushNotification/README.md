@@ -6,13 +6,18 @@ Simple cross platform plugin to handle push notification events such as register
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
 * Install into your PCL project and Client projects.
 
-**Supports**
-* Xamarin.iOS
-* Xamarin.iOS (x64 Unified)
-* Xamarin.Android
+**Platform Support**
+
+|Platform|Supported|Version|
+| ------------------- | :-----------: | :------------------: |
+|Xamarin.iOS|Yes|iOS 7+|
+|Xamarin.iOS Unified|Yes|iOS 7+|
+|Xamarin.Android|Yes|API 14+|
+|Windows Store RT|Yes|8.1+|
+|Windows 10 UWP|Yes|10+|
 
 ### TODO
-* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT, Windows Store 8.1 Support
+* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT Support
 
 ### API Usage
 
@@ -229,7 +234,7 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 * [charri](https://github.com/charri)
 * [timbrand](https://github.com/timbrand)
 * [kentcb](https://github.com/kentcb)
-* Alessandro Moscatelli
+* [Alessandro Moscatelli](https://www.linkedin.com/in/alessandromoscatelli)
 
 Thanks!
 
