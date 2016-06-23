@@ -20,7 +20,7 @@ namespace $rootnamespace$.Helpers
             Debug.WriteLine("Message Arrived");
         }
 
-        public void OnRegistered(string token, DeviceType deviceType)
+        public void OnRegistered(string Token, DeviceType deviceType)
         {
             Debug.WriteLine(string.Format("Push Notification - Device Registered - Token : {0}", Token));
         }
