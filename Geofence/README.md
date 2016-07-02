@@ -449,6 +449,7 @@ Geofence Accuracy Precision Priority enum
 * [streaming](https://github.com/streaming)
 * [PureWeen](https://github.com/PureWeen)
 * [bokmadsen](https://github.com/bokmadsen)
+* [jfversluis](https://github.com/jfversluis)
 
 This wouldn't be possible without all these great developer posts, articles and references:
 
