@@ -1,6 +1,6 @@
 ## Push Notification Plugin for Xamarin
 
-Simple cross platform plugin to handle push notification events such as registering, unregistering and messages arrival on Android and iOS.
+Simple cross platform plugin to handle push notification events such as registering, unregistering and messages arrival on Android, iOS, UWP platforms.
 
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
