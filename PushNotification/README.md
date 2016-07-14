@@ -237,6 +237,7 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 * [timbrand](https://github.com/timbrand)
 * [kentcb](https://github.com/kentcb)
 * [Alessandro Moscatelli](https://www.linkedin.com/in/alessandromoscatelli)
+* [havalli](https://github.com/havalli)
 
 Thanks!
 
