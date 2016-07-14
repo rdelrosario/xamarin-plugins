@@ -106,7 +106,9 @@ Enum of Device Types:
      public enum DeviceType
     {
         Android,
-        iOS
+        iOS,
+        WindowsPhone,
+        Windows
     }
 ```
 
