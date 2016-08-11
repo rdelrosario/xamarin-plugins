@@ -9,6 +9,7 @@ using PushNotification.Plugin.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 
 
 namespace PushNotification.Plugin
@@ -28,11 +29,6 @@ namespace PushNotification.Plugin
 
 		public void Register()
 		{
-            if (!CrossPushNotification.IsInitialized)
-            {
-
-                throw NewPushNotificationNotInitializedException();
-            }
 
 			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
 			{
@@ -49,49 +45,56 @@ namespace PushNotification.Plugin
 
 		public void Unregister()
 		{
-            if (!CrossPushNotification.IsInitialized)
-            {
 
-                throw NewPushNotificationNotInitializedException();
-            }
 			UIApplication.SharedApplication.UnregisterForRemoteNotifications();
 
-            
 
 		}
+
+      private static string DictionaryToJson(NSDictionary dictionary)
+      {
+          NSError error;
+          var json = NSJsonSerialization.Serialize(dictionary, NSJsonWritingOptions.PrettyPrinted, out error);
+
+          return json.ToString(NSStringEncoding.UTF8);
+      }
 
 		#region IPushNotificationListener implementation
 
 		public void OnMessageReceived (NSDictionary userInfo)
 		{
 			var parameters = new Dictionary<string, object>();
+		    var json = DictionaryToJson(userInfo);
+		    JObject values = JObject.Parse(json);
 
-			foreach (NSString key in userInfo.Keys)
-			{
-				parameters.Add(key, userInfo.ValueForKey(key));
-			}
-          
-            if (CrossPushNotification.IsInitialized)
-            {
-                CrossPushNotification.PushNotificationListener.OnMessage(parameters, DeviceType.iOS);
-            }else
-            {
-                throw NewPushNotificationNotInitializedException();
-            }
+		    var keyAps = new NSString("aps");
+
+            if (userInfo.ContainsKey(keyAps))
+		    {
+                NSDictionary aps = userInfo.ValueForKey(keyAps) as NSDictionary;
+
+                if (aps != null)
+                {
+                    foreach (var apsKey in aps)
+                    {
+                        parameters.Add(apsKey.Key.ToString(), apsKey.Value);
+                        JToken temp;
+                        if (!values.TryGetValue(apsKey.Key.ToString(), out temp))
+                            values.Add(apsKey.Key.ToString(), apsKey.Value.ToString());
+                    }
+                }
+		    }
+
+            CrossPushNotification.PushNotificationListener.OnMessage(values, DeviceType.iOS);
+
 		}
 
 		public void OnErrorReceived (NSError error)
 		{
 			Debug.WriteLine("{0} - Registration Failed.", PushNotificationKey.DomainName);
 		
-            if (CrossPushNotification.IsInitialized)
-            {
-                CrossPushNotification.PushNotificationListener.OnError(error.LocalizedDescription, DeviceType.iOS);
-            }
-            else
-            {
-                throw NewPushNotificationNotInitializedException();
-            }
+            CrossPushNotification.PushNotificationListener.OnError(error.LocalizedDescription, DeviceType.iOS);
+         
 		}
 
 		public void OnRegisteredSuccess (NSData token)
@@ -110,14 +113,8 @@ namespace PushNotification.Plugin
 			Console.WriteLine("{0} - Token: {1}", PushNotificationKey.DomainName, trimmedDeviceToken);
 
 
-            if (CrossPushNotification.IsInitialized)
-            {
-                CrossPushNotification.PushNotificationListener.OnRegistered(trimmedDeviceToken, DeviceType.iOS);
-            }
-            else
-            {
-                throw NewPushNotificationNotInitializedException();
-            }
+            CrossPushNotification.PushNotificationListener.OnRegistered(trimmedDeviceToken, DeviceType.iOS);
+            
 
 
 
@@ -130,22 +127,9 @@ namespace PushNotification.Plugin
             NSUserDefaults.StandardUserDefaults.SetString(string.Empty, PushNotificationKey.Token);
             NSUserDefaults.StandardUserDefaults.Synchronize();
 
-            if (CrossPushNotification.IsInitialized)
-            {
-                CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.iOS);
-            }
-            else
-            {
-                throw NewPushNotificationNotInitializedException();
-            }
+            CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.iOS);
+           
 
-        }
-
-        PushNotificationNotInitializedException NewPushNotificationNotInitializedException()
-        {
-            string description = "CrossPushNotification Plugin is not initialized. Should initialize before use on FinishedLaunching method of AppDelegate class. Example:  CrossPushNotification.Initialize<CrossPushNotificationListener>()";
-
-            return new PushNotificationNotInitializedException(description);
         }
 
 		#endregion
