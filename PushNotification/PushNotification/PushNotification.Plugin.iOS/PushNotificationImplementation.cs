@@ -48,8 +48,9 @@ namespace PushNotification.Plugin
 
 			UIApplication.SharedApplication.UnregisterForRemoteNotifications();
 
+            OnUnregisteredSuccess();
 
-		}
+        }
 
       private static string DictionaryToJson(NSDictionary dictionary)
       {
