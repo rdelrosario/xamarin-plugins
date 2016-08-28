@@ -125,12 +125,10 @@ namespace PushNotification.Plugin
 
 		public void OnUnregisteredSuccess ()
 		{
+            CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.iOS);
+
             NSUserDefaults.StandardUserDefaults.SetString(string.Empty, PushNotificationKey.Token);
             NSUserDefaults.StandardUserDefaults.Synchronize();
-
-            CrossPushNotification.PushNotificationListener.OnUnregistered(DeviceType.iOS);
-           
-
         }
 
 		#endregion
