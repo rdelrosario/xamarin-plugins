@@ -47,20 +47,20 @@ namespace PushNotification.Plugin
             public void Register()
             {
 
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering push notifications", PushNotificationKey.DomainName));
+                System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Register -  Registering push notifications");
 
                 if (string.IsNullOrEmpty(CrossPushNotification.SenderId))
                 {
 
 
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register - SenderId is missing.", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Register - SenderId is missing.");
                  
-                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - Sender Id is missing.", PushNotificationKey.DomainName), DeviceType.Android);
+                    CrossPushNotification.PushNotificationListener.OnError($"{PushNotificationKey.DomainName} - Register - Sender Id is missing.", DeviceType.Android);
              
                 }
                 else //if (string.IsNullOrEmpty(Token))
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Register -  Registering for Push Notifications", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Register -  Registering for Push Notifications");
                     //ResetBackoff();
                     
 
@@ -103,7 +103,7 @@ namespace PushNotification.Plugin
 
                 ThreadPool.QueueUserWorkItem(state =>
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Unregister -  Unregistering push notifications", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Unregister -  Unregistering push notifications");
                     try
                     {
                         InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
@@ -141,7 +141,7 @@ namespace PushNotification.Plugin
 
                 if (string.IsNullOrEmpty(registrationId))
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Registration not found.", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Registration not found.");
 
                     return retVal;
                 }
@@ -153,7 +153,7 @@ namespace PushNotification.Plugin
                 if (registeredVersion != currentVersion)
                 {
 
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - App version changed.", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - App version changed.");
 
                     return retVal;
                 }
@@ -190,7 +190,7 @@ namespace PushNotification.Plugin
                 ISharedPreferences prefs = GetGCMPreferences(context);
                 int appVersion = GetAppVersion(context);
 
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Saving token on app version " + appVersion, PushNotificationKey.DomainName));
+                System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - Saving token on app version {appVersion}");
 
                 ISharedPreferencesEditor editor = prefs.Edit();
                 editor.PutString(PushNotificationKey.Token, regId);

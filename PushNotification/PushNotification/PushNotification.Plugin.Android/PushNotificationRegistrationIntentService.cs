@@ -40,14 +40,14 @@ namespace PushNotification.Plugin
                     PushNotificationImplementation.StoreRegistrationId(Android.App.Application.Context, token);
                     this.SubscribeTopics(token);
 
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Device registered, registration ID=" + token, Tag));
+                    System.Diagnostics.Debug.WriteLine($"{token} - Device registered, registration ID={Tag}");
                 }
 
             }catch(Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+                System.Diagnostics.Debug.WriteLine($"{ex.Message} - Error : {Tag}");
 
-                CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag), DeviceType.Android);
+                CrossPushNotification.PushNotificationListener.OnError($"{ex.ToString()} - Register - {Tag}", DeviceType.Android);
               
 
             }

@@ -34,7 +34,7 @@ namespace PushNotification.Plugin
             if (extras != null && !extras.IsEmpty)
             {
               
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - GCM Listener - Push Received", PushNotificationKey.DomainName));
+                    System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - GCM Listener - Push Received");
 
                    
 
@@ -55,7 +55,7 @@ namespace PushNotification.Plugin
 
                         parameters.Add(key, extras.Get(key));
                         
-                        System.Diagnostics.Debug.WriteLine(string.Format("{0} - GCM Listener - Push Params {1} : {2}", PushNotificationKey.DomainName, key, extras.Get(key)));
+                        System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - GCM Listener - Push Params {key} : {extras.Get(key)}");
 
                    
                     }
@@ -206,7 +206,7 @@ namespace PushNotification.Plugin
 
         void CreateNotification(string title, string message, int notifyId, string tag, Bundle extras)
         {
-            System.Diagnostics.Debug.WriteLine(string.Format("{0} - PushNotification - Message {1} : {2}", PushNotificationKey.DomainName,title,message));
+            System.Diagnostics.Debug.WriteLine($"{PushNotificationKey.DomainName} - PushNotification - Message {title} : {message}");
 
             NotificationCompat.Builder builder = null;
             Context context = Android.App.Application.Context;

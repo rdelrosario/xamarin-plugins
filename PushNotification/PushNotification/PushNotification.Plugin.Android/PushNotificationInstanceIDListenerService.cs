@@ -39,9 +39,9 @@ namespace PushNotification.Plugin
                 }
                 catch (System.Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error :" + ex.Message, Tag));
+                    System.Diagnostics.Debug.WriteLine($"{ex.Message} - Error : {Tag}");
 
-                    CrossPushNotification.PushNotificationListener.OnError(string.Format("{0} - Register - " + ex.ToString(), Tag), DeviceType.Android);
+                    CrossPushNotification.PushNotificationListener.OnError($"{ex.ToString()} - Register - {Tag}", DeviceType.Android);
 
                 }
 

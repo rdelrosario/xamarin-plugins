@@ -62,6 +62,7 @@
     <Compile Include="..\PushNotification.Plugin\CrossPushNotification.cs">
       <Link>CrossPushNotification.cs</Link>
     </Compile>
+    <Compile Include="AppUpdateReceiver.cs" />
     <Compile Include="PushNotificationGcmListener.cs" />
     <Compile Include="PushNotificationImplementation.cs" />
     <Compile Include="PushNotificationInstanceIDListenerService.cs" />
