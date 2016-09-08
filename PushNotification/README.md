@@ -66,7 +66,7 @@ public class  CrossPushNotificationListener : IPushNotificationListener
     {
         //Here you will receive all push notification messages
         //Messages arrives as a dictionary, the device type is also sent in order to check specific keys correctly depending on the platform.
-        void IPushNotificationListener.OnMessage(JObject arameters, DeviceType deviceType)
+        void IPushNotificationListener.OnMessage(JObject parameters, DeviceType deviceType)
         {
             Debug.WriteLine("Message Arrived");
         }
@@ -74,7 +74,7 @@ public class  CrossPushNotificationListener : IPushNotificationListener
         void IPushNotificationListener.OnRegistered(string Token, DeviceType deviceType)
         {
             Debug.WriteLine(string.Format("Push Notification - Device Registered - Token : {0}", Token));
-
+	}
          //Fires when device is unregistered
         void IPushNotificationListener.OnUnregistered(DeviceType deviceType)
         {
