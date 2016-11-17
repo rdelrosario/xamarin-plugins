@@ -33,6 +33,19 @@ namespace PushNotification.Plugin
                 lock (syncLock)
                 {
                     InstanceID instanceID = InstanceID.GetInstance(Android.App.Application.Context);
+
+#if _DEBUG_
+                    try
+                    {
+                        instanceID.DeleteInstanceID();
+                    }
+                    catch (Exception e)
+                    {
+                        Android.Util.Log.Debug(Tag, e.ToString());
+                    }
+                    instanceID = InstanceID.GetInstance(Android.App.Application.Context);
+#endif
+
                     string token = instanceID.GetToken(CrossPushNotification.SenderId,
                         GoogleCloudMessaging.InstanceIdScope, null);
 
