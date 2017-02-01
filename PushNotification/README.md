@@ -62,6 +62,12 @@ public override void OnCreate()
 Must implement IPushNotificationListener. This would be commonly implemented in the Core project if sharing code between Android or iOS. In the case you are using the plugin only for a specific platform this would be implemented in that platform.
 
 ```
+using Newtonsoft.Json.Linq;
+using PushNotification.Plugin;
+using PushNotification.Plugin.Abstractions;
+
+....
+
 public class  CrossPushNotificationListener : IPushNotificationListener
     {
         //Here you will receive all push notification messages
