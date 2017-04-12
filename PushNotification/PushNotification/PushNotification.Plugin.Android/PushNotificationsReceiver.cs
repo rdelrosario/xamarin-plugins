@@ -4,7 +4,7 @@ using Android.Gms.Gcm;
 
 namespace PushNotification.Plugin
 {
-    [BroadcastReceiver(Permission = "com.google.android.c2dm.permission.SEND", Exported=true)]
+    [BroadcastReceiver(Permission = "com.google.android.c2dm.permission.SEND", Exported = true)]
     [IntentFilter(new string[] { "com.google.android.c2dm.intent.RECEIVE" }, Categories = new string[] { "@PACKAGE_NAME@" })]
     public class PushNotificationsReceiver : GcmReceiver
     {
