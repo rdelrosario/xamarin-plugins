@@ -9,7 +9,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Gms.Gcm.Iid;
+using Android.Gms.Iid;
 using Android.Gms.Gcm;
 using PushNotification.Plugin.Abstractions;
 using Android.Support.V4.Content;
