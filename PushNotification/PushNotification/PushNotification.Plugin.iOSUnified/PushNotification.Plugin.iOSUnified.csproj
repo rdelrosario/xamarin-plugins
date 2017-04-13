@@ -35,16 +35,12 @@
     <DocumentationFile>bin\iPhone\Release\PushNotification.Plugin.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\PushNotification.Plugin.iOS\IPushNotificationListener.cs">
-      <Link>IPushNotificationListener.cs</Link>
-    </Compile>
-    <Compile Include="..\PushNotification.Plugin.iOS\PushNotificationImplementation.cs">
-      <Link>PushNotificationImplementation.cs</Link>
-    </Compile>
     <Compile Include="..\PushNotification.Plugin\CrossPushNotification.cs">
       <Link>CrossPushNotification.cs</Link>
     </Compile>
+    <Compile Include="IPushNotificationListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PushNotificationImplementation.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PushNotification.Plugin.Abstractions\PushNotification.Plugin.Abstractions.csproj">
