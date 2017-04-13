@@ -9,20 +9,19 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Gms.Gcm.Iid;
+using Android.Gms.Iid;
 using Android.Gms.Gcm;
 using PushNotification.Plugin.Abstractions;
 using Android.Support.V4.Content;
 
 namespace PushNotification.Plugin
 {
-
-    [Service(Exported=false)]
+    [Service(Exported = false)]
     public class PushNotificationRegistrationIntentService : IntentService
     {
 
         const string Tag = "PushNotificationRegistationIntentService";
-        private string[] Topics = new string[]{"global"};
+        private string[] Topics = new string[] { "global" };
         private readonly object syncLock = new object();
 
         protected override void OnHandleIntent(Intent intent)
@@ -56,16 +55,17 @@ namespace PushNotification.Plugin
                     System.Diagnostics.Debug.WriteLine($"{token} - Device registered, registration ID={Tag}");
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"{ex.Message} - Error : {Tag}");
 
                 CrossPushNotification.PushNotificationListener.OnError($"{ex.ToString()} - Register - {Tag}", DeviceType.Android);
-              
+
 
             }
 
-           // Intent registrationComplete = new Intent(PushNotificationKey.RegistrationComplete);
+            // Intent registrationComplete = new Intent(PushNotificationKey.RegistrationComplete);
             // LocalBroadcastManager.GetInstance(Android.App.Application.Context).SendBroadcast(registrationComplete);
 
         }
@@ -74,9 +74,9 @@ namespace PushNotification.Plugin
         {
             GcmPubSub pubSub = GcmPubSub.GetInstance(this);
 
-            foreach(string topic in Topics) 
+            foreach (string topic in Topics)
             {
-                 pubSub.Subscribe(token, "/topics/" + topic, null);
+                pubSub.Subscribe(token, "/topics/" + topic, null);
             }
         }
     }

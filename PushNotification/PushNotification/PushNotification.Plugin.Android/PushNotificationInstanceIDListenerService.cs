@@ -9,13 +9,12 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Gms.Gcm.Iid;
+using Android.Gms.Iid;
 using System.Threading;
 using PushNotification.Plugin.Abstractions;
 
 namespace PushNotification.Plugin
 {
-
     [Service(Exported = false)]
     [IntentFilter(new string[] { "com.google.android.gms.iid.InstanceID" })]
     public class PushNotificationInstanceIDListenerService : InstanceIDListenerService
@@ -28,7 +27,7 @@ namespace PushNotification.Plugin
          */
         public override void OnTokenRefresh()
         {
- 	       base.OnTokenRefresh();
+            base.OnTokenRefresh();
 
             ThreadPool.QueueUserWorkItem(state =>
             {
