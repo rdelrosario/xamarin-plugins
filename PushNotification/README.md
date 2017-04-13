@@ -11,7 +11,7 @@ Simple cross platform plugin to handle push notification events such as register
 |Platform|Supported|Version|
 | ------------------- | :-----------: | :------------------: |
 |Xamarin.iOS Unified|Yes|iOS 7+|
-|Xamarin.Android|Yes|API 14+|
+|Xamarin.Android|Yes|API 16+|
 |Windows 10 UWP|Yes|10+|
 
 ### TODO
