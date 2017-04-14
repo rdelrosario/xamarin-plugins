@@ -237,7 +237,7 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 * Initialize the plugin on an Application class on android and start a sticky service so you can still receive notifications when application is closed. Consider that this application class and service can't have any Xamarin Forms related dependencies since Xamarin Forms is not initialized when app is closed, so it will crash if Xamarin dependencies are being used.
 
 ##### Additional Considerations
-* On some phones android  background services might be blocked by some application. This is the case of ASUS Zenfone 3 that has an Auto-start manager, which disables background services by default. You need to make sure that your push notification service is not being blocked by some application like this one, since you won't receive push when app is closed if so.
+* On some phones android  background services might be blocked by some application. This is the case of ASUS Zenfone 3 that has an Auto-start manager, which disables background services by default. You need to make sure that your push notification service is not being blocked by some application like this one, since you won't receive push notifications when app is closed if so.
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
