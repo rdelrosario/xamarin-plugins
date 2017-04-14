@@ -142,7 +142,7 @@ void Unregister();
 
 ##### Android Specifics
 
-* Must compile against 21 as plugin is using API 21 specific things. Here is a great breakdown: http://redth.codes/such-android-api-levels-much-confuse-wow/
+* Must compile against 21+ as plugin is using API 21 specific things. Here is a great breakdown: http://redth.codes/such-android-api-levels-much-confuse-wow/
 * The <b>package name</b> of your Android aplication must <b>start with lower case</b> or you will get the build error: <code>Installation error: INSTALL_PARSE_FAILED_MANIFEST_MALFORMED</code> 
 * Make sure you have updated your Android SDK Manager libraries:
 
@@ -233,7 +233,8 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 * iOS Application Bundle identifier must be the same corresponding to the profile used for code signing the app.
 * Must checkout the helper class on content folder: PushNotificationApplicationDelegate.txt. In order to setup correctly.
 
-
+##### Xamarin Forms Specifics
+* Initialize the plugin on an Application class on android and start a sticky service so you can still receive notifications when application is closed. Consider that this application class and service can't have any Xamarin Forms related dependencies since Xamarin Forms is not initialized when app is closed, so it will crash if Xamarin dependencies are being used.
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
