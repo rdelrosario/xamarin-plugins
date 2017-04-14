@@ -15,7 +15,12 @@ Simple cross platform plugin to handle push notification events such as register
 |Windows 10 UWP|Yes|10+|
 
 ### TODO
-* Include Windows Phone 8 (Silverlight), Windows Phone 8.1 RT Support
+* Custom Notification Styling
+* Badges control support
+* Custom Notification processing handlers
+* FCM support
+* Push notification video tutorial
+* Handling Notification click event
 
 ### API Usage
 
