@@ -18,7 +18,6 @@ Simple cross platform plugin to handle push notification events such as register
 * Custom Notification Styling
 * Badges control support
 * Custom Notification processing handlers
-* FCM support
 * Push notification video tutorial
 * Handling Notification click event
 
@@ -238,6 +237,10 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 
 ##### Additional Considerations
 * On some phones android  background services might be blocked by some application. This is the case of ASUS Zenfone 3 that has an Auto-start manager, which disables background services by default. You need to make sure that your push notification service is not being blocked by some application like this one, since you won't receive push notifications when app is closed if so.
+
+##### Using FCM in iOS and Android
+
+* Use this plugin instead https://github.com/CrossGeeks/FirebasePushNotificationPlugin
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
