@@ -350,7 +350,7 @@ namespace Geofence.Plugin
 
       void OnRegionLeft(CLRegion region)
       {
-          if (GeofenceResults.ContainsKey(region.Identifier) || GeofenceResults[region.Identifier].Transition == GeofenceTransition.Exited)
+          if (GeofenceResults.ContainsKey(region.Identifier) && GeofenceResults[region.Identifier].Transition == GeofenceTransition.Exited)
           {
               return;
           }
