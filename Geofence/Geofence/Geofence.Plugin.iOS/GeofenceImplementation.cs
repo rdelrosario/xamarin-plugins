@@ -345,14 +345,16 @@ namespace Geofence.Plugin
 
       void RegionLeft(object sender, CLRegionEventArgs e)
       {
-          if (!GeofenceResults.ContainsKey(e.Region.Identifier)||GeofenceResults[e.Region.Identifier].Transition != GeofenceTransition.Exited)
-          {
-              OnRegionLeft(e.Region);
-              
-          }
+          OnRegionLeft(e.Region);
       }
+
       void OnRegionLeft(CLRegion region)
       {
+          if (GeofenceResults.ContainsKey(region.Identifier) && GeofenceResults[region.Identifier].Transition == GeofenceTransition.Exited)
+          {
+              return;
+          }
+
           if (!mGeofenceResults.ContainsKey(region.Identifier))
           {
               mGeofenceResults.Add(region.Identifier, new GeofenceResult()
