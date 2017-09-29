@@ -30,7 +30,7 @@ Must initialize plugin on each platform before use. If not initializated before 
 **CrossPushNotification.Initialize<'T'>**
 This methods initializes push notification plugin. The generic <b>T</b> should be a class that implements IPushNotificationListener. This will be the class were you would listen to all push notifications events.
 
-####iOS
+#### iOS
  On the AppDelegate:
 ```
 public override bool FinishedLaunching (UIApplication app, NSDictionary options)
@@ -42,7 +42,7 @@ public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 }
 ```
 
-####Android
+#### Android
  On the Android Application class, is better to use the OnCreate of the Android Application class so you can handle push notifications even when activities are closed or app not running by using our PushNotificationService to keep listening to push notifications.
 
 But is that not a requirement you could do initialization on your MainActivity class.
