@@ -5,7 +5,7 @@ Simple cross platform plugin to handle push notification events such as register
 
 # **IMPORTANTE NOTE**:
 
-**Many things changed since I implemented this related to notifications on iOS and Android deprecated GCM now recommending to use FCM, I decided to completely revaluate the implementation and do it from scratch. So i'm currently not supporting this plugin anymore (if you are using GCM you can keep using it but shouldn't think at some point to migrate to FCM). There's a new version well documented which uses FCM for Android and APS for iOS (still not UWP support)  that I will be fully supporting here: https://github.com/CrossGeeks/PushNotificationPlugin**
+**Many things changed since I implemented this related to notifications on iOS and Android deprecated GCM now recommending to use FCM, I decided to completely revaluate the implementation and do it from scratch. So i'm currently not supporting this plugin anymore (if you are using GCM you can keep using it but should think at some point to migrate to FCM). There's a new version well documented which uses FCM for Android and APS for iOS (still not UWP support)  that I will be fully supporting here: https://github.com/CrossGeeks/PushNotificationPlugin**
 
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
