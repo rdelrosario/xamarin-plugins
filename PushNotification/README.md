@@ -2,6 +2,10 @@
 
 Simple cross platform plugin to handle push notification events such as registering, unregistering and messages arrival on Android, iOS, UWP platforms.
 
+# **IMPORTANTE NOTE**:
+
+**Since many thing changed related to notifications on iOS 10 and Android deprecated GCM now recommending to use FCM, I decided to completely revaluate the implementation and do it from scratch. So i'm currently not supporting this plugin anymore. There's a new version well documented that uses FCM for Android and APS for iOS (still not UWP support)  that I will be fully supporting here: https://github.com/CrossGeeks/PushNotificationPlugin**
+
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.PushNotification
 * Install into your PCL project and Client projects.
@@ -20,10 +24,6 @@ Simple cross platform plugin to handle push notification events such as register
 * Custom Notification processing handlers
 * Push notification video tutorial
 * Handling Notification click event
-
-# **IMPORTANTE NOTE**:
-
-**Since many thing changed related to notifications on iOS 10 and Android deprecated GCM now recommending to use FCM, I decided to completely revaluate the implementation and do it from scratch. So i'm currently not supporting this plugin anymore. There's a new version well documented that uses FCM for Android and APS for iOS (still not UWP support)  that I will be fully supporting here: https://github.com/CrossGeeks/PushNotificationPlugin**
 
 ### API Usage
 
