@@ -1,4 +1,4 @@
-## Push Notification Plugin for Xamarin
+## Push Notification Plugin for Xamarin (DEPRECATED)
 
 Simple cross platform plugin to handle push notification events such as registering, unregistering and messages arrival on Android, iOS, UWP platforms.
 
