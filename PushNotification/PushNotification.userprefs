@@ -1,0 +1,18 @@
+﻿<Properties StartupConfiguration="{56A56F17-7DE1-4CA1-9617-BF32E971AC84}|Default">
+  <MonoDevelop.Ide.ItemProperties.PushNotification.Plugin.Android PreferredExecutionTarget="Android.Android_Accelerated_x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="PushNotification/PushNotification.Plugin.Android/packages.config">
+    <Files>
+      <File FileName="PushNotification/PushNotification.Plugin.Android/packages.config" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <DisabledProjects>
+    <String>PushNotification/PushNotification.Plugin.UWP/PushNotification.Plugin.UWP.csproj</String>
+    <String>PushNotification/PushNotification.Plugin.WindowsPhone8/PushNotification.Plugin.WindowsPhone8.csproj</String>
+  </DisabledProjects>
+</Properties>
