@@ -13,6 +13,7 @@ Simple cross platform plugin to read motion vectors value for device motion sens
 * Windows Phone 8 (Silverlight)
 * Windows Phone 8.1 RT
 * Windows Store 8.1
+* Tizen
 
 ### API Usage
 
