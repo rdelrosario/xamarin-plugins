@@ -76,5 +76,11 @@
        <file src="DeviceMotion\DeviceMotion.Plugin.UWP\bin\Release\DeviceMotion.Plugin.pri" target="lib\UAP10\DeviceMotion.Plugin.pri" />
        <file src="DeviceMotion\DeviceMotion.Plugin.UWP\bin\Release\DeviceMotion.Plugin.pdb" target="lib\UAP10\DeviceMotion.Plugin.pdb" />
 
+        <!--Tizen-->
+        <file src="DeviceMotion\DeviceMotion.Plugin.Tizen\bin\Release\tizen40\DeviceMotion.Plugin.Abstractions.dll" target="lib\tizen40\DeviceMotion.Plugin.Abstractions.dll" />
+        <file src="DeviceMotion\DeviceMotion.Plugin.Tizen\bin\Release\tizen40\DeviceMotion.Plugin.Abstractions.pdb" target="lib\tizen40\DeviceMotion.Plugin.Abstractions.pdb" />
+        <file src="DeviceMotion\DeviceMotion.Plugin.Tizen\bin\Release\tizen40\DeviceMotion.Plugin.dll" target="lib\tizen40\DeviceMotion.Plugin.dll" />
+        <file src="DeviceMotion\DeviceMotion.Plugin.Tizen\bin\Release\tizen40\DeviceMotion.Plugin.pdb" target="lib\tizen40\DeviceMotion.Plugin.pdb" />
+
   </files>
 </package>
