@@ -18,7 +18,7 @@ namespace Geofence.Plugin
         const float InvalidFloatValue= -999.0f;
         const int InvalidIntValue= -999;
 
-        private static GeofenceStore sharedInstance=new GeofenceStore();
+        private static GeofenceStore sharedInstance = new GeofenceStore();
 
         public static GeofenceStore SharedInstance { get { return sharedInstance; } }
 
@@ -148,7 +148,8 @@ namespace Geofence.Plugin
                 // Commit the changes
                 prefs.Commit();
 
-            }catch(Java.Lang.Exception ex)
+            }
+            catch (Java.Lang.Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(string.Format("{0} - Error: {1}", CrossGeofence.Id, ex.ToString()));
             }
@@ -157,28 +158,16 @@ namespace Geofence.Plugin
 
         public override Dictionary<string,GeofenceCircularRegion> GetAll()
         {
-            IEnumerable<string> keys = mPrefs.All.Where(p => p.Key.ToString().StartsWith(GeofenceStoreId) && p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct();
-
-            Dictionary<string, GeofenceCircularRegion> regions = new Dictionary<string,GeofenceCircularRegion>();
-
+            var keys = mPrefs.All.Where(p => p.Key.ToString().StartsWith(GeofenceStoreId) && p.Key.Split('_').Length > 1).Select(p => p.Key.Split('_')[1]).Distinct().ToList();
+            var regions = new Dictionary<string,GeofenceCircularRegion>();
             foreach (string key in keys)
             {
-        
-              
                 var region = Get(key);
                 if (region != null)
-                {
-                   
                     regions.Add(region.Id, region);
-                }
-           
-                
             }
-           
             return regions;
-            
         }
-
 		
     }
 }

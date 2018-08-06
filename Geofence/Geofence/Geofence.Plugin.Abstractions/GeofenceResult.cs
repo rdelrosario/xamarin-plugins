@@ -56,11 +56,10 @@ namespace Geofence.Plugin.Abstractions
         {
             return string.Format("{0} geofence region: {1}", TransitionName, RegionId);
         }
+
         /// <summary>
         /// Get transition name
         /// </summary>
-        /// <param name="transitionType"></param>
-        /// <returns></returns>
         public string TransitionName
         {
           get
@@ -82,6 +81,24 @@ namespace Geofence.Plugin.Abstractions
               }
           }
            
+        }
+
+        public GeofenceResult()
+        {
+        }
+
+        public GeofenceResult(GeofenceResult result)
+        {
+            if (result != null)
+            {
+                this.LastEnterTime = result.LastEnterTime;
+                this.LastExitTime = result.LastExitTime;
+                this.Transition = result.Transition;
+                this.RegionId = result.RegionId;
+                this.Latitude = result.Latitude;
+                this.Longitude = result.Longitude;
+                this.Accuracy = result.Accuracy;
+            }
         }
     }
 }

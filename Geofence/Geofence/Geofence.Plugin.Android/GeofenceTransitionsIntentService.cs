@@ -21,159 +21,155 @@ namespace Geofence.Plugin
     {
         static int NotificationId = 0;
         const int  NotificationMaxId = 6;
+        static object IntentLock = new object();
+
         /// <summary>
         /// Handles geofence intent arrival
         /// </summary>
         /// <param name="intent"></param>
         protected override void OnHandleIntent(Intent intent)
         {
-            try 
-			{
-            	Context context = Android.App.Application.Context;
-            	Bundle extras = intent.Extras;
-            	Android.Gms.Location.GeofencingEvent geofencingEvent = Android.Gms.Location.GeofencingEvent.FromIntent(intent);
-            	
-            	if (geofencingEvent.HasError)
-            	{
-            	    string errorMessage = Android.Gms.Location.GeofenceStatusCodes.GetStatusCodeString(geofencingEvent.ErrorCode);
-            	    string message = string.Format("{0} - {1}", CrossGeofence.Id, errorMessage);
-            	    System.Diagnostics.Debug.WriteLine(message);
-            	    ((GeofenceImplementation)CrossGeofence.Current).LocationHasError = true;
-            	    CrossGeofence.GeofenceListener.OnError(message);
-            	    
-            	    return;
-            	}
-            	
-            	// Get the transition type.
-            	int geofenceTransition = geofencingEvent.GeofenceTransition;
-            	
-            	// Get the geofences that were triggered. A single event can trigger multiple geofences.
-            	IList<Android.Gms.Location.IGeofence> triggeringGeofences = geofencingEvent.TriggeringGeofences;
-            	
-            	GeofenceTransition gTransition = GeofenceTransition.Unknown;
-            	
-            	((GeofenceImplementation)CrossGeofence.Current).CurrentRequestType = Geofence.Plugin.GeofenceImplementation.RequestType.Update;
-            	
-            	foreach (Android.Gms.Location.IGeofence geofence in triggeringGeofences)
-            	{
-            	
-            	    if (!CrossGeofence.Current.GeofenceResults.ContainsKey(geofence.RequestId))
-            	    {
-            	        ((GeofenceImplementation)CrossGeofence.Current).AddGeofenceResult(geofence.RequestId);
-            	
-            	    }
-            	    //geofencingEvent.TriggeringLocation.Accuracy
-            	    CrossGeofence.Current.GeofenceResults[geofence.RequestId].Latitude = geofencingEvent.TriggeringLocation.Latitude;
-            	    CrossGeofence.Current.GeofenceResults[geofence.RequestId].Longitude = geofencingEvent.TriggeringLocation.Longitude;
-            	    CrossGeofence.Current.GeofenceResults[geofence.RequestId].Accuracy = geofencingEvent.TriggeringLocation.Accuracy;
-            	
-            	    double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
-            	    DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
-            	
-            	    //DateTime resultDate = DateTime.Now;
-            	
-            	    switch (geofenceTransition)
-            	    {
-            	        case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
-            	            gTransition = GeofenceTransition.Entered;
-            	            CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastEnterTime = resultDate;
-            	            CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = null;
-            	            break;
-            	        case Android.Gms.Location.Geofence.GeofenceTransitionExit:
-            	            gTransition = GeofenceTransition.Exited;
-            	            CrossGeofence.Current.GeofenceResults[geofence.RequestId].LastExitTime = resultDate;
-            	            break;
-            	        case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
-            	            gTransition = GeofenceTransition.Stayed;
-            	            break;
-            	        default:
-            	            string message = string.Format("{0} - {1}", CrossGeofence.Id, "Invalid transition type");
-            	            System.Diagnostics.Debug.WriteLine(message);
-            	            gTransition = GeofenceTransition.Unknown;
-            	            break;
-            	    }
-            	    System.Diagnostics.Debug.WriteLine(string.Format("{0} - Transition: {1}", CrossGeofence.Id, gTransition));
-            	    if (CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition != gTransition )
-            	    {
-            	   
-            	        CrossGeofence.Current.GeofenceResults[geofence.RequestId].Transition = gTransition;
-            	        
-            	        CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[geofence.RequestId]);
-            	
-            	        if (CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId) && CrossGeofence.Current.Regions[geofence.RequestId].ShowNotification)
-            	        {
-            	
-            	            string message = CrossGeofence.Current.GeofenceResults[geofence.RequestId].ToString();
-            	           
-            	            if(CrossGeofence.Current.Regions.ContainsKey(geofence.RequestId))
-            	           {
-            	             var region = CrossGeofence.Current.Regions[geofence.RequestId];
-            	             switch(gTransition)
-            	             {
-            	               case GeofenceTransition.Entered:
-            	                   if (!region.ShowEntryNotification)
-            	                     return;
-            	                   message=string.IsNullOrEmpty(region.NotificationEntryMessage)?message:region.NotificationEntryMessage;
-            	                   break;
-            	               case GeofenceTransition.Exited:
-            	                   if (!region.ShowExitNotification)
-            	                     return;
-            	                   message=string.IsNullOrEmpty(region.NotificationExitMessage)?message:region.NotificationExitMessage;
-            	                   break;
-            	               case GeofenceTransition.Stayed:
-            	                   if (!region.ShowStayNotification)
-            	                     return;
-            	                   message=string.IsNullOrEmpty(region.NotificationStayMessage)?message:region.NotificationStayMessage;
-            	                   break;
-            	
-            	             }
-            	           }
-            	         
-            	
-            	           CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), message);
-            	        }
-            	
-            	
-            	        //Check if device has stayed in region asynchronosly
-            	        //Commented because is already handled using DWELL on Android
-            	        //CheckIfStayed(geofence.RequestId);
-            	       
-            	       
-            	    }
-            	}
-            }
-			catch (Java.Lang.Exception ex)
-			{
-				System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
-			}
-			catch (System.Exception ex) 
-			{
-				System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
-            }           
-        }
-
-        /*public async Task CheckIfStayed(string regionId)
-        {
-            Context context = Android.App.Application.Context;
-            if (CrossGeofence.Current.GeofenceResults.ContainsKey(regionId) && CrossGeofence.Current.Regions.ContainsKey(regionId) && CrossGeofence.Current.Regions[regionId].NotifyOnStay && CrossGeofence.Current.GeofenceResults[regionId].Transition == GeofenceTransition.Entered && CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds != 0)
+            try
             {
-                await Task.Delay((int)CrossGeofence.Current.Regions[regionId].StayedInThresholdDuration.TotalMilliseconds);
-
-                if (CrossGeofence.Current.GeofenceResults[regionId].LastExitTime == null && CrossGeofence.Current.GeofenceResults[regionId].Transition != GeofenceTransition.Stayed)
+                lock (IntentLock)
                 {
-                    CrossGeofence.Current.GeofenceResults[regionId].Transition = GeofenceTransition.Stayed;
+                    if (intent == null)
+                        intent = new Intent(Application.Context, typeof(GeofenceTransitionsIntentService));
 
-                    CrossGeofence.GeofenceListener.OnRegionStateChanged(CrossGeofence.Current.GeofenceResults[regionId]);
+                    Context context = Android.App.Application.Context;
+                    Bundle extras = intent.Extras;
+                    Android.Gms.Location.GeofencingEvent geofencingEvent = Android.Gms.Location.GeofencingEvent.FromIntent(intent);
 
-                    if (CrossGeofence.Current.Regions[regionId].ShowNotification)
+                    if (geofencingEvent.HasError)
                     {
-                        CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), string.IsNullOrEmpty(CrossGeofence.Current.Regions[regionId].NotificationStayMessage) ? CrossGeofence.Current.GeofenceResults[regionId].ToString() : CrossGeofence.Current.Regions[regionId].NotificationStayMessage);
+                        string errorMessage = Android.Gms.Location.GeofenceStatusCodes.GetStatusCodeString(geofencingEvent.ErrorCode);
+                        string message = string.Format("{0} - {1}", CrossGeofence.Id, errorMessage);
+                        System.Diagnostics.Debug.WriteLine(message);
+                        ((GeofenceImplementation)CrossGeofence.Current).LocationHasError = true;
+                        CrossGeofence.GeofenceListener.OnError(message);
+                        return;
                     }
 
+                    // Get the geofences that were triggered. A single event can trigger multiple geofences.                
+                    var triggeringGeofences = geofencingEvent.TriggeringGeofences;
+                    var geofenceTransitions = new List<GeofenceResult>();
+                    var transitionRegions = new Dictionary<string, GeofenceCircularRegion>();
+                    if (triggeringGeofences != null)
+                    {
+                        foreach (Android.Gms.Location.IGeofence geofence in triggeringGeofences)
+                        {
+                            if (geofence == null) continue;
+                            var geofenceTransition = geofencingEvent.GeofenceTransition;
+                            var gTransition = GeofenceTransition.Unknown;
+                            // Get the transition type.
+                            lock (GeofenceImplementation.Lock)
+                            {
+                                ((GeofenceImplementation)CrossGeofence.Current).CurrentRequestType = Geofence.Plugin.GeofenceImplementation.RequestType.Update;
+                                if (!CrossGeofence.Current.GeofenceResults.ContainsKey(geofence.RequestId))
+                                {
+                                    ((GeofenceImplementation)CrossGeofence.Current).AddGeofenceResult(geofence.RequestId);
+                                }
+                                var result = CrossGeofence.Current.GeofenceResults[geofence.RequestId];
+
+                                //geofencingEvent.TriggeringLocation.Accuracy
+                                result.Latitude = geofencingEvent.TriggeringLocation.Latitude;
+                                result.Longitude = geofencingEvent.TriggeringLocation.Longitude;
+                                result.Accuracy = geofencingEvent.TriggeringLocation.Accuracy;
+
+                                double seconds = geofencingEvent.TriggeringLocation.Time / 1000;
+                                DateTime resultDate = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(seconds).ToLocalTime();
+                                switch (geofenceTransition)
+                                {
+                                    case Android.Gms.Location.Geofence.GeofenceTransitionEnter:
+                                        gTransition = GeofenceTransition.Entered;
+                                        result.LastEnterTime = resultDate;
+                                        result.LastExitTime = null;
+                                        break;
+                                    case Android.Gms.Location.Geofence.GeofenceTransitionExit:
+                                        gTransition = GeofenceTransition.Exited;
+                                        result.LastExitTime = resultDate;
+                                        break;
+                                    case Android.Gms.Location.Geofence.GeofenceTransitionDwell:
+                                        gTransition = GeofenceTransition.Stayed;
+                                        break;
+                                    default:
+                                        string message = string.Format("{0} - {1}", CrossGeofence.Id, "Invalid transition type");
+                                        System.Diagnostics.Debug.WriteLine(message);
+                                        gTransition = GeofenceTransition.Unknown;
+                                        break;
+                                }
+                                System.Diagnostics.Debug.WriteLine(string.Format("{0} - Transition: {1}", CrossGeofence.Id, gTransition));
+                                if (result.Transition != gTransition)
+                                {
+                                    result.Transition = gTransition;
+                                    geofenceTransitions.Add(new GeofenceResult(result));
+                                    if (CrossGeofence.Current.Regions.ContainsKey(result.RegionId))
+                                    {
+                                        var region = CrossGeofence.Current.Regions[result.RegionId];
+                                        transitionRegions.Add(result.RegionId, new GeofenceCircularRegion(region));
+                                    }
+                                    //Check if device has stayed in region asynchronosly
+                                    //Commented because is already handled using DWELL on Android
+                                    //CheckIfStayed(geofence.RequestId);
+                                }
+                            }
+                        }
+                    }
+
+                    Task.Factory.StartNew(() =>
+                   {
+                       foreach (var result in geofenceTransitions)
+                       {
+                           if (result == null) continue;
+                           CrossGeofence.GeofenceListener.OnRegionStateChanged(result);
+                           if (transitionRegions.ContainsKey(result.RegionId))
+                           {
+                               var region = transitionRegions[result.RegionId];
+                               if (region.ShowNotification)
+                               {
+                                   string message = result.ToString();
+                                   switch (result.Transition)
+                                   {
+                                       case GeofenceTransition.Entered:
+                                           if (!region.ShowEntryNotification)
+                                               return;
+                                           message = string.IsNullOrEmpty(region.NotificationEntryMessage) ? message : region.NotificationEntryMessage;
+                                           break;
+                                       case GeofenceTransition.Exited:
+                                           if (!region.ShowExitNotification)
+                                               return;
+                                           message = string.IsNullOrEmpty(region.NotificationExitMessage) ? message : region.NotificationExitMessage;
+                                           break;
+                                       case GeofenceTransition.Stayed:
+                                           if (!region.ShowStayNotification)
+                                               return;
+                                           message = string.IsNullOrEmpty(region.NotificationStayMessage) ? message : region.NotificationStayMessage;
+                                           break;
+
+                                   }
+                                   using (var handler = new Handler(Looper.MainLooper))
+                                   {
+                                       handler.Post(() =>
+                                       {
+                                           CreateNotification(context.ApplicationInfo.LoadLabel(context.PackageManager), message);
+                                       });
+                                   }
+                               }
+                           }
+                       }
+                   });
                 }
             }
-        }*/
-       
+            catch (Java.Lang.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
+            }
+            catch (System.Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}", CrossGeofence.Id, ex.ToString()));
+            }
+        }
+
         /// <summary>
         /// Create local notification
         /// </summary>

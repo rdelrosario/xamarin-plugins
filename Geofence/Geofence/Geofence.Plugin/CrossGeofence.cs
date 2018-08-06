@@ -46,7 +46,7 @@ namespace Geofence.Plugin
     /// <value><c>true</c> if request location permission; otherwise, <c>false</c>.</value>
     public static bool RequestLocationPermission { get; set; }
 
-    #if __ANDROID__
+#if __ANDROID__
       /// <summary>
       /// Icon resource used for notification
       /// </summary>
@@ -71,18 +71,19 @@ namespace Geofence.Plugin
       /// Fastest location updates interval
       /// </summary>
       public static int FastestLocationUpdatesInterval { get; set; }
-   #endif
+#endif
 
-    /// <summary>
-    /// Initializes geofence plugin
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="priority"></param>
-    /// <param name="smallestDisplacement"></param>
-    public static void Initialize<T>(GeofencePriority priority=GeofencePriority.BalancedPower, float smallestDisplacement = 0, bool requestNotificationPermission = true, bool requestLocationPermission = true)
+        /// <summary>
+        /// Initializes geofence plugin
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="priority"></param>
+        /// <param name="smallestDisplacement"></param>
+        /// <param name="requestNotificationPermission"></param>
+        /// <param name="requestLocationPermission"></param>
+        public static void Initialize<T>(GeofencePriority priority=GeofencePriority.BalancedPower, float smallestDisplacement = 0, bool requestNotificationPermission = true, bool requestLocationPermission = true)
      where T : IGeofenceListener, new()
     {
-
         if (GeofenceListener == null)
         {
            
@@ -125,6 +126,7 @@ namespace Geofence.Plugin
 #if PORTABLE
         return null;
 #else
+        System.Diagnostics.Debug.WriteLine("Creating GeofenceImplementation");
         var geofenceImplementation = new GeofenceImplementation();
         geofenceImplementation.RequestNotificationPermission = RequestNotificationPermission;
         geofenceImplementation.RequestLocationPermission = RequestLocationPermission;

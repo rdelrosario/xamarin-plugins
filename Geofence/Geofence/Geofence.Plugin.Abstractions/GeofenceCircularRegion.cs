@@ -15,6 +15,23 @@ namespace Geofence.Plugin.Abstractions
         {
 
         }
+
+        public GeofenceCircularRegion(GeofenceCircularRegion region)
+        {
+            Id = region.Id;
+            Latitude = region.Latitude;
+            Longitude = region.Longitude;
+            Radius = region.Radius;
+            NotifyOnEntry = region.NotifyOnEntry;
+            NotifyOnExit = region.NotifyOnExit;
+            NotifyOnStay = region.NotifyOnStay;
+            ShowNotification = region.ShowNotification;
+            Persistent = region.Persistent;
+            ShowEntryNotification = region.ShowEntryNotification;
+            ShowExitNotification = region.ShowExitNotification;
+            ShowStayNotification = region.ShowStayNotification;
+        }
+
         public GeofenceCircularRegion(string id, double centerLatitude, double centerLongitude, double radius, 
                                       bool notifyOnEntry = true, bool notifyOnExit = true, bool notifyOnStay = false, 
                                       bool showNotification = true, bool persistent = true, 
@@ -103,11 +120,6 @@ namespace Geofence.Plugin.Abstractions
         /// Sets minimum duration time span before passing to stayed in transition after an entry 
         /// </summary>
         public TimeSpan StayedInThresholdDuration;
-
-        /// <summary>
-        /// Sets the expiration duration milliseconds of geofence. This geofence will be removed automatically after this period of time.
-        /// </summary>
-        //public long ExpirationDuration;
 
         /// <summary>
         /// Sets minimum duration time span before passing to exit transition after an entry 

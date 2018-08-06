@@ -301,11 +301,11 @@ namespace Geofence.Plugin
 
           }
 
-
-          //Checks if device has stayed asynchronously
-          CheckIfStayed(region.Identifier);
-
-        
+          Task.Factory.StartNew(async () =>
+          {
+            //Checks if device has stayed asynchronously
+            await CheckIfStayed(region.Identifier);
+          });
       }
       /// <summary>
       /// Checks if has passed to stayed state
@@ -444,39 +444,36 @@ namespace Geofence.Plugin
           return retVal;
 
       }
-      /// <summary>
-      /// Starts monitoring region
-      /// </summary>
-      /// <param name="region"></param>
-      public void StartMonitoring(GeofenceCircularRegion region)
-      {
+        /// <summary>
+        /// Starts monitoring region
+        /// </summary>
+        /// <param name="region"></param>
+        public void StartMonitoring(GeofenceCircularRegion region)
+        {
+            if (AvailableForMonitoring())
+            {
+                if (!mRegions.ContainsKey(region.Id))
+                {
+                    mRegions.Add(region.Id, region);
+                }
+                else
+                {
+                    mRegions[region.Id] = region;
+                }
+                GeofenceStore.SharedInstance.Save(region);
 
-          if(AvailableForMonitoring())
-          {
+                if (Regions.Count > 20 && locationManager.MonitoredRegions.Count == 20)
+                {
 
-              if (!mRegions.ContainsKey(region.Id))
-              {
-                      mRegions.Add(region.Id, region);
-                      
-              }else{
-                      mRegions[region.Id]=region;
-              }
-              GeofenceStore.SharedInstance.Save(region);
-
-              if (Regions.Count > 20 && locationManager.MonitoredRegions.Count == 20)
-              {
-                  
-                  RecalculateRegions();
-              }
-              else
-              {
-                  AddRegion(region);
-              }
-
-              locationManager.StartMonitoringSignificantLocationChanges();
-              
-          }
-      }
+                    RecalculateRegions();
+                }
+                else
+                {
+                    AddRegion(region);
+                }
+                locationManager.StartMonitoringSignificantLocationChanges();
+            }
+        }
 
       void RecalculateRegions()
       {
@@ -526,49 +523,51 @@ namespace Geofence.Plugin
               locationManager.RequestState(cRegion);
           });
       }
-      /// <summary>
-      /// Start monitoring regions
-      /// </summary>
-      /// <param name="regions"></param>
-      public void StartMonitoring(IList<GeofenceCircularRegion> regions)
-      {
+        /// <summary>
+        /// Start monitoring regions
+        /// </summary>
+        /// <param name="regions"></param>
+        public void StartMonitoring(IList<GeofenceCircularRegion> regions)
+        {
 
-          if (AvailableForMonitoring())
-          {
-             
-              
-              foreach (var region in regions)
-              {
-                  if (!mRegions.ContainsKey(region.Id))
-                  {
-                      mRegions.Add(region.Id, region);
-                      
-                  }else{
-                      mRegions[region.Id]=region;
-                  }
+            if (AvailableForMonitoring())
+            {
 
-                  GeofenceStore.SharedInstance.Save(region);
-              }
-              
 
-              if (Regions.Count > 20 && locationManager.MonitoredRegions.Count == 20)
-              {
+                foreach (var region in regions)
+                {
+                    if (!mRegions.ContainsKey(region.Id))
+                    {
+                        mRegions.Add(region.Id, region);
 
-                  RecalculateRegions();
-              }
-              else
-              {
-                  foreach (var region in regions)
-                  {
-                      AddRegion(region);
-                  }
-                  
-              }
-              locationManager.StartMonitoringSignificantLocationChanges();
+                    }
+                    else
+                    {
+                        mRegions[region.Id] = region;
+                    }
 
-          }
-          
-      }
+                    GeofenceStore.SharedInstance.Save(region);
+                }
+
+
+                if (Regions.Count > 20 && locationManager.MonitoredRegions.Count == 20)
+                {
+
+                    RecalculateRegions();
+                }
+                else
+                {
+                    foreach (var region in regions)
+                    {
+                        AddRegion(region);
+                    }
+
+                }
+                locationManager.StartMonitoringSignificantLocationChanges();
+
+            }
+
+        }
       /// <summary>
       /// Get current 20 monitored regions.
       /// </summary>
@@ -702,21 +701,27 @@ namespace Geofence.Plugin
                // Do nothing if we have no notification permission at this time, or we will get a buildup of stale notifications
                if (UIApplication.SharedApplication.CurrentUserNotificationSettings.Types == UIUserNotificationType.None)
                    return;
-            
-               var notification = new UILocalNotification();
+            // Create notifications on main thread, this method can be invoked from a background thread
+            using (var pool = new NSAutoreleasePool())
+            {
+                pool.InvokeOnMainThread(() =>
+                {
+                    var notification = new UILocalNotification();
 
-               notification.AlertAction = title;
-               notification.AlertBody = message;
-               notification.HasAction = true;
+                    notification.AlertAction = title;
+                    notification.AlertBody = message;
+                    notification.HasAction = true;
 
-               notification.SoundName = UILocalNotification.DefaultSoundName;
-               #if __UNIFIED__
-                   UIApplication.SharedApplication.PresentLocalNotificationNow(notification);
-               #else
-                   UIApplication.SharedApplication.PresentLocationNotificationNow(notification);
-               #endif
-
+                    notification.SoundName = UILocalNotification.DefaultSoundName;
+                    #if __UNIFIED__
+                    UIApplication.SharedApplication.PresentLocalNotificationNow(notification);
+                    #else
+                    UIApplication.SharedApplication.PresentLocationNotificationNow(notification);
+                    #endif
+                });
+            }
       }
+
       void RequestAlwaysAuthorization()
       {
           if (!RequestLocationPermission)
@@ -729,13 +734,17 @@ namespace Geofence.Plugin
           CLAuthorizationStatus status = CLLocationManager.Status;
           if(status ==CLAuthorizationStatus.AuthorizedWhenInUse || status == CLAuthorizationStatus.Denied)
           {
-              string title = (status == CLAuthorizationStatus.Denied) ? "Location services are off" : "Background location is not enabled";
-              string message = "To use background location you must turn on 'Always' in the Location Services Settings";
 
               using (var pool = new NSAutoreleasePool())
               {
                   pool.InvokeOnMainThread(() => {
-                      UIAlertView alertView = new UIAlertView(title, message, null, "Cancel", "Settings");
+
+                      UIAlertView alertView = new UIAlertView()
+                      {
+                          Title = (status == CLAuthorizationStatus.Denied) ? "Location services are off" : "Background location is not enabled",
+                          Message = "To use background location you must turn on 'Always' in the Location Services Settings"
+                      };
+                      alertView.AddButton("OK");
 
                       alertView.Clicked += (sender, buttonArgs) => 
                       {

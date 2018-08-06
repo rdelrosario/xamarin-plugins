@@ -12,5 +12,18 @@ namespace Geofence.Plugin.Abstractions
         public double Longitude { get; set; }
         public DateTime Date { get; set; }
         public double Accuracy { get; set; }
+
+        public GeofenceLocation()
+        {
+        }
+
+        public GeofenceLocation(GeofenceLocation loc)
+        {
+            Latitude = loc.Latitude;
+            Longitude = loc.Longitude;
+            Date = loc.Date;
+            Accuracy = loc.Accuracy;
+        }
+
     }
 }

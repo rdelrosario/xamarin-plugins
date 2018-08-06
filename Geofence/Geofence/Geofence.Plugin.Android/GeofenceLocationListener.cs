@@ -1,9 +1,5 @@
-﻿using Geofence.Plugin.Abstractions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Android.Gms.Location;
+
 
 namespace Geofence.Plugin
 {
@@ -11,7 +7,7 @@ namespace Geofence.Plugin
     /// GeofenceLocationListener class
     /// Listens to location updates
     /// </summary>
-    public class GeofenceLocationListener : Java.Lang.Object,Android.Gms.Location.ILocationListener
+    public class GeofenceLocationListener : Android.Gms.Location.LocationCallback
     {
         private static GeofenceLocationListener sharedInstance = new GeofenceLocationListener();
 
@@ -24,7 +20,7 @@ namespace Geofence.Plugin
         {
 
         }
-        void Android.Gms.Location.ILocationListener.OnLocationChanged(Android.Locations.Location location)
+        public override void OnLocationResult(LocationResult result)
         {
             //Location Updated
             var currentGeofenceImplementation = CrossGeofence.Current as GeofenceImplementation; 
@@ -38,10 +34,12 @@ namespace Geofence.Plugin
                 // Reset
                 currentGeofenceImplementation.LocationHasError = false;
             }
-      
-            System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}",CrossGeofence.Id,"Location Update",location.Latitude,location.Longitude));
-            currentGeofenceImplementation.SetLastKnownLocation(location);
-            
+
+            foreach (var location in result.Locations)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0} - {1}: {2},{3}", CrossGeofence.Id, "Location Update", location.Latitude, location.Longitude));
+                currentGeofenceImplementation.SetLastKnownLocation(location);
+            }
         }
     }
 }

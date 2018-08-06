@@ -27,7 +27,7 @@ namespace Geofence.Plugin.Abstractions
       /// <summary>
       /// Starts monitoring one region
       /// </summary>
-      /// <param name="regions"></param>
+      /// <param name="region"></param>
       void StartMonitoring(GeofenceCircularRegion region);
       /// <summary>
       /// Starts monitoring multiple regions
