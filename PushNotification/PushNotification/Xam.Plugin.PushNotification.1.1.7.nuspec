@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata minClientVersion="2.8.1">
+        <id>Xam.Plugin.PushNotification</id>
+        <version>1.1.7</version>
+        <title>Push Notification Plugin for Xamarin</title>
+        <authors>rdelrosario</authors>
+        <owners>Rendy Del Rosario</owners>
+        <licenseUrl>https://github.com/rdelrosario/xamarin-plugins/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/rdelrosario/xamarin-plugins</projectUrl>
+        <iconUrl>https://raw.githubuserPushNotification\content.com/rdelrosario/xamarin-plugins/master/PushNotification/Resources/icon.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>Handle Push Notifications. Across iOS and Android from a single API.</description>
+        <summary>Cross Platform Push Notifications Support</summary>
+        <releaseNotes>- Ensure subscription occurs.
+- Fix attributes so registration is automatic.
+- Added support for long message on Android using BigTextStyle notifications.
+- Add Initialize overload that takes existing listener instance.</releaseNotes>
+        <tags>xamarin pcl xam.pcl push notification android ios</tags>
+        <dependencies>
+            <group>
+                <dependency id="Newtonsoft.Json" version="6.0.5" />
+            </group>
+            <group targetFramework="MonoAndroid1.0">
+                <dependency id="Xamarin.GooglePlayServices.Gcm" version="25.0.0.0" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="PushNotification\content\MonoAndroid10\PushNotificationStarted.txt.pp" target="PushNotification\content\MonoAndroid10\PushNotificationStarted.txt.pp" />
+        <file src="PushNotification\content\MonoTouch10\PushNotificationApplicationDelegate.txt.pp" target="PushNotification\content\MonoTouch10\PushNotificationApplicationDelegate.txt.pp" />
+        <file src="PushNotification\content\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Helpers\CrossPushNotificationListener.txt.pp" target="PushNotification\content\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Helpers\CrossPushNotificationListener.txt.pp" />
+        <file src="PushNotification\content\Xamarin.iOS10\PushNotificationApplicationDelegate.txt.pp" target="PushNotification\content\Xamarin.iOS10\PushNotificationApplicationDelegate.txt.pp" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.Abstractions.dll" target="lib\MonoAndroid10\PushNotification.Plugin.Abstractions.dll" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.Abstractions.pdb" target="lib\MonoAndroid10\PushNotification.Plugin.Abstractions.pdb" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.Abstractions.xml" target="lib\MonoAndroid10\PushNotification.Plugin.Abstractions.xml" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.dll" target="lib\MonoAndroid10\PushNotification.Plugin.dll" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.pdb" target="lib\MonoAndroid10\PushNotification.Plugin.pdb" />
+        <file src="..\PushNotification.Plugin.Android\bin\Release\PushNotification.Plugin.XML" target="lib\MonoAndroid10\PushNotification.Plugin.XML" />
+        <file src="..\PushNotification.Plugin.iOS\bin\iPhone\Release\PushNotification.Plugin.Abstractions.dll" target="lib\MonoTouch10\PushNotification.Plugin.Abstractions.dll" />
+        <file src="..\PushNotification.Plugin.iOS\bin\iPhone\Release\PushNotification.Plugin.Abstractions.pdb" target="lib\MonoTouch10\PushNotification.Plugin.Abstractions.pdb" />
+        <file src="..\PushNotification.Plugin.iOS\bin\iPhone\Release\PushNotification.Plugin.Abstractions.xml" target="lib\MonoTouch10\PushNotification.Plugin.Abstractions.xml" />
+        <file src="..\PushNotification.Plugin.iOS\bin\iPhone\Release\PushNotification.Plugin.dll" target="lib\MonoTouch10\PushNotification.Plugin.dll" />
+        <file src="..\PushNotification.Plugin.iOS\bin\iPhone\Release\PushNotification.Plugin.XML" target="lib\MonoTouch10\PushNotification.Plugin.XML" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.Abstractions.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.Abstractions.dll" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.Abstractions.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.Abstractions.pdb" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.Abstractions.xml" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.Abstractions.xml" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.dll" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.pdb" />
+        <file src="..\PushNotification.Plugin\bin\Release\PushNotification.Plugin.XML" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\PushNotification.Plugin.XML" />
+        <file src="..\PushNotification.Plugin.iOSUnified\bin\iPhone\Release\PushNotification.Plugin.Abstractions.dll" target="lib\Xamarin.iOS10\PushNotification.Plugin.Abstractions.dll" />
+        <file src="..\PushNotification.Plugin.iOSUnified\bin\iPhone\Release\PushNotification.Plugin.Abstractions.pdb" target="lib\Xamarin.iOS10\PushNotification.Plugin.Abstractions.pdb" />
+        <file src="..\PushNotification.Plugin.iOSUnified\bin\iPhone\Release\PushNotification.Plugin.Abstractions.xml" target="lib\Xamarin.iOS10\PushNotification.Plugin.Abstractions.xml" />
+        <file src="..\PushNotification.Plugin.iOSUnified\bin\iPhone\Release\PushNotification.Plugin.dll" target="lib\Xamarin.iOS10\PushNotification.Plugin.dll" />
+        <file src="..\PushNotification.Plugin.iOSUnified\bin\iPhone\Release\PushNotification.Plugin.XML" target="lib\Xamarin.iOS10\PushNotification.Plugin.XML" />
+    </files>
+</package>

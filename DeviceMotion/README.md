@@ -13,6 +13,7 @@ Simple cross platform plugin to read motion vectors value for device motion sens
 * Windows Phone 8 (Silverlight)
 * Windows Phone 8.1 RT
 * Windows Store 8.1
+* Tizen
 
 ### API Usage
 
@@ -20,7 +21,7 @@ Call **CrossDeviceMotion.Current** from any project or PCL to gain access to API
 
 Enum of Device Motion Sensor Type:
 
-```
+```csharp
 /// <summary>
 /// Motion sensor type enum. 
 /// </summary>
@@ -47,7 +48,7 @@ Enum of Device Motion Sensor Type:
 ```
 Enum of Device Motion Sensor Delay:
 
-```
+```csharp
 /// <summary>
 /// Motion sensor delay enum.(Specified in milliseconds)
 /// </summary>
@@ -74,7 +75,7 @@ Enum of Device Motion Sensor Delay:
 ```
 Enum of Device Motion Sensor Value Type:
 
-```
+```csharp
 /// <summary>
 /// Motion sensor value type.
 /// </summary>
@@ -94,7 +95,7 @@ Enum of Device Motion Sensor Value Type:
 **Start**
 
 Starts sensor reading for the specified sensor type and sensor delay interval.
-```
+```csharp
 /// <summary>
 /// Start reading for the specified sensorType (Motion Sensor Type Enum Value) with an update delay interval (Motion Sensor Delay Enum Value) .
 /// </summary>
@@ -107,7 +108,7 @@ void Start(MotionSensorType sensorType,MotionSensorDelay interval);
 **Stop**
 
 Stops sensor reading for the specified sensor type.
-```
+```csharp
 /// <summary>
 /// Stop reading for the specified sensorType. (Motion Sensor Type Enum Value)
 /// </summary>
@@ -116,7 +117,7 @@ void Stop(MotionSensorType sensorType);
 ```
 
 **IsActive**
-```
+```csharp
 /// <summary>
 /// Determines whether the specified sensorType (Motion Sensor Type Enum Value) is active or not.
 /// </summary>
@@ -130,14 +131,14 @@ Returns true if specified sensor type is active, false if not.
 
 You can subscribe to <b>SensorValueChanged</b>, which will return <b>SensorValueChangedEventArgs</b> with all information you need. This occurs when a new sensor reading is available at the specified interval. 
 
-```
+```csharp
 /// <summary>
 /// Occurs when sensor value changed.
 /// </summary>
 event SensorValueChangedEventHandler SensorValueChanged;
 ```
 **SensorValueChangedEventArgs Properties**
-```
+```csharp
 /// <summary>
 /// Type of the sensor.
 /// </summary>
@@ -157,7 +158,7 @@ public MotionSensorValueType ValueType
 If <b>ValueType</b> is <b>MotionSensorValueType.Vector</b> cast the <b>Value</b> to <b>MotionVector</b> to get the X,Y,Z Vector values. If <b>ValueType</b> is <b>MotionSensorValueType.Single</b> cast it to <b>MotionValue</b> and use the <b>Value</b> property of the <b>MotionValue</b> to get the sensor measure. For Compass sensor returns single value other sensors returns vector value
 
 **Reading Sensor Changes Example**
-```
+```csharp
 CrossDeviceMotion.Current.SensorValueChanged+=(s, a)=>{
 		
 				switch(a.SensorType){
@@ -177,6 +178,7 @@ CrossDeviceMotion.Current.SensorValueChanged+=(s, a)=>{
 
 #### Contributors
 * [rdelrosario](https://github.com/rdelrosario)
+* [dimitrijevic](https://github.com/dimitrijevic)
 
 Thanks!
 

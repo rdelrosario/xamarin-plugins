@@ -26,21 +26,30 @@ namespace DeviceMotion.Plugin
         /// </summary>
         public DeviceMotionImplementation()
         {
-            accelerometer = Accelerometer.GetDefault();
-            gyrometer = Gyrometer.GetDefault();
-            compass = Compass.GetDefault();
+            try
+            {
+                accelerometer = Accelerometer.GetDefault();
+                gyrometer = Gyrometer.GetDefault();
+                compass = Compass.GetDefault();
 
 #if WINDOWS_PHONE_APP
             magnetometer = Magnetometer.GetDefault();
 #endif
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+
             sensorStatus = new Dictionary<MotionSensorType, bool>()
             {
-				{ MotionSensorType.Accelerometer, false},
-				{ MotionSensorType.Gyroscope, false},
-				{ MotionSensorType.Magnetometer, false},
-                { MotionSensorType.Compass, false}
+                {MotionSensorType.Accelerometer, false},
+                {MotionSensorType.Gyroscope, false},
+                {MotionSensorType.Magnetometer, false},
+                {MotionSensorType.Compass, false}
 
-			};
+            };
+
         }
         /// <summary>
         /// Occurs when sensor value changed.
