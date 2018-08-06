@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd">
+    <metadata minClientVersion="2.8.1">
+        <id>Xam.Plugin.Geofence</id>
+        <version>1.0.9</version>
+        <title>Geofence Plugin for Xamarin</title>
+        <authors>domaven,jphbrivo,hbanzon,ephremshiferaw</authors>
+        <owners>Maven S. R. L.</owners>
+        <licenseUrl>https://github.com/domaven/xamarin-plugins/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/domaven/xamarin-plugins</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/domaven/xamarin-plugins/master/Geofence/Resources/icon.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <developmentDependency>true</developmentDependency>
+        <description>Monitors geofence regions and handle region state changes events. Across iOS and Android from a single API.</description>
+        <summary>Cross Platform Geofence Support</summary>
+        <releaseNotes>- Add keys for configurable notifications for each event. This allows us to subscribe to entry/exit/stay events and independently also get notifications for each event or not as we choose.
+
+- Add interface implementation of a method that checks
+  if location is enabled, so that we can better handle location
+  requests in our app if we do not want this function delegated to
+  this plugin.
+
+- Add OnAppStarted interface implementation to
+  handle app startup state in the client app.
+
+- Adds location service checks and
+  delegates location and permission failures to the client app by
+  raising them in a message to the OnError event.
+
+- Add robustness to the location updated
+  method for usage with the broadcast receiver in an Android
+  background service.
+
+- Add support to customize the
+  large icon and color used in the notification for Android.
+
+- Force using the UI thread where necessary
+  for iOS, and adds parameters that enable delegating location and
+  notification prompts to the client app if desired.
+
+ - Adds the request location permission flags for Android.</releaseNotes>
+        <tags>xamarin pcl xam.pcl geofence android ios</tags>
+        <dependencies>
+            <group targetFramework="MonoAndroid1.0">
+                <dependency id="Xamarin.GooglePlayServices.Location" version="27.0.0.0" />
+            </group>
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="content\MonoAndroid10\Helpers\GeofenceService.txt.pp" target="content\MonoAndroid10\Helpers\GeofenceService.txt.pp" />
+        <file src="content\MonoAndroid10\GeofenceAppStarter.txt.pp" target="content\MonoAndroid10\GeofenceAppStarter.txt.pp" />
+        <file src="content\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Helpers\CrossGeofenceListener.txt.pp" target="content\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Helpers\CrossGeofenceListener.txt.pp" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.Abstractions.dll" target="lib\MonoAndroid10\Geofence.Plugin.Abstractions.dll" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.Abstractions.pdb" target="lib\MonoAndroid10\Geofence.Plugin.Abstractions.pdb" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.Abstractions.xml" target="lib\MonoAndroid10\Geofence.Plugin.Abstractions.xml" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.dll" target="lib\MonoAndroid10\Geofence.Plugin.dll" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.pdb" target="lib\MonoAndroid10\Geofence.Plugin.pdb" />
+        <file src="lib\MonoAndroid10\Geofence.Plugin.XML" target="lib\MonoAndroid10\Geofence.Plugin.XML" />
+        <file src="Geofence.Plugin.iOS\bin\iPhone\Release\Geofence.Plugin.Abstractions.dll" target="lib\MonoTouch10\Geofence.Plugin.Abstractions.dll" />
+        <file src="Geofence.Plugin.iOS\bin\iPhone\Release\Geofence.Plugin.Abstractions.pdb" target="lib\MonoTouch10\Geofence.Plugin.Abstractions.pdb" />
+        <file src="Geofence.Plugin.iOS\bin\iPhone\Release\Geofence.Plugin.Abstractions.xml" target="lib\MonoTouch10\Geofence.Plugin.Abstractions.xml" />
+        <file src="Geofence.Plugin.iOS\bin\iPhone\Release\Geofence.Plugin.dll" target="lib\MonoTouch10\Geofence.Plugin.dll" />
+        <file src="Geofence.Plugin.iOS\bin\iPhone\Release\Geofence.Plugin.XML" target="lib\MonoTouch10\Geofence.Plugin.XML" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.dll" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.pdb" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.xml" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.Abstractions.xml" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.dll" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.dll" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.pdb" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.pdb" />
+        <file src="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.XML" target="lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\Geofence.Plugin.XML" />
+        <file src="Geofence.Plugin.iOSUnified\bin\iPhone\Release\Geofence.Plugin.Abstractions.dll" target="lib\Xamarin.iOS10\Geofence.Plugin.Abstractions.dll" />
+        <file src="Geofence.Plugin.iOSUnified\bin\iPhone\Release\Geofence.Plugin.Abstractions.pdb" target="lib\Xamarin.iOS10\Geofence.Plugin.Abstractions.pdb" />
+        <file src="Geofence.Plugin.iOSUnified\bin\iPhone\Release\Geofence.Plugin.Abstractions.xml" target="lib\Xamarin.iOS10\Geofence.Plugin.Abstractions.xml" />
+        <file src="Geofence.Plugin.iOSUnified\bin\iPhone\Release\Geofence.Plugin.dll" target="lib\Xamarin.iOS10\Geofence.Plugin.dll" />
+        <file src="Geofence.Plugin.iOSUnified\bin\iPhone\Release\Geofence.Plugin.XML" target="lib\Xamarin.iOS10\Geofence.Plugin.XML" />
+    </files>
+</package>

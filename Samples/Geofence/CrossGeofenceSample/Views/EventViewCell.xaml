@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ViewCell xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" x:Class="CrossGeofenceSample.EventViewCell">
+	 <StackLayout  Padding="20" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+	                <Label Text="{Binding Date}" FontSize="Medium" FontAttributes="Bold" />
+	                <Label Text="{Binding Description}" />
+	 </StackLayout>
+	 <ViewCell.ContextActions>
+          <MenuItem Clicked="OnDelete" Text="Delete" IsDestructive="True" />
+     </ViewCell.ContextActions>
+</ViewCell>
