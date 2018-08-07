@@ -13,7 +13,7 @@ We moved our plugins to individual repositories and made newer improved versions
 ## Old Plugins for Xamarin (DEPRECATED)
 
 Each plugin has a README with more information on what they contain.
-* **[Device Motion](https://github.com/rdelrosario/xamarin-plugins/tree/master/DeviceMotion)**
+* **[Device Motion(DEPRECATED)](https://github.com/rdelrosario/xamarin-plugins/tree/master/DeviceMotion)**
 * **[Geofence (DEPRECATED)](https://github.com/domaven/xamarin-plugins/tree/master/Geofence)**
 * **[Push Notification (DEPRECATED)](https://github.com/rdelrosario/xamarin-plugins/tree/master/PushNotification)** 
 
