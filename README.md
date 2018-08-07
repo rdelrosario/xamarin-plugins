@@ -3,7 +3,14 @@ xamarin-plugins
 
 Cross platform Xamarin & Windows plugins for PCLs
 
-# Current Plugins for Xamarin
+# Newer plugins 
+
+We moved our plugins to individual repositories and made newer improved versions. You can check out our plugins here:
+
+**[CrossGeeks Xamarin Plugins ](https://github.com/CrossGeeks/Xamarin.Plugins)
+
+
+## Old Plugins for Xamarin
 
 Each plugin has a README with more information on what they contain.
 * **[Device Motion](https://github.com/rdelrosario/xamarin-plugins/tree/master/DeviceMotion)**
