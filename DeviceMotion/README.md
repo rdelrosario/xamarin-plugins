@@ -2,6 +2,9 @@
 
 Simple cross platform plugin to read motion vectors value for device motion sensors such as:  Accelerometer, Gyroscope, Magnetometer, Compass. 
 
+## IMPORTANTE NOTE:
+This plugin is deprecated. Please use the newer version instead here: https://github.com/CrossGeeks/DeviceSensorsPlugin
+
 ### Setup
 * Available on NuGet: http://www.nuget.org/packages/Xam.Plugin.DeviceMotion
 * Install into your PCL project and Client projects.
