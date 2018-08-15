@@ -1,4 +1,4 @@
-## Device Motion Plugin for Xamarin and Windows
+## Device Motion Plugin for Xamarin and Windows (DEPRECATED)
 
 Simple cross platform plugin to read motion vectors value for device motion sensors such as:  Accelerometer, Gyroscope, Magnetometer, Compass. 
 
