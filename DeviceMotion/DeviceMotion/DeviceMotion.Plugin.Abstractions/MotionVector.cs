@@ -29,7 +29,7 @@ namespace DeviceMotion.Plugin.Abstractions
         /// <returns></returns>
         public override string ToString()
         {
-            return string.Format("X={0}, Y={0}, Z={0}",X,Y,Z);
+            return string.Format("X={0}, Y={1}, Z={2}",X,Y,Z);
         }
 
 		/// <summary>
