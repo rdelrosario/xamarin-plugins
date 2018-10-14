@@ -37,7 +37,7 @@ This methods initializes push notification plugin. The generic <b>T</b> should b
 
 #### iOS
  On the AppDelegate:
-```
+```c#
 public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 {
 	//Consider inizializing before application initialization, if using any CrossPushNotification method during application initialization.
@@ -51,7 +51,7 @@ public override bool FinishedLaunching (UIApplication app, NSDictionary options)
  On the Android Application class, is better to use the OnCreate of the Android Application class so you can handle push notifications even when activities are closed or app not running by using our PushNotificationService to keep listening to push notifications.
 
 But is that not a requirement you could do initialization on your MainActivity class.
-```
+```c#
 public override void OnCreate()
 {
 	base.OnCreate();
@@ -68,7 +68,7 @@ public override void OnCreate()
 
 Must implement IPushNotificationListener. This would be commonly implemented in the Core project if sharing code between Android or iOS. In the case you are using the plugin only for a specific platform this would be implemented in that platform.
 
-```
+```c#
 using Newtonsoft.Json.Linq;
 using PushNotification.Plugin;
 using PushNotification.Plugin.Abstractions;
@@ -112,7 +112,7 @@ public class  CrossPushNotificationListener : IPushNotificationListener
 
 Enum of Device Types:
 
-```
+```c#
 /// <summary>
 /// Device type.
 /// </summary>
@@ -129,7 +129,7 @@ Enum of Device Types:
 
 Register device to receive push notifications. Should only be used after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
-```
+```c#
 void Register();
 ```
 
@@ -137,7 +137,7 @@ void Register();
 
 Unregister device to stop receiving push notifications. Should only be used after initialization, if not will get <b>PushNotificationNotInitializedException</b>.
 
-```
+```c#
 void Unregister();
 ```
 
@@ -156,7 +156,7 @@ void Unregister();
 
    Implement an Android Application class in your Droid project and initialize plugin there. Here a brief snippet:
 
-   ```
+   ```c#
    [Application]
    public class YourAndroidApplication : Application
    {
@@ -211,7 +211,7 @@ Just move your initialization stuff from MainActivity.cs to this Android Applica
 
 
 * There are a few things you can configure in Android project using the following properties from CrossPushNotification class:
-    ```
+    ```c#
     //The sets the key associated with the value will be used to show the title for the notification
     public static string NotificationContentTitleKey { get; set; }
    
